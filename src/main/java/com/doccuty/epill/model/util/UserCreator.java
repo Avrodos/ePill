@@ -57,7 +57,8 @@ public class UserCreator implements SendableEntityCreatorNoIndex
       //User.PROPERTY_CLICKS,
       //User.PROPERTY_QUERY,
       User.PROPERTY_DISEASE,
-      User.PROPERTY_REDGREENCOLORBLIND
+      User.PROPERTY_REDGREENCOLORBLIND,
+      User.PROPERTY_GID
    };
    
    @Override
@@ -181,6 +182,11 @@ public class UserCreator implements SendableEntityCreatorNoIndex
       if (User.PROPERTY_DISEASE.equalsIgnoreCase(attribute))
       {
          return ((User) target).getDisease();
+      }
+
+      if (User.PROPERTY_GID.equalsIgnoreCase(attribute))
+      {
+         return ((User) target).getGid();
       }
       
       return null;

@@ -64,7 +64,7 @@ public class SimpleUser implements SendableEntity {
 	}
 
 	public SimpleUser(long id, String firstname, String lastname, String username, String password, String salt,
-			String preferredFontSize, int levelOfDetail, boolean redGreenColorblind) {
+			String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid) {
 		this.id = id;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -74,6 +74,7 @@ public class SimpleUser implements SendableEntity {
 		this.preferredFontSize = preferredFontSize;
 		this.levelOfDetail = levelOfDetail;
 		this.redGreenColorblind = redGreenColorblind;
+		this.gid = gid;
 	}
 
 	public SimpleUser(User user) {
@@ -93,6 +94,7 @@ public class SimpleUser implements SendableEntity {
 
 		this.preferredFontSize = user.getPreferredFontSize();
 		this.levelOfDetail = user.getLevelOfDetail();
+		this.gid = user.getGid();
 	}
 
 	// ==========================================================================
