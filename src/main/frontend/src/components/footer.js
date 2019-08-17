@@ -38,8 +38,8 @@ class Footer extends React.Component {
 							<div className="col-sm-5 footer-section">
 								<ul className="list-inline">
 									<li className="text-uppercase">ePill:</li>
-									<li><a href="https://www.uni-kassel.de/fb07/institute/ibwl/personen-fachgebiete/sunyaev-prof-dr/team.html" target="blank">{t("team")}</a></li>
-									<li><a href="https://www.uni-kassel.de/fb07/institute/ibwl/personen-fachgebiete/sunyaev-prof-dr/research.html" target="blank">{t("articles")}</a></li>
+									<li><a href="http://www.aifb.kit.edu/web/Critical_Information_Infrastructures/en" target="blank">{t("team")}</a></li>
+									<li><a href="http://www.aifb.kit.edu/web/Anton_Grube/en" target="blank">{t("articles")}</a></li>
 									<li><a href="#/about">{t('whyRegister')}</a></li>
 								</ul>
 								<ul className="list-inline">
@@ -50,9 +50,12 @@ class Footer extends React.Component {
 							</div>
 							<div className="col-sm-3">
 								<address>
-									<strong>Universität Kassel</strong><br /> Henschelstraße 4<br />
-									34127, Kassel<br /> (+49) 561-804-3450<br />
-									<a href="mailto:sunyaev@uni-kassel.de">{t("contactUs")}</a>
+									<strong>Karlsruher Institut für Technologie</strong>
+									<br /> KIT-Campus Süd - Kollegiengebäude am Kronenplatz (Geb. 05.20)
+									<br /> Kaiserstrasse 89
+									<br /> D-76133 Karlsruhe
+									<br /> (+49) 7621 608-43679
+									<br /><a href="mailto:anton.grube@kit.edu">{t("contactUs")}</a>
 								</address>
 							</div>
 						</div>
@@ -71,7 +74,7 @@ class Footer extends React.Component {
 							<div className="col-md-12 text-center">
 								<h3 className="text-uppercase">ePill</h3>
 								<p className="monospaced">
-									&copy;2017 ePill <span className="text-uppercase">All Rights Reserved</span>
+									&copy;2019 ePill <span className="text-uppercase">All Rights Reserved</span>
 								</p>
 							</div>
 						</div>

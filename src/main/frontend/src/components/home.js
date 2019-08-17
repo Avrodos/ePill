@@ -33,35 +33,29 @@ class Home extends React.Component {
         				<div className="col-lg-4">
         					<img className="img-circle" src="/assets/images/logo_s.svg" alt="Generic placeholder image" width="140" height="140"></img>
         					<h2>{t("projectName")}</h2>
-        					<p>Donec sed odio dui. Etiam porta sem malesuada magna mollis
-        						euismod. Nullam id dolor id nibh ultricies vehicula ut id elit.
-        						Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-        						Praesent commodo cursus magna.</p>
+        					<p>Bei dieser Webanwendung handelt es sich um einen Forschungsprototypen des KIT. Mit dieser Webseite können Sie sich Informationen, die normalerweise in Beipackzetteln
+								von Medikamenten stehen, online ansehen.
+								Suchen Sie einfach nach einem Medikament und lassen Sie sich die Informationen zu diesem
+								anzeigen. Außerdem werden noch einige Zusatzfunktionen angeboten.</p>
         					<p>
-        						<a className="btn btn-default" href="/about" role="button" target="blank">{t('viewDetails')} »</a>
+        						<a className="btn btn-default" href="#/about" role="button">{t('viewDetails')} »</a>
         					</p>
         				</div>
         				<div className="col-lg-4">
         					<img className="img-circle" src="/assets/images/prof_sunyaev.jpg" alt="Generic placeholder image" width="140" height="140"></img>
         					<h2>{t("Team")}</h2>
-        					<p>Duis mollis, est non commodo luctus, nisi erat porttitor
-        						ligula, eget lacinia odio sem nec elit. Cras mattis consectetur
-        						purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo,
-        						tortor mauris condimentum nibh.</p>
+        					<p>Wir erforschen zuverlässige, sichere und zweckorientierte Software- und Informationssysteme mit Bezug zu kritischen Informationsinfrastrukturen, innovativen Health-IT Anwendungen / Digital Health, Cloud und Edge Computing Diensten, Blockchain Technologien, und der Auditierung/Zertifizierung von IT.</p>
         					<p>
-        						<a className="btn btn-default" href="https://www.uni-kassel.de/fb07/institute/ibwl/personen-fachgebiete/sunyaev-prof-dr/team.html" role="button" target="blank">{t('viewDetails')} »</a>
+        						<a className="btn btn-default" href="http://www.aifb.kit.edu/web/Critical_Information_Infrastructures/en" role="button" target="blank">{t('viewDetails')} »</a>
         					</p>
         				</div>
 
         				<div className="col-lg-4">
         					<img className="img-circle" src="/assets/images/articles.jpg" alt="Generic placeholder image" width="140" height="140"></img>
         					<h2>{t("articles")}</h2>
-        					<p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in,
-        						egestas eget quam. Vestibulum id ligula porta felis euismod semper.
-        						Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum
-        						nibh, ut fermentum massa justo sit amet risus.</p>
+        					<p>Hier finden Sie unsere aktuellen Publikationen, Projekte und weitere Informationen über die Forschungsgruppe Critical Informatiuon Infrastructures am KIT.</p>
         					<p>
-        						<a className="btn btn-default" href="https://www.uni-kassel.de/fb07/institute/ibwl/personen-fachgebiete/sunyaev-prof-dr/research.html" role="button" target="blank">{t('viewDetails')} »</a>
+        						<a className="btn btn-default" href="http://www.aifb.kit.edu/web/Critical_Information_Infrastructures/en" role="button" target="blank">{t('viewDetails')} »</a>
         					</p>
         				</div>
         			</div>

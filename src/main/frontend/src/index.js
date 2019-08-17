@@ -16,6 +16,7 @@ import Footer from "./components/footer";
 import Home from "./components/home";
 import About from "./components/about";
 import Imprint from "./components/imprint";
+import Privacy from "./components/privacy";
 import Authentication from "./components/authentication";
 import Register from "./components/register";
 import DrugList from "./components/drug_list";
@@ -77,6 +78,7 @@ class Root extends React.Component {
 	                {/* Information sites */}
 	                <Route path="/about" component={About} />
 	                <Route path="/imprint" component={Imprint} />
+                    <Route path="/privacy" component={Privacy} />
 	                
 	                {/* Default route */}
 	                <Route path="/" component={Home} />

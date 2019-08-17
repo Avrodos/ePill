@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import {translate} from "react-i18next";
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about forms.
-class Imprint extends React.Component {
+class Privacy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,15 +26,16 @@ class Imprint extends React.Component {
         		<div className='page-header'>
         	    		<div className='btn-toolbar pull-right'>
         	            <div className='btn-group'></div>
-        	        </div>
-        	        <h3>{t("imprint")}</h3>
-        	    </div>
+                        </div>
+                    <h3>{t("privacy")}</h3>
+                </div>
+
         	    
-        		<div className="col-md-12 no-padding" dangerouslySetInnerHTML={this.createMarkup(t('imprintText'))} />
+        		<div className="col-md-12 no-padding" dangerouslySetInnerHTML={this.createMarkup(t('privacyPolicy'))} />
 
         	</div>
         );
     }
 }
 
-export default translate()(Imprint);
+export default translate()(Privacy);
