@@ -58,6 +58,8 @@ public class UserService {
 		return repository.findByUsername(username);
 	}
 
+	public SimpleUser findByGid(String gid) { return repository.findByGid(gid); }
+
 	
 	public User saveUser(User user) {
 
@@ -65,6 +67,9 @@ public class UserService {
 			return null;
 		
 		if(repository.findByEmail(user.getEmail()) != null)
+			return null;
+
+		if(repository.findByGid(user.getGid()) != null)
 			return null;
 		
 		SecureRandom random = new SecureRandom();
@@ -154,6 +159,9 @@ public class UserService {
 		
 		if(usr.getGender() != null)
 			user.setGender(genderRepository.findOne(usr.getGender().getId()));
+
+		if(usr.getGid() != null)
+			user.withGid(usr.getGid());
 		
 		user = repository.save(user);
 
@@ -264,7 +272,6 @@ public class UserService {
 	/**
 	 * add a drug to user remember list
 	 * @param drug
-	 * @param user
 	 */
 	
 	public boolean addDrugToUserTakingList(Drug drug) {
@@ -284,11 +291,10 @@ public class UserService {
 		
 		return true;
 	}
-	
+
 	/**
 	 * add a drug to user remember list
 	 * @param drug
-	 * @param user
 	 */
 	
 	public boolean removeDrugFromUserTakingList(Drug drug) {
@@ -313,7 +319,6 @@ public class UserService {
 	/**
 	 * add a drug to user remember list
 	 * @param drug
-	 * @param user
 	 */
 	
 	public boolean addDrugToUserRememberList(Drug drug) {
@@ -338,7 +343,6 @@ public class UserService {
 	/**
 	 * remove a drug from user favorites
 	 * @param drug
-	 * @param user
 	 */
 	
 	public boolean removeDrugFromUserRememberList(Drug drug) {

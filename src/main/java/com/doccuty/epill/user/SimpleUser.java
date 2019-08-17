@@ -172,7 +172,31 @@ public class SimpleUser implements SendableEntity {
 		result.append(" ").append(this.getPassword());
 		result.append(" ").append(this.getEmail());
 		result.append(" ").append(this.getPreferredFontSize());
+		result.append(" ").append(this.getGid());
 		return result.substring(1);
+	}
+
+
+	// ==========================================================================
+
+	public static final String PROPERTY_GID = "gid";
+
+	@Column(unique = true)
+	private String gid;
+
+	public String getGid() {
+		return this.gid;
+	}
+
+	public void setGid(String value) {
+		if (!EntityUtil.stringEquals(this.gid, value)) {
+			this.gid = value;
+		}
+	}
+
+	public SimpleUser withGid(String value) {
+		setGid(value);
+		return this;
 	}
 
 	// ==========================================================================

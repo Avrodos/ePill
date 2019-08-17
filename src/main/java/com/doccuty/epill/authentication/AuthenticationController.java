@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.doccuty.epill.user.UserToken;
 
-
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
@@ -18,6 +17,11 @@ public class AuthenticationController {
     public static class UserLogin {
         public String username;
         public String password;
+    }
+
+    public static class TpaLogin {
+        public String tpaId;
+        public TpaService service;
     }
 
     @Autowired
@@ -35,6 +39,18 @@ public class AuthenticationController {
         		return new ResponseEntity<>(token, HttpStatus.UNAUTHORIZED);
         }
         
+        return new ResponseEntity<>(token, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "googleLogin", method = RequestMethod.POST)
+    public ResponseEntity<UserToken> tpalogin(@RequestBody TpaLogin userLogin) {
+        userLogin.service = TpaService.GOOGLE;
+        UserToken token = authenticationService.tpaLogin(userLogin.tpaId, userLogin.service);
+
+        if(token == null) {
+            return new ResponseEntity<>(token, HttpStatus.UNAUTHORIZED);
+        }
+
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 }

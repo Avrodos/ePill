@@ -104,7 +104,15 @@
 			<!-- <classifier>core17</classifier> -->
 			<classifier>sources</classifier>
 		</dependency>
-        
+
+        <!-- Google API -->
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>1.30.2</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

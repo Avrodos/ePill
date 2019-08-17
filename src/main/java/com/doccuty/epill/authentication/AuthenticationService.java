@@ -13,6 +13,15 @@ import com.doccuty.epill.model.LoginAttempt;
 import com.doccuty.epill.user.SimpleUser;
 import com.doccuty.epill.user.SimpleUserRepository;
 import com.doccuty.epill.user.UserToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import java.util.Collections;
+
+
+
 
 @Service
 public class AuthenticationService {
@@ -70,6 +79,51 @@ public class AuthenticationService {
         return userToken;
     }
 
+    /**
+     *
+     * @param tpaID
+     * @return
+     */
+    public UserToken tpaLogin(String tpaID, TpaService service) {
+        SimpleUser user = new SimpleUser();
+        if (service == TpaService.GOOGLE) {
+            //TODO: I should probably verify the integrity of the google token around here
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
+                    // Specify the CLIENT_ID of the app that accesses the backend:
+                    .setAudience(Collections.singletonList("583900150012-agjlvgr8gjsj8cv5f8fkiv3fjl9keu1j.apps.googleusercontent.com"))
+                    // Or, if multiple clients access the backend:
+                    //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+                    .build();
+            try {
+                GoogleIdToken idToken = verifier.verify(tpaID);
+                if (idToken != null) {
+                    Payload payload = idToken.getPayload();
+
+                    // Print user identifier
+                    String userId = payload.getSubject();
+                    System.out.println("User ID: " + userId);
+                }
+
+            } catch (Exception e){
+                //we have an error
+            }
+
+                user = repository.findByGid(tpaID);
+        } else {
+            //just assume here its looking for a7 or other services
+        }
+
+        if(user == null) {
+            //this means, we create an account before we log in.
+            return null;
+        }
+
+        String username = user.getUsername();
+
+        //now we login with the found username
+        UserToken userToken = login(username, "");
+        return userToken;
+    }
 
     /**
      * Validate that a token is valid and returns its body.
@@ -98,4 +152,6 @@ public class AuthenticationService {
     public String hashPassword(String salt, String password) {
         return DigestUtils.sha512Hex(salt + password);
     }
+
+
 }
