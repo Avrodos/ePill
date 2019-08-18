@@ -7,6 +7,7 @@ import {toast} from 'react-toastify';
 import {withCookies} from "react-cookie";
 
 import User from "../util/User";
+import GoogleLogin from "react-google-login";
 
 class Authentication extends React.Component {
     constructor(props) {
@@ -16,7 +17,9 @@ class Authentication extends React.Component {
             username: '',
             password: '',
             error	: undefined,
-            sending	: false
+            sending	: false,
+            tpaId: '',
+            service: '' //TODO: Remove, if not needed
         };
         
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
@@ -102,6 +105,12 @@ class Authentication extends React.Component {
     render() {
         const {t} = this.props;
 
+        const responseGoogle = (response) => {
+            const id_token = response.getAuthResponse().id_token;
+            this.state.tpaId = id_token;
+            this.props.authenticateWithGoogle();
+        }
+
         let component = null;
         if (User.isNotAuthenticated()) {
             component =
@@ -126,7 +135,15 @@ class Authentication extends React.Component {
             component = <div className="container">
         						Current user: {User.username || 'not logged in'}<br />
             					<button onClick={this.handleLogout} className="btn btn-danger">Logout</button>
-            				</div>
+                <GoogleLogin
+                    clientId="583900150012-agjlvgr8gjsj8cv5f8fkiv3fjl9keu1j.apps.googleusercontent.com"
+                    buttonText="Log in with Google"
+                    onSuccess={responseGoogle}
+                    onFailure={responseGoogle}
+                    cookiePolicy={'single_host_origin'}
+                />
+            </div>
+
         }
 
         return (
@@ -144,8 +161,8 @@ class Authentication extends React.Component {
 		             		<Link to="/user/register">{t('register')}</Link>
 		    		        </div>
 		             }
-		          </div>
-		         </div>
+		            </div>
+                </div>
         );
     }
 }

@@ -40,6 +40,7 @@ class Root extends React.Component {
         
         this.updateNavigation 	= this.updateNavigation.bind(this);
         this.updateFontSize		= this.updateFontSize.bind(this);
+        this.authenticateWithGoogle = this.authenticateWithGoogle.bind(this);
     }
 
     // This is called whenever the authentication state of a user is changed by a component
@@ -52,14 +53,17 @@ class Root extends React.Component {
 		this.setState(this.state);
     }
 
+    authenticateWithGoogle() {
+        Register.registeredByGoogle();
+    }
+
     render() {
         return (
             <div className={this.state.fontSize}>
 	            <Navigation {...this.props} ref={(component) => { this.nav = component; }} />
-                
 	            <Switch>
 	                {/* Authentication */}
-	                <Route path="/user/login" render={(props) => (<Authentication {...props} updateNavigation={this.updateNavigation}/> )}/>
+	                <Route path="/user/login" render={(props) => (<Authentication {...props} updateNavigation={this.updateNavigation} authenticateWithGoogle={this.authenticateWithGoogle}/> )}/>
 	                
 	                <Route path="/user/register" render={(props) => (<Register {...props} updateNavigation={this.updateNavigation}/> )}/>
 	

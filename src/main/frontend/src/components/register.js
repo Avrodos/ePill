@@ -189,11 +189,11 @@ class Register extends React.Component {
         const responseGoogle = (response) => {
             console.log(response);
             //TODO Check if something went wrong.
-            const profile = response.getBasicProfile();
+            //const profile = response.getBasicProfile();
             const id_token = response.getAuthResponse().id_token;
 
-            this.state.firstname = profile.getGivenName();
-            this.state.lastname = profile.getFamilyName();
+            //this.state.firstname = profile.getGivenName();
+            //this.state.lastname = profile.getFamilyName();
             //this.state.username = profile.getEmail(); //for testing
             //this.state.password = "apfel"; //for testing
             this.state.tpaId = id_token;
