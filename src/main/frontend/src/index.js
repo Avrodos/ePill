@@ -61,7 +61,7 @@ class Root extends React.Component {
 	                {/* Authentication */}
 	                <Route path="/user/login" render={(props) => (<Authentication {...props} updateNavigation={this.updateNavigation}/> )}/>
 	                
-	                <Route path="/user/register" component={Register}/>
+	                <Route path="/user/register" render={(props) => (<Register {...props} updateNavigation={this.updateNavigation}/> )}/>
 	
 	                {/* Drug handling */}
 	                <Route path="/drug/list" component={DrugList}/>

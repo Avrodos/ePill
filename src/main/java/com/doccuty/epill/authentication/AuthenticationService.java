@@ -121,9 +121,10 @@ public class AuthenticationService {
             if (user == null) {
                 //no user account in the database -> we have to create one.
                 String email = payload.getEmail();
-                String firstName = (String) payload.get("name");
+                String firstName = (String) payload.get("given_name");
                 String familyName = (String) payload.get("family_name");
-
+                //TODO: I have to create the user somehow else -> nullpointer exception
+                user = new User();
                 user.setFirstname(firstName);
                 user.setLastname(familyName);
                 user.setEmail(email);

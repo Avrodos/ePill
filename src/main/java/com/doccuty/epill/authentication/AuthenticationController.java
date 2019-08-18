@@ -43,7 +43,7 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value = "googleLogin", method = RequestMethod.POST)
-    public ResponseEntity<UserToken> tpalogin(@RequestBody TpaLogin userLogin) {
+    public ResponseEntity<UserToken> googleLogin(@RequestBody TpaLogin userLogin) {
         userLogin.service = TpaService.GOOGLE;
         UserToken token = authenticationService.tpaLogin(userLogin.tpaId, userLogin.service);
 
