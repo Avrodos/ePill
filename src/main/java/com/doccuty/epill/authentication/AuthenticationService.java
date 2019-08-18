@@ -1,5 +1,6 @@
 package com.doccuty.epill.authentication;
 
+import com.doccuty.epill.user.*;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -10,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.doccuty.epill.model.LoginAttempt;
-import com.doccuty.epill.user.SimpleUser;
-import com.doccuty.epill.user.SimpleUserRepository;
-import com.doccuty.epill.user.UserToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -32,6 +30,9 @@ public class AuthenticationService {
 
     @Autowired
     private LoginAttemptRepository loginAttemptRepository;
+
+    @Autowired
+    private UserService service;
     
     private final String JWTSecret = "geheim";
 
@@ -84,9 +85,11 @@ public class AuthenticationService {
      * @param tpaID
      * @return
      */
-    public UserToken tpaLogin(String tpaID, TpaService service) {
-        SimpleUser user = new SimpleUser();
-        if (service == TpaService.GOOGLE) {
+    public UserToken tpaLogin(String tpaID, TpaService tpaService) {
+        SimpleUser user = new User();
+        if (tpaService == TpaService.GOOGLE) {
+            String userID = "";
+            Payload payload = null;
             //TODO: I should probably verify the integrity of the google token around here
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
                     // Specify the CLIENT_ID of the app that accesses the backend:
@@ -97,18 +100,49 @@ public class AuthenticationService {
             try {
                 GoogleIdToken idToken = verifier.verify(tpaID);
                 if (idToken != null) {
-                    Payload payload = idToken.getPayload();
+                    payload = idToken.getPayload();
 
                     // Print user identifier
-                    String userId = payload.getSubject();
-                    System.out.println("User ID: " + userId);
+                    userID = payload.getSubject();
+                    System.out.println("User ID: " + userID);
                 }
 
             } catch (Exception e){
                 //we have an error
+                //TODO: Do I need further error handling?
+                return null;
+            }
+            if (userID.equals("") || payload == null) {
+                return null;
             }
 
-                user = repository.findByGid(tpaID);
+            //this means we successfully verified the user
+            user = repository.findByGid(userID);
+            if (user == null) {
+                //no user account in the database -> we have to create one.
+                String email = payload.getEmail();
+                String firstName = (String) payload.get("name");
+                String familyName = (String) payload.get("family_name");
+
+                user.setFirstname(firstName);
+                user.setLastname(familyName);
+                user.setEmail(email);
+                user.setGid(userID);
+                user.setUsername(userID); //TODO: perhaps this should be mail
+                user.setPassword("");
+                User childUser = (User) user;
+                if(service.saveUser(childUser) == null) {
+                    return null;
+                }
+
+                return login(userID, "");
+            } else {
+                // we have to just log him into this account
+                return login(user.getUsername(), user.getPassword());
+            }
+
+
+
         } else {
             //just assume here its looking for a7 or other services
         }
@@ -124,6 +158,7 @@ public class AuthenticationService {
         UserToken userToken = login(username, "");
         return userToken;
     }
+
 
     /**
      * Validate that a token is valid and returns its body.

@@ -140,6 +140,7 @@ class Register extends React.Component {
         console.log("sending");
         //TODO: Perhaps the user already registered for our userbase, we have to log him in directly in that case...
         //TODO: After he registered with google, anyone could enter his acc, since it has no pw...
+
         axios.post('/user/save',
             {
                 firstname       : this.state.firstname,
