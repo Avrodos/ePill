@@ -130,16 +130,16 @@ public class AuthenticationService {
                 user.setEmail(email);
                 user.setGid(userID);
                 user.setUsername(userID); //TODO: perhaps this should be mail
-                user.setPassword("");
+                user.setPassword("thirdPartyAccountService");
                 User childUser = (User) user;
                 if(service.saveUser(childUser) == null) {
                     return null;
                 }
 
-                return login(userID, "");
+                return login(userID, "thirdPartyAccountService");
             } else {
                 // we have to just log him into this account
-                return login(user.getUsername(), user.getPassword());
+                return login(user.getUsername(), "thirdPartyAccountService");
             }
 
 
