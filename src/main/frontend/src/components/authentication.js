@@ -41,6 +41,7 @@ class Authentication extends React.Component {
         this.setState({password: event.target.value});
     }
 
+    //TODO: Prevent TPAs from logging in directly.
     handleSubmit(event) {
         event.preventDefault();
 

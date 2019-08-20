@@ -90,7 +90,7 @@ public class AuthenticationService {
         if (tpaService == TpaService.GOOGLE) {
             String userID = "";
             Payload payload = null;
-            //TODO: I should probably verify the integrity of the google token around here
+            //Verification of the received token
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
                     // Specify the CLIENT_ID of the app that accesses the backend:
                     .setAudience(Collections.singletonList("583900150012-agjlvgr8gjsj8cv5f8fkiv3fjl9keu1j.apps.googleusercontent.com"))
@@ -102,9 +102,8 @@ public class AuthenticationService {
                 if (idToken != null) {
                     payload = idToken.getPayload();
 
-                    // Print user identifier
+                    // This is our desired ID. Unique and constant for the whole account lifetime.
                     userID = payload.getSubject();
-                    System.out.println("User ID: " + userID);
                 }
 
             } catch (Exception e){
@@ -123,7 +122,7 @@ public class AuthenticationService {
                 String email = payload.getEmail();
                 String firstName = (String) payload.get("given_name");
                 String familyName = (String) payload.get("family_name");
-                //TODO: I have to create the user somehow else -> nullpointer exception
+
                 user = new User();
                 user.setFirstname(firstName);
                 user.setLastname(familyName);
