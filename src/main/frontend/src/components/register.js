@@ -5,9 +5,8 @@ import {Link} from "react-router-dom";
 import {translate} from "react-i18next";
 import { toast } from 'react-toastify';
 
-import GoogleLogin from 'react-google-login';
-import User from "../util/User";
 import {withCookies} from "react-cookie";
+import TpaAuthentication from "./tpaAuthentication";
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about forms.
 class Register extends React.Component {
@@ -21,9 +20,7 @@ class Register extends React.Component {
             redGreenColorblind    : false,
             password		: '',
             passwordRepeat: '',
-            sending		: false,
-            tpaId : '',
-            service : ''
+            sending		: false
         };
 
         this.handleFirstnameChange	= this.handleFirstnameChange.bind(this);
@@ -36,11 +33,6 @@ class Register extends React.Component {
         this.handlePasswordRepeatChange = this.handlePasswordRepeatChange.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
-
-        this.registeredByGoogle = this.registeredByGoogle.bind(this);
-
-        this.options = toast.POSITION.BOTTOM_CENTER;
-        this.cookies = this.props.cookies; //TODO: unsure
     }
 
 
@@ -93,7 +85,7 @@ class Register extends React.Component {
         }
 
         if(this.state.password != this.state.passwordRepeat) {
-            toast.error(t('passwordsDifferent'), this.options);
+            toast.error(t('passwordsDifferent'), options);
             return;
         }
         this.state.sending = true;
@@ -115,91 +107,22 @@ class Register extends React.Component {
 
                 switch (status) {
                     case 200:
-                        toast.success(t('registrationSuccess'), this.options);
+                        toast.success(t('registrationSuccess'), options);
                         this.props.history.push("/user/login");
                         break;
                     case 409:
-                        toast.error(t('usernameUsed'), this.options);
+                        toast.error(t('usernameUsed'), options);
                         break;
                     default:
-                        toast.error(t('errorOccurred'), this.options);
+                        toast.error(t('errorOccurred'), options);
                         break;
                 }
             });
     }
 
-    /*
-    To prevent overfilling the render method, I extracted the pushing and sending process for Google sign up to a separate method
-     */
-    registeredByGoogle() {
-
-        this.state.sending = true;
-        this.state.service = "GOOGLE";
-        this.setState(this.state);
-        console.log("sending");
-
-        axios.post('/auth/googleLogin', this.state, {
-            // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
-            // check the HTTP status code.
-            validateStatus: (status) => {
-                console.log(status);
-                return (status >= 200 && status < 300) || status == 401
-            }
-        })
-            .then(({data, status}) => {
-
-            this.state.sending = false;
-            this.setState(this.state);
-
-            const {t} = this.props;
-
-            const options = {
-                position: toast.POSITION.BOTTOM_CENTER
-            };
-
-            switch (status) {
-                case 200:
-                    User.setCookieCredentials(data);
-
-                    this.setState({error: undefined});
-
-                    // Store authentication values even after refresh.
-                    this.cookies.set('auth', {
-                        token: data.token,
-                        user: User
-                    }, {path: '/'});
-
-                    // Send event of updated login state.
-                    this.props.updateNavigation();
-
-                    // Redirect to front page.
-                    this.props.history.push("/");
-                    break;
-                case 401:
-                    this.setState({error: true});
-                    toast.error(t('loginFailed'), options);
-                    break;
-            }
-        });
-    }
 
     render() {
         const {t} = this.props;
-
-        const responseGoogle = (response) => {
-            console.log(response);
-            //TODO Check if something went wrong.
-            //const profile = response.getBasicProfile();
-            const id_token = response.getAuthResponse().id_token;
-
-            //this.state.firstname = profile.getGivenName();
-            //this.state.lastname = profile.getFamilyName();
-            //this.state.username = profile.getEmail(); //for testing
-            //this.state.password = "apfel"; //for testing
-            this.state.tpaId = id_token;
-            console.log("Now registerProcess should be running.");
-            this.registeredByGoogle();
-        }
 
         return (
             <div className="container no-banner">
@@ -275,15 +198,7 @@ class Register extends React.Component {
                             dein Verständnis für Medikamente zu verbessern.</p>
                         <p>Beispielsweise können wir dir genau die Informationen...</p>
                     </div>
-
-                    <GoogleLogin
-                        clientId="583900150012-agjlvgr8gjsj8cv5f8fkiv3fjl9keu1j.apps.googleusercontent.com"
-                        buttonText="Sign Up with Google"
-                        onSuccess={responseGoogle}
-                        onFailure={responseGoogle}
-                        cookiePolicy={'single_host_origin'}
-                    />
-
+                    <TpaAuthentication {...this.props} updateNavigation={this.props.updateNavigation}  />
                 </div>
             </div>
 

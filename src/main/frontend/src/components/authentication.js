@@ -7,7 +7,7 @@ import {toast} from 'react-toastify';
 import {withCookies} from "react-cookie";
 
 import User from "../util/User";
-import GoogleLogin from "react-google-login";
+import TpaAuthentication from "./tpaAuthentication";
 
 class Authentication extends React.Component {
     constructor(props) {
@@ -17,9 +17,7 @@ class Authentication extends React.Component {
             username: '',
             password: '',
             error	: undefined,
-            sending	: false,
-            tpaId: '',
-            service: '' //TODO: Remove, if not needed
+            sending	: false
         };
         
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
@@ -104,13 +102,6 @@ class Authentication extends React.Component {
 
     render() {
         const {t} = this.props;
-
-        const responseGoogle = (response) => {
-            const id_token = response.getAuthResponse().id_token;
-            this.state.tpaId = id_token;
-            this.props.authenticateWithGoogle();
-        }
-
         let component = null;
         if (User.isNotAuthenticated()) {
             component =
@@ -130,18 +121,13 @@ class Authentication extends React.Component {
 	            				: <button className="btn btn-default"><img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="></img></button> }
 			            <Link to="/user/register"><button type="button" className="btn btn-default">{t('register')}</button></Link>
 			        </div>
+                    <TpaAuthentication {...this.props} updateNavigation={this.props.updateNavigation}  />
                 </form>
         } else {
             component = <div className="container">
         						Current user: {User.username || 'not logged in'}<br />
             					<button onClick={this.handleLogout} className="btn btn-danger">Logout</button>
-                <GoogleLogin
-                    clientId="583900150012-agjlvgr8gjsj8cv5f8fkiv3fjl9keu1j.apps.googleusercontent.com"
-                    buttonText="Log in with Google"
-                    onSuccess={responseGoogle}
-                    onFailure={responseGoogle}
-                    cookiePolicy={'single_host_origin'}
-                />
+
             </div>
 
         }

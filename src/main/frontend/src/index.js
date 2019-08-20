@@ -23,6 +23,8 @@ import DrugList from "./components/drug_list";
 import DrugDetail from "./components/drug_detail";
 import UserData from "./components/user/data";
 
+import TpaAuthentication from "./components/tpaAuthentication";
+
 
 class Root extends React.Component {
 	constructor(props) {
@@ -54,18 +56,19 @@ class Root extends React.Component {
     }
 
     authenticateWithGoogle() {
-        Register.registeredByGoogle();
+        this.tpaAuth.authenticateWithGoogle();
     }
 
     render() {
         return (
             <div className={this.state.fontSize}>
 	            <Navigation {...this.props} ref={(component) => { this.nav = component; }} />
+
 	            <Switch>
 	                {/* Authentication */}
 	                <Route path="/user/login" render={(props) => (<Authentication {...props} updateNavigation={this.updateNavigation} authenticateWithGoogle={this.authenticateWithGoogle}/> )}/>
 	                
-	                <Route path="/user/register" render={(props) => (<Register {...props} updateNavigation={this.updateNavigation}/> )}/>
+	                <Route path="/user/register" render={(props) => (<Register {...props} updateNavigation={this.updateNavigation} authenticateWithGoogle={this.authenticateWithGoogle}/> )}/>
 	
 	                {/* Drug handling */}
 	                <Route path="/drug/list" component={DrugList}/>
