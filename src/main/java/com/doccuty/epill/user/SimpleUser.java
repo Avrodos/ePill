@@ -27,16 +27,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import de.uniks.networkparser.EntityUtil;
@@ -64,7 +56,7 @@ public class SimpleUser implements SendableEntity {
 	}
 
 	public SimpleUser(long id, String firstname, String lastname, String username, String password, String salt,
-			String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid) {
+			String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid, Boolean tpa) {
 		this.id = id;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -75,6 +67,7 @@ public class SimpleUser implements SendableEntity {
 		this.levelOfDetail = levelOfDetail;
 		this.redGreenColorblind = redGreenColorblind;
 		this.gid = gid;
+		this.tpa = tpa;
 	}
 
 	public SimpleUser(User user) {
@@ -95,6 +88,7 @@ public class SimpleUser implements SendableEntity {
 		this.preferredFontSize = user.getPreferredFontSize();
 		this.levelOfDetail = user.getLevelOfDetail();
 		this.gid = user.getGid();
+		this.tpa = user.getTPA();
 	}
 
 	// ==========================================================================
@@ -175,6 +169,7 @@ public class SimpleUser implements SendableEntity {
 		result.append(" ").append(this.getEmail());
 		result.append(" ").append(this.getPreferredFontSize());
 		result.append(" ").append(this.getGid());
+		result.append(" ").append(this.getTPA());
 		return result.substring(1);
 	}
 
@@ -198,6 +193,31 @@ public class SimpleUser implements SendableEntity {
 
 	public SimpleUser withGid(String value) {
 		setGid(value);
+		return this;
+	}
+
+	// ==========================================================================
+
+	public static final String PROPERTY_TPA = "tpa";
+
+	@Column
+	private Boolean tpa;
+
+
+	public Boolean getTPA() {
+		return this.tpa;
+	}
+
+	public void setTPA(Boolean value) {
+		if (this.tpa!= value) {
+			Boolean oldValue = this.tpa;
+			this.tpa = value;
+			this.firePropertyChange(PROPERTY_TPA, oldValue, value);
+		}
+	}
+
+	public SimpleUser withTPA(Boolean value) {
+		setTPA(value);
 		return this;
 	}
 

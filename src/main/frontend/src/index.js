@@ -23,7 +23,6 @@ import DrugList from "./components/drug_list";
 import DrugDetail from "./components/drug_detail";
 import UserData from "./components/user/data";
 
-import TpaAuthentication from "./components/tpaAuthentication";
 
 
 class Root extends React.Component {
@@ -42,7 +41,6 @@ class Root extends React.Component {
         
         this.updateNavigation 	= this.updateNavigation.bind(this);
         this.updateFontSize		= this.updateFontSize.bind(this);
-        this.authenticateWithGoogle = this.authenticateWithGoogle.bind(this);
     }
 
     // This is called whenever the authentication state of a user is changed by a component
@@ -55,9 +53,6 @@ class Root extends React.Component {
 		this.setState(this.state);
     }
 
-    authenticateWithGoogle() {
-        this.tpaAuth.authenticateWithGoogle();
-    }
 
     render() {
         return (
@@ -66,9 +61,9 @@ class Root extends React.Component {
 
 	            <Switch>
 	                {/* Authentication */}
-	                <Route path="/user/login" render={(props) => (<Authentication {...props} updateNavigation={this.updateNavigation} authenticateWithGoogle={this.authenticateWithGoogle}/> )}/>
+	                <Route path="/user/login" render={(props) => (<Authentication {...props} updateNavigation={this.updateNavigation}/> )}/>
 	                
-	                <Route path="/user/register" render={(props) => (<Register {...props} updateNavigation={this.updateNavigation} authenticateWithGoogle={this.authenticateWithGoogle}/> )}/>
+	                <Route path="/user/register" render={(props) => (<Register {...props} updateNavigation={this.updateNavigation}/> )}/>
 	
 	                {/* Drug handling */}
 	                <Route path="/drug/list" component={DrugList}/>

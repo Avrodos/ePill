@@ -58,7 +58,8 @@ public class UserCreator implements SendableEntityCreatorNoIndex
       //User.PROPERTY_QUERY,
       User.PROPERTY_DISEASE,
       User.PROPERTY_REDGREENCOLORBLIND,
-      User.PROPERTY_GID
+      User.PROPERTY_GID,
+      User.PROPERTY_TPA
    };
    
    @Override
@@ -188,6 +189,11 @@ public class UserCreator implements SendableEntityCreatorNoIndex
       {
          return ((User) target).getGid();
       }
+
+      if (User.PROPERTY_TPA.equalsIgnoreCase(attribute))
+      {
+         return ((User) target).getTPA();
+      }
       
       return null;
    }
@@ -260,7 +266,13 @@ public class UserCreator implements SendableEntityCreatorNoIndex
          ((User) target).setRedGreenColorblind((boolean) value);
          return true;
       }
-      
+
+      if (User.PROPERTY_TPA.equalsIgnoreCase(attrName))
+      {
+         ((User) target).setTPA((Boolean) value);
+         return true;
+      }
+
       if (User.PROPERTY_ID.equalsIgnoreCase(attrName))
       {
          ((User) target).setId(Integer.parseInt(value.toString()));

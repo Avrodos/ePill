@@ -44,7 +44,7 @@ public class AuthenticationService {
      * @return a UserToken or null if the credentials are not valid
      */
     public UserToken login(String username, String password) {
-    	
+
         SimpleUser user = repository.findByUsername(username);
 
         if(user == null) {
@@ -130,6 +130,7 @@ public class AuthenticationService {
                 user.setGid(userID);
                 user.setUsername(userID); //TODO: perhaps this should be mail
                 user.setPassword("thirdPartyAccountService");
+                user.setTPA(true);
                 User childUser = (User) user;
                 if(service.saveUser(childUser) == null) {
                     return null;

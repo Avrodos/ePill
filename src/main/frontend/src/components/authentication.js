@@ -68,21 +68,26 @@ class Authentication extends React.Component {
                 
                 switch (status) {
                     case 200:
-                        User.setCookieCredentials(data);
-                        
-                        this.setState({error: undefined});
+                        if (data.user.tpa) {
+                            toast.error(t('Dein Account ist mit keinem Basis ePill Account verbunden. Bitte über deinen third-party Service einloggen.'), options);
+                            handleLogout();
+                        } else {
+                            User.setCookieCredentials(data);
 
-                        // Store authentication values even after refresh.
-                        this.cookies.set('auth', {
-                            token: data.token,
-                            user: User
-                        }, {path: '/'});
+                            this.setState({error: undefined});
 
-                        // Send event of updated login state.
-                        this.props.updateNavigation();
-                        
-                        // Redirect to front page.
-                        this.props.history.push("/");
+                            // Store authentication values even after refresh.
+                            this.cookies.set('auth', {
+                                token: data.token,
+                                user: User
+                            }, {path: '/'});
+
+                            // Send event of updated login state.
+                            this.props.updateNavigation();
+
+                            // Redirect to front page.
+                            this.props.history.push("/");
+                        }
                         break;
                     case 401:
                     		this.setState({error: true});

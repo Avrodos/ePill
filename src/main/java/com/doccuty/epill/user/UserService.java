@@ -162,6 +162,9 @@ public class UserService {
 
 		if(usr.getGid() != null)
 			user.withGid(usr.getGid());
+
+		if(usr.getTPA() != null)
+			user.withTPA(usr.getTPA());
 		
 		user = repository.save(user);
 
