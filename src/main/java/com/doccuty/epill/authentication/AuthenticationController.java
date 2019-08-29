@@ -42,9 +42,8 @@ public class AuthenticationController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "googleLogin", method = RequestMethod.POST)
-    public ResponseEntity<UserToken> googleLogin(@RequestBody TpaLogin userLogin) {
-        userLogin.service = TpaService.GOOGLE;
+    @RequestMapping(value = "tpaLogin", method = RequestMethod.POST)
+    public ResponseEntity<UserToken> tpaLogin(@RequestBody TpaLogin userLogin) {
         UserToken token = authenticationService.tpaLogin(userLogin.tpaId, userLogin.service);
 
         if(token == null) {

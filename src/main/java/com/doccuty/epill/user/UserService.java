@@ -58,7 +58,7 @@ public class UserService {
 		return repository.findByUsername(username);
 	}
 
-	public SimpleUser findByGid(String gid) { return repository.findByGid(gid); }
+	public SimpleUser findByGID(String gid) { return repository.findByGID(gid); }
 
 	
 	public User saveUser(User user) {
@@ -69,7 +69,7 @@ public class UserService {
 		if(repository.findByEmail(user.getEmail()) != null)
 			return null;
 
-		if(repository.findByGid(user.getGid()) != null)
+		if(repository.findByGID(user.getGid()) != null)
 			return null;
 		
 		SecureRandom random = new SecureRandom();

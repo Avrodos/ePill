@@ -15,8 +15,11 @@ public interface SimpleUserRepository<T extends SimpleUser> extends CrudReposito
     T findByEmail(@Param("email") String email);
 
     @Query("SELECT new SimpleUser(u.id, u.firstname, u.lastname, u.username, u.password, u.salt, u.preferredFontSize, u.levelOfDetail, u.redGreenColorblind, u.gid, u.tpa) FROM SimpleUser u WHERE u.gid LIKE :gid")
-    T findByGid(@Param(value = "gid") String gid);
-    
+    T findByGID(@Param(value = "gid") String gid);
+
+    //@Query("SELECT new SimpleUser(u.id, u.firstname, u.lastname, u.username, u.password, u.salt, u.preferredFontSize, u.levelOfDetail, u.redGreenColorblind, u.gid, u.tpa) FROM SimpleUser u WHERE u.gid LIKE :gid")
+    //T findByA7ID(@Param(value = "a7id") String a7id);
+
     @Query("SELECT new SimpleUser(u.id, u.firstname, u.lastname) FROM SimpleUser u WHERE u.id = :id")
 	T findOneSimple(@Param("id") long id);
 }

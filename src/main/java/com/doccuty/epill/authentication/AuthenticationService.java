@@ -116,7 +116,7 @@ public class AuthenticationService {
             }
 
             //this means we successfully verified the user
-            user = repository.findByGid(userID);
+            user = repository.findByGID(userID);
             if (user == null) {
                 //no user account in the database -> we have to create one.
                 String email = payload.getEmail();
@@ -144,8 +144,16 @@ public class AuthenticationService {
 
 
 
+        } else if (tpaService == TpaService.A7) {
+            if (tpaID.equals("")) {
+                return null;
+            }
+            //lets see whether or not he already has an account.
+            //user = repository.findByA7ID(tpaID);
+
         } else {
-            //just assume here its looking for a7 or other services
+            //something went wrong with the transmission of states.
+            return null;
         }
 
         if(user == null) {
