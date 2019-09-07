@@ -81,7 +81,6 @@ public class AuthenticationService {
     }
 
     /**
-     *
      * @param tpaID
      * @return
      */
@@ -149,24 +148,30 @@ public class AuthenticationService {
                 return null;
             }
             //lets see whether or not he already has an account.
-            //user = repository.findByA7ID(tpaID);
+            user = repository.findByA7ID(tpaID);
+
+            if(user == null) {
+                user = new User();
+                user.setA7id(tpaID);
+                user.setUsername(tpaID);
+                user.setPassword("thirdPartyAccountService");
+                user.setTPA(true);
+                User childUser = (User) user;
+                if(service.saveUser(childUser) == null) {
+                    return null;
+                }
+                return login(tpaID, "thirdPartyAccountService");
+            } else {
+                return login(user.getUsername(), "thirdPartyAccountService");
+            }
 
         } else {
             //something went wrong with the transmission of states.
             return null;
         }
-
-        if(user == null) {
-            //this means, we create an account before we log in.
-            return null;
-        }
-
-        String username = user.getUsername();
-
-        //now we login with the found username
-        UserToken userToken = login(username, "");
-        return userToken;
     }
+
+
 
 
     /**

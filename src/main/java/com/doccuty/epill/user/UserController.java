@@ -210,4 +210,18 @@ public class UserController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @RequestMapping(value="/updateA7", method = RequestMethod.POST)
+    public ResponseEntity<JsonObject> updateA7UserData(@RequestBody User user) {
+        // A pragmatic approach to security which does not use much framework-specific magic. While other approaches
+        // with annotations, etc. are possible they are much more complex while this is quite easy to understand and
+        // extend.
+        if (service.isAnonymous()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        service.updateA7UserData(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -6,27 +6,34 @@ import {toast} from 'react-toastify';
 
 import {withCookies} from "react-cookie";
 import {sha256} from "js-sha256";
+import User from "../util/User";
+import Cookies from "universal-cookie";
 
 class a7Popup extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            firstname: '',
+            lastname: '',
             sending : '',
             tpaId : '',
             service: 'A7',
             password : '',
             email: '',
-            firstName: '',
-            lastName: '',
             error: ''
         };
 
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.updateA7UserData = this.updateA7UserData.bind(this);
 
         this.options = toast.POSITION.BOTTOM_CENTER;
         this.cookies = this.props.cookies;
+    }
+    componentDidMount() {
+        //TODO:
+        this._isMounted = true;
     }
 
     handleUsernameChange(event) {
@@ -60,27 +67,66 @@ class a7Popup extends React.Component {
                 //TODO: Fehlerbehandlung. get gender, rot-grün-schwäche...
                 //TODO: Account creation itself should be on the backend, right?
                     this.state.sending = false;
+                    this.state.tpaId = data.id;
+                    const {lastName: lastName, firstName: firstName} = data.administrative;
+                    this.state.firstname = firstName;
+                    this.state.lastname = lastName;
+                    this.state.email = data.mail;
                     this.setState(this.state);
 
-                    const {t} = this.props;
-
-                    console.log(data);
-                    console.log("Now, lets see if I can get the correct entries:");
-                    const id = data.id;
-                    const {lastName: lastName, firstName: firstName} = data.administrative;
-                    const mail = data.mail;
-                    let path = this.props.location.pathname;
-                    console.log(path);
                     //sending request to backend
-                /*
-                    axios.post('/auth/a7Login', this.state, {
+                    this.state.sending = true;
+                    this.setState(this.state);
+
+                    axios.post('/auth/tpaLogin', this.state, {
                         // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
                         // check the HTTP status code.
                         validateStatus: (status) => {
                             return (status >= 200 && status < 300) || status == 401
                         }
-                    })
-                */
+                    }).then(({data, status}) => {
+
+                        this.state.sending = false;
+                        this.setState(this.state);
+
+                        const {t} = this.props;
+
+                        const options = {
+                            position: toast.POSITION.BOTTOM_CENTER
+                        };
+
+                        switch (status) {
+                            case 200:
+                                //TODO: now we load all available data
+                                User.setCookieCredentials(data);
+                                let tempUser = User.get();
+                                tempUser.firstname = this.state.firstname;
+                                tempUser.lastname = this.state.lastname;
+                                console.log(tempUser);
+                                User.set(tempUser);
+
+                                this.setState({error: undefined});
+                                console.log("State after .setState {error: undefined}");
+                                console.log(this.state);
+                                this.cookies.set('auth', {
+                                    token: data.token,
+                                    user: User
+                                }, {path: '/'});
+                                this.updateA7UserData(User);
+
+                                // Send event of updated login state.
+                                this.props.updateNavigation();
+                                // Redirect to front page.
+                                this.props.history.push("/");
+
+                                break;
+                            case 401:
+                                this.setState({error: true});
+                                toast.error(t('loginFailed'), options);
+                                break;
+                        }
+                    });
+
                 },
                 (error) => {
                     console.log(error);
@@ -89,10 +135,54 @@ class a7Popup extends React.Component {
                     toast.error(t('loginFailed'), this.options);
                 }
             );
-        this.state.sending = false;
-        this.setState(this.state);
     }
 
+    //TODO: Colorblind, adjust method for proper use in profile
+    updateA7UserData(givenUser) {
+        console.log("Entered update Method! Current state:");
+        console.log(this.state);
+        if(this.state.sending)
+            return;
+        this.state.sending = true;
+        const email = this.state.email;
+        //const username = this.state.tpaId;
+        this.setState(this.state);
+        axios.post('/user/updateA7',
+            {
+                firstname: givenUser.firstname,
+                lastname: givenUser.lastname,
+                //dateOfBirth			: date,
+                //gender				: this.state.gender,
+                email: email
+                //redGreenColorblind   : this.state.redGrenColorblind,
+            }).then(({dat, status}) => {
+            this.state.sending = false;
+            this.setState(this.state);
+
+            const {t} = this.props;
+            const options = {
+                position: toast.POSITION.BOTTOM_CENTER
+            };
+            switch (status) {
+                case 200:
+                    //var data2 = this.state;
+                    //data2.id = User.id;
+                    //User.set(data2);
+                    User.set(givenUser);
+                    console.log("Success!");
+                    console.log(User.get());
+                    break;
+                case 400:
+                    console.log("case 400");
+                    toast.error(t('loading failed'), options);
+                    break;
+                case 401:
+                    console.log(data, "not permitted");
+                    break;
+            }
+        });
+
+    }
 
     render() {
         const {t} = this.props;

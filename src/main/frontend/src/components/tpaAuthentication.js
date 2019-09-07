@@ -10,6 +10,7 @@ import GoogleLogin from "react-google-login";
 import Popup from "reactjs-popup";
 import A7Popup from "./a7Popup";
 
+//TODO: Fehler wenn man im incogn zuerst über a7 und dann über Google einloggt, passiert nichts beim google log in
 class tpaAuthentication extends React.Component {
     constructor(props) {
         super(props);
@@ -76,10 +77,9 @@ class tpaAuthentication extends React.Component {
 
 
     render() {
-        //TODO: name der buttons sollte sich abhängig von register oder login ändern
         //TODO: Button Größe vereinheitlichen, position anpassen
         const responseGoogle = (response) => {
-            //TODO Check if something went wrong.
+            //TODO Check if something went wrong, e.g., when you cancel the login
             this.state.tpaId = response.getAuthResponse().id_token;
 
             this.setState(this.state);

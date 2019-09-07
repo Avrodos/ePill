@@ -56,7 +56,7 @@ public class SimpleUser implements SendableEntity {
 	}
 
 	public SimpleUser(long id, String firstname, String lastname, String username, String password, String salt,
-			String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid, Boolean tpa) {
+			String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid, Boolean tpa, String a7id) {
 		this.id = id;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -68,6 +68,7 @@ public class SimpleUser implements SendableEntity {
 		this.redGreenColorblind = redGreenColorblind;
 		this.gid = gid;
 		this.tpa = tpa;
+		this.a7id = a7id;
 	}
 
 	public SimpleUser(User user) {
@@ -89,6 +90,7 @@ public class SimpleUser implements SendableEntity {
 		this.levelOfDetail = user.getLevelOfDetail();
 		this.gid = user.getGid();
 		this.tpa = user.getTPA();
+		this.a7id = user.getA7id();
 	}
 
 	// ==========================================================================
@@ -170,6 +172,7 @@ public class SimpleUser implements SendableEntity {
 		result.append(" ").append(this.getPreferredFontSize());
 		result.append(" ").append(this.getGid());
 		result.append(" ").append(this.getTPA());
+		result.append(" ").append(this.getA7id());
 		return result.substring(1);
 	}
 
@@ -193,6 +196,28 @@ public class SimpleUser implements SendableEntity {
 
 	public SimpleUser withGid(String value) {
 		setGid(value);
+		return this;
+	}
+
+	// ==========================================================================
+
+	public static final String PROPERTY_A7ID = "a7id";
+
+	@Column(unique = true)
+	private String a7id;
+
+	public String getA7id() {
+		return this.a7id;
+	}
+
+	public void setA7id(String value) {
+		if (!EntityUtil.stringEquals(this.a7id, value)) {
+			this.a7id = value;
+		}
+	}
+
+	public SimpleUser withA7id(String value) {
+		setA7id(value);
 		return this;
 	}
 

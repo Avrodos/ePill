@@ -169,7 +169,6 @@ class UserData extends React.Component {
                 .then(({data, status}) => {
                      this.state.sending = false;
                      this.setState(this.state);
-                     
                      const {t} = this.props;
                      const options = {
                      	    position: toast.POSITION.BOTTOM_CENTER
