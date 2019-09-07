@@ -10,6 +10,8 @@ import User from "../util/User";
 import Cookies from "universal-cookie";
 
 class a7Popup extends React.Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -34,6 +36,10 @@ class a7Popup extends React.Component {
     componentDidMount() {
         //TODO:
         this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     handleUsernameChange(event) {
@@ -65,7 +71,6 @@ class a7Popup extends React.Component {
         })
             .then(({data}) => {
                 //TODO: Fehlerbehandlung. get gender, rot-grün-schwäche...
-                //TODO: Account creation itself should be on the backend, right?
                     this.state.sending = false;
                     this.state.tpaId = data.id;
                     const {lastName: lastName, firstName: firstName} = data.administrative;
@@ -102,12 +107,9 @@ class a7Popup extends React.Component {
                                 let tempUser = User.get();
                                 tempUser.firstname = this.state.firstname;
                                 tempUser.lastname = this.state.lastname;
-                                console.log(tempUser);
                                 User.set(tempUser);
 
                                 this.setState({error: undefined});
-                                console.log("State after .setState {error: undefined}");
-                                console.log(this.state);
                                 this.cookies.set('auth', {
                                     token: data.token,
                                     user: User
@@ -139,8 +141,6 @@ class a7Popup extends React.Component {
 
     //TODO: Colorblind, adjust method for proper use in profile
     updateA7UserData(givenUser) {
-        console.log("Entered update Method! Current state:");
-        console.log(this.state);
         if(this.state.sending)
             return;
         this.state.sending = true;
@@ -157,28 +157,24 @@ class a7Popup extends React.Component {
                 //redGreenColorblind   : this.state.redGrenColorblind,
             }).then(({dat, status}) => {
             this.state.sending = false;
-            this.setState(this.state);
+            if (this._isMounted) {
+                this.setState(this.state);
 
-            const {t} = this.props;
-            const options = {
-                position: toast.POSITION.BOTTOM_CENTER
-            };
-            switch (status) {
-                case 200:
-                    //var data2 = this.state;
-                    //data2.id = User.id;
-                    //User.set(data2);
-                    User.set(givenUser);
-                    console.log("Success!");
-                    console.log(User.get());
-                    break;
-                case 400:
-                    console.log("case 400");
-                    toast.error(t('loading failed'), options);
-                    break;
-                case 401:
-                    console.log(data, "not permitted");
-                    break;
+                const {t} = this.props;
+                const options = {
+                    position: toast.POSITION.BOTTOM_CENTER
+                };
+                switch (status) {
+                    case 200:
+                        User.set(givenUser);
+                        break;
+                    case 400:
+                        toast.error(t('loading failed'), options);
+                        break;
+                    case 401:
+                        toast.error(t('no permission'), options);
+                        break;
+                }
             }
         });
 
