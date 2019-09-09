@@ -2,8 +2,7 @@ import axios from "axios";
 import React from "react";
 import Moment from 'moment';
 
-import {Link} from "react-router-dom";
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import {translate} from "react-i18next";
 import Cookies from "universal-cookie";
 
@@ -24,7 +23,8 @@ class UserData extends React.Component {
 	        	redGreenColorblind    : false,
             levelOfDetail       : 3,
             preferredFontSize   : 'defaultFontSize',
-	        	sending		: false
+			sending: false,
+			tpa: false
         };
         
         this.handleFirstnameChange		= this.handleFirstnameChange.bind(this);
@@ -65,6 +65,7 @@ class UserData extends React.Component {
             		
             		this.state.levelOfDetail	    = data.levelOfDetail	|| 3;
             		this.state.preferredFontSize	= data.preferredFontSize   || 'defaultFontSize';
+				this.state.tpa = data.tpa || false;
 
                 this.setState(this.state);
             });
@@ -200,7 +201,8 @@ class UserData extends React.Component {
                      }
                 });
     }
-    
+
+	//TODO: Ask after first tpa-log in for other fields and then disable all
     render() {
         const {t} 		= this.props;
         const firstname 	= this.state.firstname;
@@ -220,14 +222,16 @@ class UserData extends React.Component {
 				</div>
 		    } 
 	        	   <form onSubmit={this.handleSubmit} className="row">
-		        		<fieldset>
+					   <fieldset>
+						   <fieldset disabled={this.state.tpa}>
 				            <div className="form-group col-md-6 col-lg-6">
 				               <label htmlFor="firstname">{t('firstname')}</label>
 				               <input type="text" name="firstname" id="firstname" className="form-control" value={this.state.firstname} onChange={this.handleFirstnameChange} />
 				            </div> 
 				            <div className="form-group col-md-6 col-lg-6">
 				               <label htmlFor="lastname">{t('lastname')}</label>
-				               <input type="text" name="lastname" id="lastname" className="form-control" value={this.state.lastname} onChange={this.handleLastnameChange} />
+								<input type="text" name="lastname" id="lastname" className="form-control"
+									   value={this.state.lastname} onChange={this.handleLastnameChange}/>
 				            </div>
                             <div className="form-group col-md-6 col-lg-6">
                                <label htmlFor="gender">{t('gender')}</label>
@@ -242,14 +246,14 @@ class UserData extends React.Component {
                              <input type="text" name="dateOfBirth" id="dateOfBirth" className="form-control" value={this.state.dateOfBirth} onChange={this.handleDateOfBirthChange} />
                           </div> 
 					</fieldset>
-						
-		        		<fieldset>
+
+						   <fieldset disabled={this.state.tpa}>
 					      <div className="form-group col-lg-6 col-md-6">
 					         <label htmlFor="email">{t('email')}</label>
 					         <input type="text" name="email" id="email" className="form-control" value={this.state.email} onChange={this.handleEmailChange} />
-					      </div> 
-					</fieldset>
-					<fieldset>
+					      </div>
+						   </fieldset>
+						   <fieldset disabled={this.state.tpa}>
                           <div className="form-group col-lg-6 col-md-6">
                             <p><b>{t("redGreenColorblind")}</b></p>
                             <ul className="list-inline">
@@ -311,8 +315,8 @@ class UserData extends React.Component {
             						</li>
             					</ul>
         					</div>
-				</fieldset>	
-						
+				</fieldset>
+					   </fieldset>
 						<div className="form-actions container">
 			            {!this.state.sending ?
 	            				<button type="submit" className="btn btn-primary">{t('save')}</button>

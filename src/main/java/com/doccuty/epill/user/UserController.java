@@ -1,23 +1,17 @@
 package com.doccuty.epill.user;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.doccuty.epill.model.util.UserCreator;
-
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -211,6 +205,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /*
     @RequestMapping(value="/updateA7", method = RequestMethod.POST)
     public ResponseEntity<JsonObject> updateA7UserData(@RequestBody User user) {
         // A pragmatic approach to security which does not use much framework-specific magic. While other approaches
@@ -224,4 +219,5 @@ public class UserController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+     */
 }

@@ -1,12 +1,5 @@
 package com.doccuty.epill.user;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.doccuty.epill.authentication.AuthenticationService;
 import com.doccuty.epill.country.CountryRepository;
 import com.doccuty.epill.drug.Drug;
@@ -17,10 +10,15 @@ import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.language.LanguageRepository;
 import com.doccuty.epill.model.DrugFeature;
 import com.doccuty.epill.model.PackagingTopic;
-
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.List;
 
 /**
  * Handle all CRUD operations for posts.
@@ -176,45 +174,46 @@ public class UserService {
 		return user;
 	}
 
-	public User updateA7UserData(User usr) {
+	/*
+        public User updateA7UserData(User usr) {
 
-		User user = repository.findOne(getCurrentUser().getId());
+            User user = repository.findOne(getCurrentUser().getId());
 
-		if(user == null)
-			return null;
+            if(user == null)
+                return null;
 
-		user.withFirstname(usr.getFirstname())
-				.withLastname(usr.getLastname())
-				.withEmail(usr.getEmail());
+            user.withFirstname(usr.getFirstname())
+                    .withLastname(usr.getLastname())
+                    .withEmail(usr.getEmail());
 
-		if(usr.getUsername() != null)
-			user.withUsername(usr.getUsername());
+            if(usr.getUsername() != null)
+                user.withUsername(usr.getUsername());
 
-		if(usr.getLanguage() != null)
-			user.setLanguage(languageRepository.findOne(usr.getLanguage().getId()));
+            if(usr.getLanguage() != null)
+                user.setLanguage(languageRepository.findOne(usr.getLanguage().getId()));
 
-		if(usr.getCountry() != null)
-			user.setCountry(countryRepository.findOne(usr.getCountry().getId()));
+            if(usr.getCountry() != null)
+                user.setCountry(countryRepository.findOne(usr.getCountry().getId()));
 
-		if(usr.getGender() != null)
-			user.setGender(genderRepository.findOne(usr.getGender().getId()));
+            if(usr.getGender() != null)
+                user.setGender(genderRepository.findOne(usr.getGender().getId()));
 
-		if(usr.getGid() != null)
-			user.withGid(usr.getGid());
+            if(usr.getGid() != null)
+                user.withGid(usr.getGid());
 
-		if(usr.getTPA() != null)
-			user.withTPA(usr.getTPA());
+            if(usr.getTPA() != null)
+                user.withTPA(usr.getTPA());
 
-		if(usr.getA7id() != null)
-			user.withA7id(usr.getA7id());
+            if(usr.getA7id() != null)
+                user.withA7id(usr.getA7id());
 
-		user = repository.save(user);
+            user = repository.save(user);
 
-		LOG.info("User={} was updated ", user);
+            LOG.info("User={} was updated ", user);
 
-		return user;
-	}
-
+            return user;
+        }
+    */
 	public User updateUserPassword(User usr) {
 		
 		User user = repository.findOne(getCurrentUser().getId());

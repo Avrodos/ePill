@@ -7,8 +7,12 @@ import {toast} from 'react-toastify';
 import {withCookies} from "react-cookie";
 import {sha256} from "js-sha256";
 import User from "../util/User";
-import Cookies from "universal-cookie";
+import Popup from "reactjs-popup";
+import MissingDataPopup from "./missingDataPopup";
 
+//TODO: If I start the popup through "Login" the component unmounts before the update.
+//TODO: If I create gacc first, I cant register with a7?
+//TODO: Correct error handling in case of wrong password
 class a7Popup extends React.Component {
     _isMounted = false;
 
@@ -22,7 +26,11 @@ class a7Popup extends React.Component {
             service: 'A7',
             password : '',
             email: '',
-            error: ''
+            error: '',
+            open: false,
+            gender: {id: 0},
+            redGreenColorblind: false,
+            dateOfBirth: '',
         };
 
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
@@ -32,14 +40,30 @@ class a7Popup extends React.Component {
 
         this.options = toast.POSITION.BOTTOM_CENTER;
         this.cookies = this.props.cookies;
+
+
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.handleGenderChange = this.handleGenderChange.bind(this);
+        this.handleRedGreenColorblind = this.handleRedGreenColorblind.bind(this);
+        this.setFormattedDate = this.setFormattedDate.bind(this);
     }
+
     componentDidMount() {
-        //TODO:
+        //This should prevent operations after unmounting
         this._isMounted = true;
     }
 
     componentWillUnmount() {
         this._isMounted = false;
+    }
+
+    openModal() {
+        this.setState({open: true});
+    }
+
+    closeModal() {
+        this.setState({open: false});
     }
 
     handleUsernameChange(event) {
@@ -50,6 +74,24 @@ class a7Popup extends React.Component {
         this.setState({password: event.target.value});
     }
 
+
+    handleGenderChange(event) {
+        this.state.gender = {id: event.target.value};
+        this.setState(this.state);
+    }
+
+    handleRedGreenColorblind(event) {
+        this.state.redGreenColorblind = (event.target.value == 1) ? true : false;
+        this.setState(this.state);
+        User.setRedGreenColorblind(this.state.redGreenColorblind);
+    }
+
+    setFormattedDate(date) {
+        this.state.dateOfBirth = date;
+        this.setState(this.state);
+    }
+
+    //TODO: Falsches passwort "hängt" das fenster auf
     handleSubmit(event) {
         event.preventDefault();
         this.state.sending = true;
@@ -102,25 +144,24 @@ class a7Popup extends React.Component {
 
                         switch (status) {
                             case 200:
-                                //TODO: now we load all available data
+                                //First we are only loading the absolutely necessary data.
                                 User.setCookieCredentials(data);
                                 let tempUser = User.get();
+                                //We need the names, because the update call is asynchronous, and the user might see the HP before the update is finished.
                                 tempUser.firstname = this.state.firstname;
                                 tempUser.lastname = this.state.lastname;
                                 User.set(tempUser);
 
+                                //enabling us to update the User
                                 this.setState({error: undefined});
                                 this.cookies.set('auth', {
                                     token: data.token,
                                     user: User
                                 }, {path: '/'});
-                                this.updateA7UserData(User);
 
-                                // Send event of updated login state.
-                                this.props.updateNavigation();
-                                // Redirect to front page.
-                                this.props.history.push("/");
-
+                                this.setState(this.state);
+                                //we need further data
+                                this.openModal();
                                 break;
                             case 401:
                                 this.setState({error: true});
@@ -131,7 +172,6 @@ class a7Popup extends React.Component {
 
                 },
                 (error) => {
-                    console.log(error);
                     const {t} = this.props;
                     this.setState({error: true});
                     toast.error(t('loginFailed'), this.options);
@@ -140,21 +180,18 @@ class a7Popup extends React.Component {
     }
 
     //TODO: Colorblind, adjust method for proper use in profile
-    updateA7UserData(givenUser) {
-        if(this.state.sending)
+    updateA7UserData() {
+        if (this.state.sending)
             return;
         this.state.sending = true;
-        const email = this.state.email;
-        //const username = this.state.tpaId;
-        this.setState(this.state);
-        axios.post('/user/updateA7',
+        axios.post('/user/update',
             {
-                firstname: givenUser.firstname,
-                lastname: givenUser.lastname,
-                //dateOfBirth			: date,
-                //gender				: this.state.gender,
-                email: email
-                //redGreenColorblind   : this.state.redGrenColorblind,
+                firstname: User.firstname,
+                lastname: User.lastname,
+                dateOfBirth: this.state.dateOfBirth,
+                gender: this.state.gender,
+                email: this.state.email,
+                redGreenColorblind: this.state.redGreenColorblind
             }).then(({dat, status}) => {
             this.state.sending = false;
             if (this._isMounted) {
@@ -166,7 +203,11 @@ class a7Popup extends React.Component {
                 };
                 switch (status) {
                     case 200:
-                        User.set(givenUser);
+                        this.closeModal();
+                        // Send event of updated login state.
+                        this.props.updateNavigation();
+                        // Redirect to front page.
+                        this.props.history.push("/");
                         break;
                     case 400:
                         toast.error(t('loading failed'), options);
@@ -177,11 +218,19 @@ class a7Popup extends React.Component {
                 }
             }
         });
-
     }
 
     render() {
         const {t} = this.props;
+
+        let missingDataPopup =
+            <div>
+                <Popup open={this.state.open}>
+                    <MissingDataPopup gender={this.handleGenderChange} setFormattedDate={this.setFormattedDate}
+                                      redGreenColorblind={this.handleRedGreenColorblind}
+                                      update={this.updateA7UserData}/>
+                </Popup>
+            </div>;
 
         return (
             <div>
@@ -205,6 +254,7 @@ class a7Popup extends React.Component {
 
                     </form>
                 </div>
+                {missingDataPopup}
             </div>)
     }
 }
