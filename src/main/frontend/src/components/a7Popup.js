@@ -173,13 +173,13 @@ class a7Popup extends React.Component {
                 },
                 (error) => {
                     const {t} = this.props;
-                    this.setState({error: true});
+                    this.setState({sending: false, error: true});
                     toast.error(t('loginFailed'), this.options);
                 }
             );
     }
 
-    //TODO: Colorblind, adjust method for proper use in profile
+    //TODO: adjust method for proper use in profile
     updateA7UserData() {
         if (this.state.sending)
             return;
@@ -210,10 +210,10 @@ class a7Popup extends React.Component {
                         this.props.history.push("/");
                         break;
                     case 400:
-                        toast.error(t('loading failed'), options);
+                        toast.error(t('loadingFailed'), options);
                         break;
                     case 401:
-                        toast.error(t('no permission'), options);
+                        toast.error(t('noPermission'), options);
                         break;
                 }
             }

@@ -41,6 +41,7 @@ class missingDataPopup extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        const {t} = this.props;
         const options = {
             position: toast.POSITION.BOTTOM_CENTER
         };

@@ -69,7 +69,7 @@ class Authentication extends React.Component {
                 switch (status) {
                     case 200:
                         if (data.user.tpa) {
-                            toast.error(t('Dein Account ist mit keinem Basis ePill Account verbunden. Bitte über deinen third-party Service einloggen.'), options);
+                            toast.error(t('notBasicAcc'), options);
                             this.handleLogout();
                         } else {
                             User.setCookieCredentials(data);
