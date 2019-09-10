@@ -12,10 +12,10 @@ import MissingDataPopup from "./missingDataPopup";
 
 //TODO: If I start the popup through "Login" the component unmounts before the update.
 //TODO: If I create gacc first, I cant register with a7?
-//TODO: Correct error handling in case of wrong password
+//TODO: toast at wrong pos when entering wrong password
 class a7Popup extends React.Component {
     _isMounted = false;
-
+    _token = "";
     constructor(props) {
         super(props);
         this.state = {
@@ -96,6 +96,7 @@ class a7Popup extends React.Component {
         event.preventDefault();
         this.state.sending = true;
         this.setState(this.state);
+        const {t} = this.props;
 
         const url = 'https://sandbox.andaman7.com/public/v1/users/me';
         const apiKey = '0a24fa4b-9f38-47a4-ad99-5ba3a2c211c1';
@@ -136,12 +137,6 @@ class a7Popup extends React.Component {
                         this.state.sending = false;
                         this.setState(this.state);
 
-                        const {t} = this.props;
-
-                        const options = {
-                            position: toast.POSITION.BOTTOM_CENTER
-                        };
-
                         switch (status) {
                             case 200:
                                 //First we are only loading the absolutely necessary data.
@@ -151,28 +146,20 @@ class a7Popup extends React.Component {
                                 tempUser.firstname = this.state.firstname;
                                 tempUser.lastname = this.state.lastname;
                                 User.set(tempUser);
-
-                                //enabling us to update the User
                                 this.setState({error: undefined});
-                                this.cookies.set('auth', {
-                                    token: data.token,
-                                    user: User
-                                }, {path: '/'});
-
-                                this.setState(this.state);
+                                this._token = data.token;
                                 //we need further data
                                 this.openModal();
                                 break;
                             case 401:
                                 this.setState({error: true});
-                                toast.error(t('loginFailed'), options);
+                                toast.error(t('loginFailed'), this.options);
                                 break;
                         }
                     });
 
                 },
                 (error) => {
-                    const {t} = this.props;
                     this.setState({sending: false, error: true});
                     toast.error(t('loginFailed'), this.options);
                 }
@@ -183,7 +170,16 @@ class a7Popup extends React.Component {
     updateA7UserData() {
         if (this.state.sending)
             return;
+
+        // Store authentication values even after refresh.
+        //Had to move this into this method, since otherwise react would unmount this comp too early, for some reason.
+        this.cookies.set('auth', {
+            token: this._token,
+            user: User
+        }, {path: '/'});
+
         this.state.sending = true;
+        //TODO: If second log in, are doB, gender and rgcb still correct?
         axios.post('/user/update',
             {
                 firstname: User.firstname,
@@ -194,28 +190,27 @@ class a7Popup extends React.Component {
                 redGreenColorblind: this.state.redGreenColorblind
             }).then(({dat, status}) => {
             this.state.sending = false;
-            if (this._isMounted) {
-                this.setState(this.state);
-
-                const {t} = this.props;
-                const options = {
-                    position: toast.POSITION.BOTTOM_CENTER
-                };
-                switch (status) {
-                    case 200:
+            const {t} = this.props;
+            switch (status) {
+                case 200:
+                    if (this._isMounted) {
+                        //we dont need to do this, if the comp is unmounted anyway
+                        this.setState(this.state);
                         this.closeModal();
-                        // Send event of updated login state.
-                        this.props.updateNavigation();
-                        // Redirect to front page.
-                        this.props.history.push("/");
-                        break;
-                    case 400:
-                        toast.error(t('loadingFailed'), options);
-                        break;
-                    case 401:
-                        toast.error(t('noPermission'), options);
-                        break;
-                }
+                    }
+                    // Send event of updated login state.
+                    this.props.updateNavigation();
+                    // Redirect to front page.
+                    this.props.history.push("/");
+                    break;
+                case 400:
+                    toast.error(t('loadingFailed'), this.options);
+                    break;
+                case 401:
+                    toast.error(t('noPermission'), this.options);
+                    break;
+                default:
+                    toast.error(t('loginFailed'), this.options);
             }
         });
     }
@@ -223,6 +218,7 @@ class a7Popup extends React.Component {
     render() {
         const {t} = this.props;
 
+        //TODO: Proper error handling if the user clicks outside of modal before entering data.
         let missingDataPopup =
             <div>
                 <Popup open={this.state.open}>
