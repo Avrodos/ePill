@@ -148,6 +148,7 @@ class a7Popup extends React.Component {
                                 User.set(tempUser);
                                 this.setState({error: undefined});
                                 this._token = data.token;
+                                //TODO: is this the first sign in?
                                 //we need further data
                                 this.openModal();
                                 break;

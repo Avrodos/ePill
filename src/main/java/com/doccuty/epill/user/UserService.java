@@ -69,6 +69,9 @@ public class UserService {
 
 		if(repository.findByGID(user.getGid()) != null)
 			return null;
+
+		if (repository.findByA7ID(user.getA7id()) != null)
+			return null;
 		
 		SecureRandom random = new SecureRandom();
 		byte[] randomByte = new byte[30];
@@ -166,6 +169,9 @@ public class UserService {
 
 		if(usr.getA7id() != null)
 			user.withA7id(usr.getA7id());
+
+		if (usr.getFirstSignIn() != null)
+			user.withFirstSignIn(usr.getFirstSignIn());
 		
 		user = repository.save(user);
 

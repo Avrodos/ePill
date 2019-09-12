@@ -21,22 +21,20 @@
 
 package com.doccuty.epill.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.interfaces.SendableEntity;
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
-import javax.persistence.*;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.interfaces.SendableEntity;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
 @Table(name = "user_simple")
@@ -55,8 +53,9 @@ public class SimpleUser implements SendableEntity {
 		this.lastname = lastname;
 	}
 
+	//TODO: Clean this up.
 	public SimpleUser(long id, String firstname, String lastname, String username, String password, String salt,
-			String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid, Boolean tpa, String a7id) {
+					  String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid, Boolean tpa, String a7id, Boolean firstSignIn) {
 		this.id = id;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -69,6 +68,7 @@ public class SimpleUser implements SendableEntity {
 		this.gid = gid;
 		this.tpa = tpa;
 		this.a7id = a7id;
+		this.firstSignIn = firstSignIn;
 	}
 
 	public SimpleUser(User user) {
@@ -91,6 +91,7 @@ public class SimpleUser implements SendableEntity {
 		this.gid = user.getGid();
 		this.tpa = user.getTPA();
 		this.a7id = user.getA7id();
+		this.firstSignIn = user.getFirstSignIn();
 	}
 
 	// ==========================================================================
@@ -227,7 +228,6 @@ public class SimpleUser implements SendableEntity {
 
 	@Column
 	private Boolean tpa;
-
 
 	public Boolean getTPA() {
 		return this.tpa;
@@ -505,6 +505,32 @@ public class SimpleUser implements SendableEntity {
 
 	public SimpleUser withRedGreenColorblind(boolean value) {
 		setRedGreenColorblind(value);
+		return this;
+	}
+
+	// ==========================================================================
+
+	//This aids us identifying the first sign in of the user
+	//Needed for e.g., red-green colorblindness
+	public static final String PROPERTY_FIRSTSIGNIN = "firstSignIn";
+
+	@Column
+	private Boolean firstSignIn = true;
+
+	public Boolean getFirstSignIn() {
+		return this.firstSignIn;
+	}
+
+	public void setFirstSignIn(boolean value) {
+		if (this.firstSignIn != value) {
+			boolean oldValue = this.firstSignIn;
+			this.firstSignIn = value;
+			this.firePropertyChange(PROPERTY_FIRSTSIGNIN, oldValue, value);
+		}
+	}
+
+	public SimpleUser withFirstSignIn(boolean value) {
+		setFirstSignIn(value);
 		return this;
 	}
 }
