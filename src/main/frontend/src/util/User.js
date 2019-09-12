@@ -25,7 +25,8 @@ class User {
         this.levelOfDetail		= data.levelOfDetail || 3;
         this.preferredFontSize	= data.preferredFontSize || 'defaultFontSize';
         this.redGreenColorblind	= data.redGreenColorblind || false;
-        this.tpa = data.tpa;
+        this.tpa = data.tpa || false;
+        this.firstSignIn = data.firstSignIn || false;
     }
 
     reset() {
@@ -37,6 +38,7 @@ class User {
         this.redGreenColorblind	= false;
         this.id = -1;
         this.tpa = null;
+        this.firstSignIn = null;
     }
     
     get() {
@@ -48,7 +50,8 @@ class User {
     			levelOfDetail:	this.levelOfDetail,
     			preferredFontSize	:	this.preferredFontSize,
     			redGreenColorblind	:	this.redGreenColorblind,
-                tpa : this.tpa
+                tpa: this.tpa,
+                firstSignIn: this.firstSignIn
     		}
     }
     
@@ -75,6 +78,10 @@ class User {
 
     isTPA() {
         return this.tpa;
+    }
+
+    isFirstSignIn() {
+        return this.firstSignIn;
     }
 }
 

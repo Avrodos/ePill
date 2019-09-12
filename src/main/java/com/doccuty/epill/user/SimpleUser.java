@@ -515,22 +515,23 @@ public class SimpleUser implements SendableEntity {
 	public static final String PROPERTY_FIRSTSIGNIN = "firstSignIn";
 
 	@Column
-	private Boolean firstSignIn = true;
+	private Boolean firstSignIn;
 
 	public Boolean getFirstSignIn() {
 		return this.firstSignIn;
 	}
 
-	public void setFirstSignIn(boolean value) {
+	public void setFirstSignIn(Boolean value) {
 		if (this.firstSignIn != value) {
-			boolean oldValue = this.firstSignIn;
+			Boolean oldValue = this.firstSignIn;
 			this.firstSignIn = value;
 			this.firePropertyChange(PROPERTY_FIRSTSIGNIN, oldValue, value);
 		}
 	}
 
-	public SimpleUser withFirstSignIn(boolean value) {
+	public SimpleUser withFirstSignIn(Boolean value) {
 		setFirstSignIn(value);
 		return this;
 	}
+
 }

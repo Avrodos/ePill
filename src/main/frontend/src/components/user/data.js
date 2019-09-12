@@ -24,7 +24,8 @@ class UserData extends React.Component {
             levelOfDetail       : 3,
             preferredFontSize   : 'defaultFontSize',
 			sending: false,
-			tpa: false
+			tpa: false,
+			firstSignIn: false
         };
         
         this.handleFirstnameChange		= this.handleFirstnameChange.bind(this);
@@ -66,6 +67,7 @@ class UserData extends React.Component {
             		this.state.levelOfDetail	    = data.levelOfDetail	|| 3;
             		this.state.preferredFontSize	= data.preferredFontSize   || 'defaultFontSize';
 				this.state.tpa = data.tpa || false;
+				this.state.firstSignIn = data.firstSignIn || false;
 
                 this.setState(this.state);
             });
@@ -202,7 +204,6 @@ class UserData extends React.Component {
                 });
     }
 
-	//TODO: Ask after first tpa-log in for other fields and then disable all
     render() {
         const {t} 		= this.props;
         const firstname 	= this.state.firstname;

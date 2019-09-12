@@ -144,7 +144,6 @@ public class UserService {
 		user.withFirstname(usr.getFirstname())
 			.withLastname(usr.getLastname())
 			.withEmail(usr.getEmail())
-			.withDateOfBirth(usr.getDateOfBirth())
 			.withPreferredFontSize(usr.getPreferredFontSize())
 			.withLevelOfDetail(usr.getLevelOfDetail())
 			.withRedGreenColorblind(usr.getRedGreenColorblind());
@@ -161,17 +160,20 @@ public class UserService {
 		if(usr.getGender() != null)
 			user.setGender(genderRepository.findOne(usr.getGender().getId()));
 
+		if (usr.getDateOfBirth() != null)
+			user.setDateOfBirth(usr.getDateOfBirth());
+
 		if(usr.getGid() != null)
-			user.withGid(usr.getGid());
+			user.setGid(usr.getGid());
 
 		if(usr.getTPA() != null)
-			user.withTPA(usr.getTPA());
+			user.setTPA(usr.getTPA());
 
 		if(usr.getA7id() != null)
-			user.withA7id(usr.getA7id());
+			user.setA7id(usr.getA7id());
 
 		if (usr.getFirstSignIn() != null)
-			user.withFirstSignIn(usr.getFirstSignIn());
+			user.setFirstSignIn(usr.getFirstSignIn());
 		
 		user = repository.save(user);
 

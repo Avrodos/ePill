@@ -1,21 +1,20 @@
 package com.doccuty.epill.authentication;
 
+import com.doccuty.epill.model.LoginAttempt;
 import com.doccuty.epill.user.*;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.doccuty.epill.model.LoginAttempt;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import java.util.Collections;
 
 
@@ -130,6 +129,7 @@ public class AuthenticationService {
                 user.setUsername(userID); //TODO: perhaps this should be mail
                 user.setPassword("thirdPartyAccountService");
                 user.setTPA(true);
+                user.setFirstSignIn(true);
                 User childUser = (User) user;
                 if(service.saveUser(childUser) == null) {
                     return null;
@@ -138,6 +138,9 @@ public class AuthenticationService {
                 return login(userID, "thirdPartyAccountService");
             } else {
                 // we have to just log him into this account
+                if (user.getFirstSignIn()) {
+                    user.setFirstSignIn(false);
+                }
                 return login(user.getUsername(), "thirdPartyAccountService");
             }
 
@@ -156,6 +159,7 @@ public class AuthenticationService {
                 user.setUsername(tpaID);
                 user.setPassword("thirdPartyAccountService");
                 user.setTPA(true);
+                user.setFirstSignIn(true);
                 User childUser = (User) user;
                 if(service.saveUser(childUser) == null) {
                     return null;

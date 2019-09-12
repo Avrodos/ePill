@@ -16,6 +16,9 @@ import MissingDataPopup from "./missingDataPopup";
 class a7Popup extends React.Component {
     _isMounted = false;
     _token = "";
+    _levelOfDetail = 3;
+    _preferredFontSize = 'defaultFontSize';
+
     constructor(props) {
         super(props);
         this.state = {
@@ -30,7 +33,7 @@ class a7Popup extends React.Component {
             open: false,
             gender: {id: 0},
             redGreenColorblind: false,
-            dateOfBirth: '',
+            dateOfBirth: ''
         };
 
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
@@ -146,11 +149,22 @@ class a7Popup extends React.Component {
                                 tempUser.firstname = this.state.firstname;
                                 tempUser.lastname = this.state.lastname;
                                 User.set(tempUser);
-                                this.setState({error: undefined});
+                                this._levelOfDetail = data.user.levelOfDetail;
+                                this._preferredFontSize = data.user.preferredFontSize;
+                                this.setState({
+                                    levelOfDetail: this._levelOfDetail,
+                                    preferredFontSize: this._preferredFontSize,
+                                    redGreenColorblind: tempUser.redGreenColorblind,
+                                    error: undefined
+                                });
                                 this._token = data.token;
                                 //TODO: is this the first sign in?
-                                //we need further data
-                                this.openModal();
+                                if (data.user.firstSignIn) {
+                                    //we need further data
+                                    this.openModal();
+                                } else {
+                                    this.updateA7UserData();
+                                }
                                 break;
                             case 401:
                                 this.setState({error: true});
@@ -167,6 +181,7 @@ class a7Popup extends React.Component {
             );
     }
 
+    //WRITE: describe problem regarding the update of data, getting the gender etc
     //TODO: adjust method for proper use in profile
     updateA7UserData() {
         if (this.state.sending)
@@ -180,16 +195,40 @@ class a7Popup extends React.Component {
         }, {path: '/'});
 
         this.state.sending = true;
-        //TODO: If second log in, are doB, gender and rgcb still correct?
-        axios.post('/user/update',
-            {
+        let newData;
+        if (this.state.gender.id === 0) {
+            //In this case, we would be losing our previously gained information.
+            //Since the default is 0, we will always have the correct gender this way.
+
+            //has to contain everything that cannot be handled by != null in UserService.java
+            newData = {
                 firstname: User.firstname,
                 lastname: User.lastname,
+                email: this.state.email,
+                dateOfBirth: this.state.dateOfBirth,
+
+                redGreenColorblind: this.state.redGreenColorblind,
+                levelOfDetail: this._levelOfDetail,
+                preferredFontSize: this._preferredFontSize,
+                firstSignIn: false
+            };
+        } else {
+            newData = {
+                firstname: User.firstname,
+                lastname: User.lastname,
+                email: this.state.email,
                 dateOfBirth: this.state.dateOfBirth,
                 gender: this.state.gender,
-                email: this.state.email,
-                redGreenColorblind: this.state.redGreenColorblind
-            }).then(({dat, status}) => {
+                redGreenColorblind: this.state.redGreenColorblind,
+                levelOfDetail: this._levelOfDetail,
+                preferredFontSize: this._preferredFontSize,
+                firstSignIn: false
+            };
+        }
+
+        //TODO: If second log in, are doB, gender and rgcb still correct?
+        axios.post('/user/update', newData
+        ).then(({dat, status}) => {
             this.state.sending = false;
             const {t} = this.props;
             switch (status) {
