@@ -7,7 +7,9 @@ import {toast} from 'react-toastify';
 import {withCookies} from "react-cookie";
 
 import User from "../util/User";
-import TpaAuthentication from "./tpaAuthentication";
+import GooglePopup from "./googlePopup";
+import Popup from "reactjs-popup";
+import A7Popup from "./a7Popup";
 
 class Authentication extends React.Component {
     constructor(props) {
@@ -41,7 +43,6 @@ class Authentication extends React.Component {
         this.setState({password: event.target.value});
     }
 
-    //TODO: Prevent TPAs from logging in directly.
     handleSubmit(event) {
         event.preventDefault();
 
@@ -109,6 +110,17 @@ class Authentication extends React.Component {
     render() {
         const {t} = this.props;
         let component = null;
+
+        let a7LoginPopup =
+            <div>
+                <Popup
+                    trigger={<button> Login with Andaman7</button>}
+                    position="right center"
+                    modal>
+                    <A7Popup {...this.props} updateNavigation={this.props.updateNavigation}/>
+                </Popup>
+            </div>;
+
         if (User.isNotAuthenticated()) {
             component =
                 <div>
@@ -129,7 +141,8 @@ class Authentication extends React.Component {
 			            <Link to="/user/register"><button type="button" className="btn btn-default">{t('register')}</button></Link>
 			        </div>
                 </form>
-                    <TpaAuthentication {...this.props} updateNavigation={this.props.updateNavigation}  />
+                    <GooglePopup {...this.props} updateNavigation={this.props.updateNavigation}/>
+                    {a7LoginPopup}
                 </div>
         } else {
             component = <div className="container">

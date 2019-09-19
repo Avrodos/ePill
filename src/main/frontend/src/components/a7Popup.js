@@ -10,9 +10,6 @@ import User from "../util/User";
 import Popup from "reactjs-popup";
 import MissingDataPopup from "./missingDataPopup";
 
-//TODO: If I start the popup through "Login" the component unmounts before the update.
-//TODO: If I create gacc first, I cant register with a7?
-//TODO: toast at wrong pos when entering wrong password
 class a7Popup extends React.Component {
     _isMounted = false;
     _token = "";
@@ -94,7 +91,6 @@ class a7Popup extends React.Component {
         this.setState(this.state);
     }
 
-    //TODO: Falsches passwort "hängt" das fenster auf
     handleSubmit(event) {
         event.preventDefault();
         this.state.sending = true;
@@ -116,7 +112,6 @@ class a7Popup extends React.Component {
             }
         })
             .then(({data}) => {
-                //TODO: Fehlerbehandlung. get gender, rot-grün-schwäche...
                     this.state.sending = false;
                     this.state.tpaId = data.id;
                     const {lastName: lastName, firstName: firstName} = data.administrative;
@@ -226,7 +221,6 @@ class a7Popup extends React.Component {
             };
         }
 
-        //TODO: If second log in, are doB, gender and rgcb still correct?
         axios.post('/user/update', newData
         ).then(({dat, status}) => {
             this.state.sending = false;

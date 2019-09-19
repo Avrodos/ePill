@@ -143,13 +143,15 @@ public class UserService {
 
 		user.withFirstname(usr.getFirstname())
 			.withLastname(usr.getLastname())
-			.withEmail(usr.getEmail())
 			.withPreferredFontSize(usr.getPreferredFontSize())
 			.withLevelOfDetail(usr.getLevelOfDetail())
 			.withRedGreenColorblind(usr.getRedGreenColorblind());
 
 		if(usr.getUsername() != null)
 			user.withUsername(usr.getUsername());
+
+		if (usr.getEmail() != null)
+			user.setEmail(usr.getEmail());
 			
 		if(usr.getLanguage() != null)
 			user.setLanguage(languageRepository.findOne(usr.getLanguage().getId()));

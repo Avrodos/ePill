@@ -3,10 +3,12 @@ import React from "react";
 
 import {Link} from "react-router-dom";
 import {translate} from "react-i18next";
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 
 import {withCookies} from "react-cookie";
-import TpaAuthentication from "./tpaAuthentication";
+import GooglePopup from "./googlePopup";
+import Popup from "reactjs-popup";
+import A7Popup from "./a7Popup";
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about forms.
 class Register extends React.Component {
@@ -124,6 +126,16 @@ class Register extends React.Component {
     render() {
         const {t} = this.props;
 
+        let a7RegisterPopup =
+            <div>
+                <Popup
+                    trigger={<button> Register with Andaman7</button>}
+                    position="right center"
+                    modal>
+                    <A7Popup {...this.props} updateNavigation={this.props.updateNavigation}/>
+                </Popup>
+            </div>;
+
         return (
             <div className="container no-banner">
                 <div className="page-header">
@@ -198,7 +210,8 @@ class Register extends React.Component {
                             dein Verständnis für Medikamente zu verbessern.</p>
                         <p>Beispielsweise können wir dir genau die Informationen...</p>
                     </div>
-                    <TpaAuthentication {...this.props} updateNavigation={this.props.updateNavigation}  />
+                    <GooglePopup {...this.props} updateNavigation={this.props.updateNavigation}/>
+                    {a7RegisterPopup}
                 </div>
             </div>
 

@@ -74,7 +74,7 @@ class missingDataPopup extends React.Component {
 
         return (
             <div>
-                <h3> Leider fehlen noch ein paar wichtige Daten. Bitte ergänzen Sie diese: </h3>
+                <h3>{t("missingData")}</h3>
                 <form onSubmit={this.handleSubmit} className="info">
                     <fieldset>
                         <div className="form-group col-md-6 col-lg-6">
