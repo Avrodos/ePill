@@ -717,3 +717,86 @@ a.wide { display : block }
 .font-size-list li span {
 	height: 40px;
 }
+
+/*Medication-Plan*/
+
+.btn-date-change {
+	color: black;
+	background-color: white;
+	margin-left: 10px;
+	margin-right: 10px;
+	display: inline-block;
+}
+
+.text-date-change {
+	text-align: center;
+}
+
+.glyphicon.glyphicon-triangle-left{
+	font-size: 50px;
+}
+
+.glyphicon.glyphicon-triangle-right{
+	font-size: 50px;
+}
+
+.mp-title {
+	display: inline-block;
+}
+
+.btn-add-drug{
+	float: right;
+	color: white;
+}
+
+.btn-recalculate{
+	float: right;
+	color: white;
+	background-color: #555753;
+}
+
+.table-line-hover:hover {
+  background-color:#ddd;
+}
+
+.table-line-hover:hover .progress {
+  background-color:#ddd;
+}
+
+.td-style {
+  padding: 8px;
+  text-align: left;
+  line-height: 53px;
+}
+
+.th-style {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table-style {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.progress {
+  box-shadow: none;
+  background-color: white;
+  margin-top: 25px;
+}
+
+.progress-bar {
+  display: block;
+  float: right;
+  background-color: #0ca49a; 
+}
+
+.checkbox-position{
+  float: right;
+}
+
+.information {
+  margin: 0 !important;
+  padding: 0 !important;
+}

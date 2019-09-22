@@ -35,6 +35,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -45,6 +46,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import de.uniks.networkparser.EntityUtil;
@@ -53,6 +55,9 @@ import de.uniks.networkparser.interfaces.SendableEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.interfaces.SendableEntity;
 
 @Entity
 @Table(name = "user_simple")
@@ -73,7 +78,7 @@ public class SimpleUser implements SendableEntity {
 
 	//TODO: Clean this up.
 	public SimpleUser(long id, String firstname, String lastname, String username, String password, String salt,
-					  String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid, Boolean tpa, String a7id, Boolean firstSignIn) {
+					  String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid, Boolean tpa, String a7id, Boolean firstSignIn, int weight) {
 		this.id = id;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -87,6 +92,7 @@ public class SimpleUser implements SendableEntity {
 		this.tpa = tpa;
 		this.a7id = a7id;
 		this.firstSignIn = firstSignIn;
+        this.weight = weight;
 	}
 
 	public SimpleUser(User user) {
@@ -110,6 +116,10 @@ public class SimpleUser implements SendableEntity {
 		this.tpa = user.getTPA();
 		this.a7id = user.getA7id();
 		this.firstSignIn = user.getFirstSignIn();
+		this.weight = user.getWeight();
+		this.breakfastTime = user.getBreakfastTime();
+		this.dinnerTime = user.getDinnerTime();
+		this.lunchTime = user.getLunchTime();
 	}
 
 	// ==========================================================================
@@ -124,6 +134,7 @@ public class SimpleUser implements SendableEntity {
 		return false;
 	}
 
+	@Override
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
 		if (listeners == null) {
 			listeners = new PropertyChangeSupport(this);
@@ -132,6 +143,7 @@ public class SimpleUser implements SendableEntity {
 		return true;
 	}
 
+	@Override
 	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		if (listeners == null) {
 			listeners = new PropertyChangeSupport(this);
@@ -140,6 +152,7 @@ public class SimpleUser implements SendableEntity {
 		return true;
 	}
 
+	@Override
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		if (listeners == null) {
 			listeners.removePropertyChangeListener(listener);
@@ -148,6 +161,7 @@ public class SimpleUser implements SendableEntity {
 		return true;
 	}
 
+	@Override
 	public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		if (listeners != null) {
 			listeners.removePropertyChangeListener(propertyName, listener);
@@ -180,7 +194,7 @@ public class SimpleUser implements SendableEntity {
 
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 
 		result.append(" ").append(this.getId());
 		result.append(" ").append(this.getFirstname());
@@ -192,6 +206,7 @@ public class SimpleUser implements SendableEntity {
 		result.append(" ").append(this.getGid());
 		result.append(" ").append(this.getTPA());
 		result.append(" ").append(this.getA7id());
+        result.append(" ").append(this.getWeight());
 		return result.substring(1);
 	}
 
@@ -365,7 +380,7 @@ public class SimpleUser implements SendableEntity {
 	public void setSalt(String value) {
 		if (!EntityUtil.stringEquals(this.salt, value)) {
 
-			String oldValue = this.salt;
+			final String oldValue = this.salt;
 			this.salt = value;
 			this.firePropertyChange(PROPERTY_SALT, oldValue, value);
 		}
@@ -422,17 +437,18 @@ public class SimpleUser implements SendableEntity {
 
 	@JsonIgnore
 	public int getAge() {
-		
-		if(this.dateOfBirth == null) {
+
+		if (this.dateOfBirth == null) {
 			return 0;
 		}
-		
-		Calendar cal = Calendar.getInstance();
-	    cal.setTime(this.dateOfBirth);
 
-		LocalDate b = LocalDate.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-	    long age = b.until(LocalDate.now(), ChronoUnit.YEARS);
-	    
+		final Calendar cal = Calendar.getInstance();
+		cal.setTime(this.dateOfBirth);
+
+		final LocalDate b = LocalDate.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+				cal.get(Calendar.DAY_OF_MONTH));
+		final long age = b.until(LocalDate.now(), ChronoUnit.YEARS);
+
 		return (int) age;
 	}
 
@@ -460,7 +476,7 @@ public class SimpleUser implements SendableEntity {
 	// ==========================================================================
 
 	public static final String PROPERTY_LEVELOFDETAIL = "levelOfDetail";
-	
+
 	private int levelOfDetail;
 
 	public int getLevelOfDetail() {
@@ -469,7 +485,7 @@ public class SimpleUser implements SendableEntity {
 
 	public void setLevelOfDetail(int value) {
 		if (this.levelOfDetail != value) {
-			int oldValue = this.levelOfDetail;
+			final int oldValue = this.levelOfDetail;
 			this.levelOfDetail = value;
 			this.firePropertyChange(PROPERTY_LEVELOFDETAIL, oldValue, value);
 		}
@@ -515,7 +531,7 @@ public class SimpleUser implements SendableEntity {
 
 	public void setRedGreenColorblind(boolean value) {
 		if (this.redGreenColorblind != value) {
-			boolean oldValue = this.redGreenColorblind;
+			final boolean oldValue = this.redGreenColorblind;
 			this.redGreenColorblind = value;
 			this.firePropertyChange(PROPERTY_REDGREENCOLORBLIND, oldValue, value);
 		}
@@ -549,6 +565,103 @@ public class SimpleUser implements SendableEntity {
 
 	public SimpleUser withFirstSignIn(Boolean value) {
 		setFirstSignIn(value);
+		return this;
+	}
+
+
+	// ==========================================================================
+
+	public static final String PROPERTY_WEIGHT = "weight";
+
+	@Column(nullable = false, columnDefinition = "int default 0")
+	private int weight;
+
+	public int getWeight() {
+		return this.weight;
+	}
+
+	public void setWeight(int value) {
+		if (this.weight != value) {
+			final int oldValue = this.weight;
+			this.weight = value;
+			this.firePropertyChange(PROPERTY_WEIGHT, oldValue, value);
+		}
+	}
+
+	public SimpleUser withWeight(int value) {
+		setWeight(value);
+		return this;
+	}
+
+	// ==========================================================================
+
+	public static final String PROPERTY_BREAKFAST_TIME = "breakfasttime";
+
+	@Column(name = "breakfast_time")
+	private int breakfastTime;
+
+	public int getBreakfastTime() {
+		return this.breakfastTime;
+	}
+
+	public void setBreakfastTime(int value) {
+		if (this.breakfastTime != value) {
+			final int oldValue = this.breakfastTime;
+			this.breakfastTime = value;
+			this.firePropertyChange(PROPERTY_BREAKFAST_TIME, oldValue, value);
+		}
+	}
+
+	public SimpleUser withBreakfastTime(int value) {
+		setBreakfastTime(value);
+		return this;
+	}
+
+	// ==========================================================================
+
+	public static final String PROPERTY_LUNCH_TIME = "lunchtime";
+
+	@Column(name = "lunch_time")
+	private int lunchTime;
+
+	public int getLunchTime() {
+		return this.lunchTime;
+	}
+
+	public void setLunchTime(int value) {
+		if (this.lunchTime != value) {
+			final int oldValue = this.lunchTime;
+			this.lunchTime = value;
+			this.firePropertyChange(PROPERTY_LUNCH_TIME, oldValue, value);
+		}
+	}
+
+	public SimpleUser withLunchTime(int value) {
+		setLunchTime(value);
+		return this;
+	}
+
+	// ==========================================================================
+
+	public static final String PROPERTY_DINNER_TIME = "dinnertime";
+
+	@Column(name = "dinner_time")
+	private int dinnerTime;
+
+	public int getDinnerTime() {
+		return this.dinnerTime;
+	}
+
+	public void setDinnerTime(int value) {
+		if (this.dinnerTime != value) {
+			final int oldValue = this.dinnerTime;
+			this.dinnerTime = value;
+			this.firePropertyChange(PROPERTY_DINNER_TIME, oldValue, value);
+		}
+	}
+
+	public SimpleUser withDinnerTime(int value) {
+		setDinnerTime(value);
 		return this;
 	}
 

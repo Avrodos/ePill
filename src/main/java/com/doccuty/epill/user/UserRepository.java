@@ -11,7 +11,10 @@ import org.springframework.stereotype.Repository;
 @Transactional
 public interface UserRepository extends SimpleUserRepository<User> {
 
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE User u SET u.preferredFontSize = :preferredFontSize WHERE u.id = :id")
-    int updateSettings(@Param("id") int id, @Param("preferredFontSize") int preferredFontSize);
+	@Modifying(clearAutomatically = true)
+	@Query("UPDATE User u SET u.preferredFontSize = :preferredFontSize WHERE u.id = :id")
+	int updateSettings(@Param("id") int id, @Param("preferredFontSize") int preferredFontSize);
+
+	@Query("SELECT u FROM User u WHERE u.id = :id")
+	User findUserById(@Param("id") long id);
 }

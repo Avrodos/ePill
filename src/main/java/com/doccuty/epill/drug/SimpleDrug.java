@@ -137,8 +137,6 @@ import de.uniks.networkparser.EntityUtil;
       return result.substring(1);
    }
 
-
-   
    //==========================================================================
    
    public static final String PROPERTY_NAME = "name";
@@ -336,4 +334,143 @@ import de.uniks.networkparser.EntityUtil;
       setName(value);
       return this;
    } 
+   
+//==========================================================================
+   
+   public static final String PROPERTY_HALF_TIME_PERIOD = "period";
+   
+   @Column(name = "period")
+   private int period;
+
+   public int getPeriod()
+   {
+      return this.period;
+   }
+   
+   public void setPeriod(int value)
+   {
+      if (this.period != value) {
+      
+         int oldValue = this.period;
+         this.period = value;
+         this.firePropertyChange(PROPERTY_HALF_TIME_PERIOD, oldValue, value);
+      }
+   }
+   
+   public SimpleDrug withPeriod(int value)
+   {
+      setPeriod(value);
+      return this;
+   }
+   
+//==========================================================================
+   
+   public static final String PROPERTY_TAKE_ON_EMPTY_STOMACH = "takeonemptystomach";
+   
+   @Column(name = "take_on_empty_stomach")
+   private boolean takeOnEmptyStomach;
+
+   public boolean getTakeOnEmptyStomach()
+   {
+      return this.takeOnEmptyStomach;
+   }
+   
+   public void setTakeOnEmptyStomach(boolean value)
+   {
+      if (this.takeOnEmptyStomach != value) {
+      
+         boolean oldValue = this.takeOnEmptyStomach;
+         this.takeOnEmptyStomach = value;
+         this.firePropertyChange(PROPERTY_TAKE_ON_EMPTY_STOMACH, oldValue, value);
+      }
+   }
+   
+//   public SimpleDrug withTakeOnEmptyStomach(boolean value)
+//   {
+//	   setTakeOnEmptyStomach(value);
+//      return this;
+//   }
+
+//==========================================================================
+   
+   public static final String PROPERTY_TAKE_ON_FULL_STOMACH = "takeonfullstomach";
+   
+   @Column(name = "take_on_full_stomach")
+   private boolean takeOnFullStomach;
+
+   public boolean getTakeOnFullStomach()
+   {
+      return this.takeOnFullStomach;
+   }
+   
+   public void setTakeOnFullStomach(boolean value)
+   {
+      if (this.takeOnFullStomach != value) {
+      
+         boolean oldValue = this.takeOnFullStomach;
+         this.takeOnFullStomach = value;
+         this.firePropertyChange(PROPERTY_TAKE_ON_FULL_STOMACH, oldValue, value);
+      }
+   }
+   
+//   public SimpleDrug withTakeOnFullStomach(boolean value)
+//   {
+//	   setTakeOnFullStomach(value);
+//      return this;
+//   }
+   
+
+//==========================================================================
+   
+   public static final String PROPERTY_TAKE_TO_MEALS = "taketomeals";
+   
+   @Column(name = "take_to_meals")
+   private boolean takeToMeals;
+
+   public boolean getTakeToMeals()
+   {
+      return this.takeToMeals;
+   }
+   
+   public void setTakeToMeals(boolean value)
+   {
+      if (this.takeToMeals != value) {
+      
+         boolean oldValue = this.takeToMeals;
+         this.takeToMeals = value;
+         this.firePropertyChange(PROPERTY_TAKE_TO_MEALS, oldValue, value);
+      }
+   }
+   
+//   public SimpleDrug withTakeToMeals(boolean value)
+//   {
+//	   setTakeToMeals(value);
+//      return this;
+//   }
+   
+//==========================================================================
+   
+   public static final String PROPERTY_COUNT_PER_DAY = "countperday";
+   
+   @Column(name = "count_per_day")
+   private int countPerDay;
+
+   public int getCountPerDay()
+   {
+      return this.countPerDay;
+   }
+   
+   public void setCountPerDay(int value)
+   {
+      if (this.countPerDay != value) {
+      
+         int oldValue = this.countPerDay;
+         this.countPerDay = value;
+         this.firePropertyChange(PROPERTY_COUNT_PER_DAY, oldValue, value);
+      }
+   }
+   
+
 }
+
+
