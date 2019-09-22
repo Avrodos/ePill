@@ -58,7 +58,7 @@ class Root extends React.Component {
         return (
             <div className={this.state.fontSize}>
 	            <Navigation {...this.props} ref={(component) => { this.nav = component; }} />
-
+                
 	            <Switch>
 	                {/* Authentication */}
 	                <Route path="/user/login" render={(props) => (<Authentication {...props} updateNavigation={this.updateNavigation}/> )}/>
@@ -76,12 +76,13 @@ class Root extends React.Component {
 	                <Route path="/user/rememberedDrugs" component={DrugList}/>
 	                <Route path="/user/takenDrugs" component={DrugList}/>
 	                <Route path="/user/data"  render={(props) => (<UserData {...props} updateFontSize={this.updateFontSize} updateNavigation={this.updateNavigation} /> )}/>
+	                <Route path="/user/settings" component={UserSettings}/>
 	                
 	                {/* Information sites */}
 	                <Route path="/about" component={About} />
 	                <Route path="/imprint" component={Imprint} />
                     <Route path="/privacy" component={Privacy} />
-	                
+
 	                {/* Default route */}
 	                <Route path="/" component={Home} />
 	            </Switch>
