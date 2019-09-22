@@ -61,11 +61,11 @@ public class UserService {
 
     public SimpleUser findByGID(String gid) { return repository.findByGID(gid); }
 
-    /*
+
 	public User findUserById(long id) {
 		return repository.findUserById(id);
 	}
-*/
+
 
 	public User saveUser(User user) {
 
