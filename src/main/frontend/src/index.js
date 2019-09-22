@@ -76,7 +76,6 @@ class Root extends React.Component {
 	                <Route path="/user/rememberedDrugs" component={DrugList}/>
 	                <Route path="/user/takenDrugs" component={DrugList}/>
 	                <Route path="/user/data"  render={(props) => (<UserData {...props} updateFontSize={this.updateFontSize} updateNavigation={this.updateNavigation} /> )}/>
-	                <Route path="/user/settings" component={UserSettings}/>
 	                
 	                {/* Information sites */}
 	                <Route path="/about" component={About} />
