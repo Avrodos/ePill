@@ -21,11 +21,18 @@ import com.doccuty.epill.user.User;
 
 import de.uniks.networkparser.interfaces.SendableEntity;
 
+/**
+ * UserDrugPlanItem contains plan data (for future intakes) and historical data 
+ * (for intakes in the past)  per intake of one drug. 
+ * 
+ * @author cs
+ *
+ */
 @Entity
-@Table(name="user_drug_plan")
-public class UserDrugPlan implements SendableEntity {
+@Table(name="user_drug_plan_item")
+public class UserDrugPlanItem implements SendableEntity {
 
-    public UserDrugPlan() {
+    public UserDrugPlanItem() {
 
     }
 
@@ -51,7 +58,7 @@ public class UserDrugPlan implements SendableEntity {
         }
     }
 
-    public UserDrugPlan withId(long value)
+    public UserDrugPlanItem withId(long value)
     {
         setId(value);
         return this;
@@ -87,7 +94,7 @@ public class UserDrugPlan implements SendableEntity {
         }
     }
 
-    public UserDrugPlan withTimestamp(Date value)
+    public UserDrugPlanItem withTimestamp(Date value)
     {
         setDateTimePlanned(value);
         return this;
@@ -140,7 +147,7 @@ public class UserDrugPlan implements SendableEntity {
         return changed;
     }
 
-    public UserDrugPlan withDrug(Drug value)
+    public UserDrugPlanItem withDrug(Drug value)
     {
         setDrug(value);
         return this;
@@ -195,7 +202,7 @@ public class UserDrugPlan implements SendableEntity {
         return changed;
     }
 
-    public UserDrugPlan withUser(User value)
+    public UserDrugPlanItem withUser(User value)
     {
         setUser(value);
         return this;

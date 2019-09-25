@@ -20,7 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.doccuty.epill.user.UserService;
-import com.doccuty.epill.userdrugplan.UserDrugPlan;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItemViewModel;;
 
 // Use Spring's testing support in JUnit
@@ -54,7 +54,7 @@ public class UserDrugPlanTest {
 	@Transactional
 	public void testGetAllUserDrugPlans() {
 		LOG.info("testing UserDrugPlan data access");
-		final List<UserDrugPlan> userDrugPlanList = drugService.getUserDrugPlansByUserId();
+		final List<UserDrugPlanItem> userDrugPlanList = drugService.getUserDrugPlansByUserId();
 		assertNotNull(userDrugPlanList);
 		assertTrue(userDrugPlanList.size() > 2);
 	}
@@ -65,7 +65,7 @@ public class UserDrugPlanTest {
 		LOG.info("testing UserDrugPlan data access by date");
 		final Date dateFrom = new GregorianCalendar(2019, 9 - 1, 1).getTime();
 		final Date dateTo = new GregorianCalendar(2019, 9 - 1, 2).getTime();
-		final List<UserDrugPlan> userDrugPlanList = drugService.getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
+		final List<UserDrugPlanItem> userDrugPlanList = drugService.getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
 		assertNotNull(userDrugPlanList);
 		assertEquals(2, userDrugPlanList.size());
 	}

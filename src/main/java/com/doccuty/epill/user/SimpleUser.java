@@ -28,7 +28,6 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
@@ -46,18 +45,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.interfaces.SendableEntity;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
-
-import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.interfaces.SendableEntity;
 
 @Entity
 @Table(name = "user_simple")
@@ -78,7 +65,9 @@ public class SimpleUser implements SendableEntity {
 
 	//TODO: Clean this up.
 	public SimpleUser(long id, String firstname, String lastname, String username, String password, String salt,
-					  String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid, Boolean tpa, String a7id, Boolean firstSignIn, int weight) {
+					  String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid, Boolean tpa, String a7id, 
+					  Boolean firstSignIn, int sleepTime, int dinnerTime, int breakfastTime, int lunchTime) {
+		
 		this.id = id;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -92,7 +81,10 @@ public class SimpleUser implements SendableEntity {
 		this.tpa = tpa;
 		this.a7id = a7id;
 		this.firstSignIn = firstSignIn;
-        this.weight = weight;
+		this.sleepTime = sleepTime;
+		this.breakfastTime = breakfastTime;
+		this.dinnerTime = dinnerTime;
+		this.lunchTime = lunchTime;
 	}
 
 	public SimpleUser(User user) {
@@ -116,11 +108,10 @@ public class SimpleUser implements SendableEntity {
 		this.tpa = user.getTPA();
 		this.a7id = user.getA7id();
 		this.firstSignIn = user.getFirstSignIn();
-		this.weight = user.getWeight();
 		this.breakfastTime = user.getBreakfastTime();
 		this.dinnerTime = user.getDinnerTime();
 		this.lunchTime = user.getLunchTime();
-	}
+		this.sleepTime = user.getSleepTime();	}
 
 	// ==========================================================================
 
@@ -206,7 +197,6 @@ public class SimpleUser implements SendableEntity {
 		result.append(" ").append(this.getGid());
 		result.append(" ").append(this.getTPA());
 		result.append(" ").append(this.getA7id());
-        result.append(" ").append(this.getWeight());
 		return result.substring(1);
 	}
 
@@ -568,31 +558,30 @@ public class SimpleUser implements SendableEntity {
 		return this;
 	}
 
-
 	// ==========================================================================
 
-	public static final String PROPERTY_WEIGHT = "weight";
+	public static final String PROPERTY_SLEEP_TIME = "sleeptime";
 
-	@Column(nullable = false, columnDefinition = "int default 0")
-	private int weight;
+	@Column(name = "sleep_time")
+	private int sleepTime;
 
-	public int getWeight() {
-		return this.weight;
+	public int getSleepTime() {
+		return this.sleepTime;
 	}
 
-	public void setWeight(int value) {
-		if (this.weight != value) {
-			final int oldValue = this.weight;
-			this.weight = value;
-			this.firePropertyChange(PROPERTY_WEIGHT, oldValue, value);
+	public void setSleepTime(int value) {
+		if (this.sleepTime != value) {
+			final int oldValue = this.sleepTime;
+			this.sleepTime = value;
+			this.firePropertyChange(PROPERTY_SLEEP_TIME, oldValue, value);
 		}
 	}
 
-	public SimpleUser withWeight(int value) {
-		setWeight(value);
+	public SimpleUser withSleepTime(int value) {
+		setSleepTime(value);
 		return this;
 	}
-
+	
 	// ==========================================================================
 
 	public static final String PROPERTY_BREAKFAST_TIME = "breakfasttime";

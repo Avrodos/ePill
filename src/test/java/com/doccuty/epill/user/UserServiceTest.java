@@ -94,4 +94,23 @@ public class UserServiceTest {
 	    	assertNotNull("User found by username", userSimple);
 	    	
 	}
+    
+    /**
+     * Test that updating a user works.
+     */
+    @Test
+    @Transactional
+    public void testUserUpdate() {
+
+    	User user = userService.findUserById(userService.getCurrentUser().getId());
+    	user.setSleepTime(23);
+    	
+    	User userSaved = userService.updateUserData(user);
+    	assertNotNull(userSaved);
+    	assertEquals(23, userSaved.getSleepTime());
+    	
+    	User userSaved2 = userService.findUserById(userService.getCurrentUser().getId());
+    	assertNotNull(userSaved2);
+    	assertEquals(23, userSaved2.getSleepTime());
+	}
 }

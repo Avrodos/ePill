@@ -92,7 +92,11 @@
 	"medicationPlan": "Dein Medikamenten-Plan",
 	"medicationEmpty": "Ihr Medikamentenplan ist leer. Wenn...<br>",
 	"addDrugsToMedicationPlan": "Füge Medikamente zu deinem Medikamentenplan hinzu",
-	"weight": "Gewicht",
+	"breakfastTime": "Frühstückszeit",
+	"lunchTime": "Mittagessenszeit",
+	"dinnerTime": "Abenndessenszeit",
+	"sleepTime": "Schlafenszeit",
+	"drugIntakePlan": "Ihr Medikamenten Einnahme Plan",
 	"for": "für den",
 	"recalculatePlan": "Plan neu berechnen"
 }

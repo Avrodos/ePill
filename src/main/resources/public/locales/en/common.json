@@ -92,7 +92,11 @@
 	"medicationPlan": "Your Medication Plan",
     "medicationEmpty": "Your Medication Plan is empty. If...<br>",
     "addDrugsToMedicationPlan": "add drugs to your Medication Plan",
-	"weight": "weight",
+	"breakfastTime": "breakfast time",
+	"lunchTime": "lunch time",
+	"dinnerTime": "dinner time",
+	"sleepTime": "sleep time",
+	"drugIntakePlan": "Your Drug Intake Plan",
 	"for": "for",
 	"recalculatePlan": "recalculate plan"
 }

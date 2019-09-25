@@ -9,9 +9,13 @@ import User from "./../util/User";
 import moment from 'moment';
 import EmptyList from "./empty_list";
 import ProgressBar from "./progress_bar";
+import Popup from "reactjs-popup";
+import DrugIntakeSuccessPopup from "./drug_intake_success_popup";
+import ChangingDrugIntakePopup from "./changing_drug_intake_popup";
+
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about forms.
-class MedicationPlanView extends React.Component {
+class DrugIntakePlan extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -25,7 +29,6 @@ class MedicationPlanView extends React.Component {
 
     // This function is called before render() to initialize its state.
     componentWillMount() {
-        console.log("componentWillMount");
         this.getData();
     }
 
@@ -33,7 +36,6 @@ class MedicationPlanView extends React.Component {
         this.state.loading = true;
         this.state.percentage = 100;
         this.setState(this.state);
-        console.log("getting userdrugplanned");
         axios.get("/drug/list/medicationplan/date", {
                         params: {
                           date: this.state.date
@@ -55,7 +57,6 @@ class MedicationPlanView extends React.Component {
     }
 
     changeDate (incrementBy) {
-        console.log("setDate");
         this.state.date.setTime(this.state.date.getTime() + incrementBy * 86400000);
         this.setState(this.state);
         this.getData();
@@ -72,7 +73,23 @@ class MedicationPlanView extends React.Component {
 
         this.setState({ expandedRows: newExpandedRows });
       }
-
+    
+    handleCheckbox(drugplanned) {
+    		if (drugplanned.drugNamesSameTime !== null)	{
+    			return (
+    				<Popup trigger={<input type="checkbox" className="checkbox-position"></input>} modal closeOnDocumentClick>
+        				<DrugIntakeSuccessPopup/>
+        			</Popup>	
+    			)
+    		} else {
+    			return (
+    				<Popup trigger={<input type="checkbox" className="checkbox-position"></input>} modal closeOnDocumentClick>
+    	    			<ChangingDrugIntakePopup/>
+    	    		</Popup>	
+    			)    			
+    		}
+    }
+    
     renderDrugsPlanned(drugsplanned) { 
         return drugsplanned.map(drugplanned => {
         	
@@ -82,7 +99,7 @@ class MedicationPlanView extends React.Component {
                         	{this.renderProgressBar(drugplanned)} 
                         </td>
                         <td className="td-style">
-                            <input type="checkbox" className="checkbox-position" value=""></input>
+                            {this.handleCheckbox(drugplanned)}
                         </td>
                         <td className="td-style">{drugplanned.timeString}</td>
                         <td className="td-style">
@@ -154,7 +171,6 @@ class MedicationPlanView extends React.Component {
     }*/
 
     recalculatePlan() {
-        console.log("recalculating user drug plan");
                 axios.post('/drug/userdrugplanned/calculate/date', { date: moment(this.state.date).format("DD.MM.YYYY")}, {
             validateStatus: (status) => {
                 console.log("status=" + status);
@@ -178,6 +194,8 @@ class MedicationPlanView extends React.Component {
          }
         });
     }
+    
+    
 
     render() {
         const { t } = this.props;
@@ -192,13 +210,13 @@ class MedicationPlanView extends React.Component {
                             <span className="glyphicon glyphicon-triangle-left"></span>
                             </button>
                             <div className="mp-title">
-                                <h3>{t("medicationPlan")}</h3>
+                                <h3>{t("drugIntakePlan")}</h3>
                                 <p>{" " + (t("for")) + " " + formatted_date}</p>
                             </div>
                             <button type="button" className="btn btn-sm btn-date-change" onClick={this.changeDate.bind(this, 1)}>
                             <span className="glyphicon glyphicon-triangle-right"></span>
                             </button>
-                            <button type="button" className="btn btn-sm btn-add btn-add-drug">{t("addDrugsToMedicationPlan")}</button>
+                            <button type="button" className="btn btn-sm btn-add btn-add-drug"><Link to="/drug/list">{t("addDrugsToMedicationPlan")}</Link></button>
                             <button type="button" className="btn btn-sm btn-recalculate" onClick={() => this.recalculatePlan()}>{t("recalculatePlan")}
                                 <span className="glyphicon glyphicon-white glyphicon-refresh"></span>
                                 </button>
@@ -217,16 +235,14 @@ class MedicationPlanView extends React.Component {
                             <EmptyList />
                         )}
                         {!this.state.loading && drugsplanned && drugsplanned.length > 0 && (
-                            <table id="drugsplanned" className="table-style">
-                                            <thead>
-                                                    <th className="th-style">half-time-period</th>
-                                                    <th className="th-style"></th>
-                                                    <th className="th-style">time</th>
-                                                    <th className="th-style">name</th>
-                                                    <th className="th-style"></th>
-                                            </thead>
-                                            {this.renderDrugsPlanned(drugsplanned)}
-                            </table>                           
+                        	<table id="drugsplanned" className="table-style">                 
+                        		<th className="th-style">half-time-period</th>
+                                <th className="th-style"></th>
+                                <th className="th-style">time</th>
+                                <th className="th-style">name</th>
+                                <th className="th-style"></th>
+                                {this.renderDrugsPlanned(drugsplanned)}
+                            </table> 
                         )}
                     </div>
                 </div>
@@ -236,5 +252,5 @@ class MedicationPlanView extends React.Component {
     }
 }
 
-export default translate()(MedicationPlanView);
+export default translate()(DrugIntakePlan);
 

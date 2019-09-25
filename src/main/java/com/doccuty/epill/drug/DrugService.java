@@ -25,10 +25,10 @@ import com.doccuty.epill.tailoredtext.TailoredTextService;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
 import com.doccuty.epill.userdrugplan.DateUtils;
-import com.doccuty.epill.userdrugplan.UserDrugPlan;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import com.doccuty.epill.userdrugplan.UserDrugPlanCalculator;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItemViewModel;
-import com.doccuty.epill.userdrugplan.UserDrugPlanRepository;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItemRepository;
 
 @Service
 public class DrugService {
@@ -49,7 +49,7 @@ public class DrugService {
 	ItemInvocationRepository invocationRepository;
 
 	@Autowired
-	UserDrugPlanRepository userDrugPlanRepository;
+	UserDrugPlanItemRepository userDrugPlanRepository;
 
 	@Autowired
 	DrugFeatureRepository featureRepository;
@@ -250,9 +250,9 @@ public class DrugService {
 		return list;
 	}
 
-	public List<UserDrugPlan> getUserDrugPlansByUserId() {
+	public List<UserDrugPlanItem> getUserDrugPlansByUserId() {
 
-		final List<UserDrugPlan> userDrugPlans = userDrugPlanRepository.findByUser(userService.getCurrentUser());
+		final List<UserDrugPlanItem> userDrugPlans = userDrugPlanRepository.findByUser(userService.getCurrentUser());
 		LOG.info("found items={} in UserDrugPlan", userDrugPlans.size());
 		return userDrugPlans;
 	}
@@ -269,11 +269,11 @@ public class DrugService {
 		final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
 
 		final List<UserDrugPlanItemViewModel> userDrugPlanView = new ArrayList<>();
-		final List<UserDrugPlan> userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
+		final List<UserDrugPlanItem> userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
 		Date lastDateTime = (Date) dateFrom.clone();
 		for (int hour = currentUser.getBreakfastTime(); hour <= currentUser.getDinnerTime() + 2; hour++) {
 			final int hourToCompare = hour;
-			final List<UserDrugPlan> plannedItemsForHour = userDrugItemsPlanned.stream().parallel()
+			final List<UserDrugPlanItem> plannedItemsForHour = userDrugItemsPlanned.stream().parallel()
 					.filter(p -> DateUtils.getHours(p.getDatetimeIntakePlanned()) == hourToCompare)
 					.collect(Collectors.toList());
 			if (!plannedItemsForHour.isEmpty()) {
@@ -305,7 +305,7 @@ public class DrugService {
 				userDrugPlanView.add(mapUserDrugPlanToView(plannedItemsForHour.get(0), drugNames, halfTimePeriodMax, personalizedInformation, drugDiseases));
 			} else {
 				// intermediate step
-				final UserDrugPlan userDrugPlanItemIntermediate = new UserDrugPlan();
+				final UserDrugPlanItem userDrugPlanItemIntermediate = new UserDrugPlanItem();
 				userDrugPlanItemIntermediate.setUser(currentUser);
 				userDrugPlanItemIntermediate.setDateTimePlanned(DateUtils.setHoursOfDate(lastDateTime, hour));
 				userDrugPlanView.add(mapUserDrugPlanToView(userDrugPlanItemIntermediate, "", 0, "", ""));
@@ -324,7 +324,7 @@ public class DrugService {
 	 * @param halfTimePeriodMax
 	 * @return
 	 */
-	private UserDrugPlanItemViewModel mapUserDrugPlanToView(UserDrugPlan userDrugPlanItem, String drugNamesSameTime,
+	private UserDrugPlanItemViewModel mapUserDrugPlanToView(UserDrugPlanItem userDrugPlanItem, String drugNamesSameTime,
 			int halfTimePeriodMax, String personalizedDrugInformation, String drugDiseases) {
 		final UserDrugPlanItemViewModel model = new UserDrugPlanItemViewModel();
 		final Calendar calendar = GregorianCalendar.getInstance();
@@ -409,10 +409,10 @@ public class DrugService {
 	 * @param dateTo
 	 * @return
 	 */
-	public List<UserDrugPlan> getUserDrugPlansByUserIdAndDate(Date dateFrom, Date dateTo) {
+	public List<UserDrugPlanItem> getUserDrugPlansByUserIdAndDate(Date dateFrom, Date dateTo) {
 
 		final Long userId = userService.getCurrentUser().getId();
-		final List<UserDrugPlan> userDrugPlans = userDrugPlanRepository.findByUserBetweenDates(userId, dateFrom,
+		final List<UserDrugPlanItem> userDrugPlans = userDrugPlanRepository.findByUserBetweenDates(userId, dateFrom,
 				dateTo);
 		LOG.info("found items={} in UserDrugPlan", userDrugPlans.size());
 		return userDrugPlans;
@@ -424,12 +424,12 @@ public class DrugService {
 	 * @param date
 	 * @return
 	 */
-	public List<UserDrugPlan> recalculateAndSaveUserDrugPlanForDay(Date day) {
+	public List<UserDrugPlanItem> recalculateAndSaveUserDrugPlanForDay(Date day) {
 		LOG.info("calculate drug plan for day {}", day);
 		final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
 		final UserDrugPlanCalculator calculator = new UserDrugPlanCalculator(currentUser,
 				this.findUserDrugsTaking(currentUser));
-		final List<UserDrugPlan> plannedItemsForDay = calculator.calculatePlanForDay(day);
+		final List<UserDrugPlanItem> plannedItemsForDay = calculator.calculatePlanForDay(day);
 		logDrugPlanItems("planed drugs for day", plannedItemsForDay);
 		LOG.info("plan for day calculated with {} items", plannedItemsForDay.size());
 		// delete current plan (if existing) and save new plan for day
@@ -437,13 +437,13 @@ public class DrugService {
 				DateUtils.asDateEndOfDay(day));
 		LOG.info("old plan deleted for day {}", day);
 		LOG.info("saving plan for day for calculated {} items", plannedItemsForDay.size());
-		final List<UserDrugPlan> savedItems = userDrugPlanRepository.save(plannedItemsForDay);
+		final List<UserDrugPlanItem> savedItems = userDrugPlanRepository.save(plannedItemsForDay);
 		logDrugPlanItems("saved drug plan", savedItems);
 		return savedItems;
 	}
 
-	private void logDrugPlanItems(String message, List<UserDrugPlan> items) {
-		for (final UserDrugPlan item : items) {
+	private void logDrugPlanItems(String message, List<UserDrugPlanItem> items) {
+		for (final UserDrugPlanItem item : items) {
 			LOG.info("{}: drug {}: {}", message, item.getDrug().getName(), item.getDatetimeIntakePlanned());
 		}
 

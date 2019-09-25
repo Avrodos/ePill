@@ -51,7 +51,7 @@ import com.doccuty.epill.model.util.ItemInvocationSet;
 import com.doccuty.epill.model.util.UserSet;
 import com.doccuty.epill.packagingsection.PackagingSection;
 import com.doccuty.epill.user.User;
-import com.doccuty.epill.userdrugplan.UserDrugPlan;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 
 @Entity
 @Table(name = "drug")
@@ -681,20 +681,20 @@ public class Drug extends SimpleDrug {
 	public static final String PROPERTY_USER_DRUG_PLANS = "user_drug_plans";
 
 	@Transient
-	private Set<UserDrugPlan> userDrugPlans = null;
+	private Set<UserDrugPlanItem> userDrugPlans = null;
 
-	public Set<UserDrugPlan> getUserDrugPlans() {
+	public Set<UserDrugPlanItem> getUserDrugPlans() {
 		if (this.userDrugPlans == null) {
 			return new HashSet<>();
 		}
 		return this.userDrugPlans;
 	}
 
-	public Drug withUserDrugPlans(UserDrugPlan... value) {
+	public Drug withUserDrugPlans(UserDrugPlanItem... value) {
 		if (value == null) {
 			return this;
 		}
-		for (final UserDrugPlan item : value) {
+		for (final UserDrugPlanItem item : value) {
 			if (item != null) {
 				if (this.userDrugPlans == null) {
 					this.userDrugPlans = new HashSet<>();
@@ -711,8 +711,8 @@ public class Drug extends SimpleDrug {
 		return this;
 	}
 
-	public Drug withoutUserDrugPlans(UserDrugPlan... values) {
-		for (final UserDrugPlan item : values) {
+	public Drug withoutUserDrugPlans(UserDrugPlanItem... values) {
+		for (final UserDrugPlanItem item : values) {
 			if ((this.userDrugPlans != null) && (item != null)) {
 				if (this.userDrugPlans.remove(item)) {
 					item.setDrug(null);
@@ -723,8 +723,8 @@ public class Drug extends SimpleDrug {
 		return this;
 	}
 
-	public UserDrugPlan createUserDrugPlans() {
-		final UserDrugPlan value = new UserDrugPlan();
+	public UserDrugPlanItem createUserDrugPlans() {
+		final UserDrugPlanItem value = new UserDrugPlanItem();
 		withUserDrugPlans(value);
 		return value;
 	}

@@ -27,10 +27,10 @@ import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.model.DrugFeature;
 import com.doccuty.epill.model.util.DrugCreator;
 import com.doccuty.epill.model.util.ItemInvocationCreator;
-import com.doccuty.epill.model.util.UserDrugPlanCreator;
+import com.doccuty.epill.model.util.UserDrugPlanItemCreator;
 import com.doccuty.epill.user.UserService;
 import com.doccuty.epill.userdrugplan.DateUtils;
-import com.doccuty.epill.userdrugplan.UserDrugPlan;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItemViewModel;
 
 import de.uniks.networkparser.Deep;
@@ -422,15 +422,15 @@ public class DrugController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		final List<UserDrugPlan> userDrugPlanList = service.getUserDrugPlansByUserId();
+		final List<UserDrugPlanItem> userDrugPlanList = service.getUserDrugPlansByUserId();
 		LOG.info("getUserDrugsPlanned, count of drugs={}", userDrugPlanList.size());
-		final IdMap map = UserDrugPlanCreator.createIdMap("");
+		final IdMap map = UserDrugPlanItemCreator.createIdMap("");
 		map.withFilter(Filter.regard(Deep.create(2)));
 
 		final JsonObject json = new JsonObject();
 		final JsonArray userDrugPlanArray = new JsonArray();
 
-		for (final UserDrugPlan userDrugPlan : userDrugPlanList) {
+		for (final UserDrugPlanItem userDrugPlan : userDrugPlanList) {
 			userDrugPlanArray.add(map.toJsonObject(userDrugPlan));
 		}
 
@@ -484,16 +484,16 @@ public class DrugController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		final List<UserDrugPlan> userDrugPlanList = service
+		final List<UserDrugPlanItem> userDrugPlanList = service
 				.getUserDrugPlansByUserIdAndDate(DateUtils.asDateStartOfDay(day), DateUtils.asDateEndOfDay(day));
 		LOG.info("getUserDrugsPlanned, count of drugs={}", userDrugPlanList.size());
-		final IdMap map = UserDrugPlanCreator.createIdMap("");
+		final IdMap map = UserDrugPlanItemCreator.createIdMap("");
 		map.withFilter(Filter.regard(Deep.create(2)));
 
 		final JsonObject json = new JsonObject();
 		final JsonArray userDrugPlanArray = new JsonArray();
 
-		for (final UserDrugPlan userDrugPlan : userDrugPlanList) {
+		for (final UserDrugPlanItem userDrugPlan : userDrugPlanList) {
 			userDrugPlanArray.add(map.toJsonObject(userDrugPlan));
 		}
 

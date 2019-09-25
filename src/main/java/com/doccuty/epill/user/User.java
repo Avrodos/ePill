@@ -48,7 +48,7 @@ import com.doccuty.epill.model.util.DrugSet;
 import com.doccuty.epill.model.util.ItemInvocationSet;
 import com.doccuty.epill.model.util.PackagingTopicSet;
 import com.doccuty.epill.model.util.UserQuerySet;
-import com.doccuty.epill.userdrugplan.UserDrugPlan;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 
 /**
  * 
@@ -68,7 +68,7 @@ public class User extends SimpleUser {
 		setLanguage(null);
 		setGender(null);
 		withoutClicks(this.getClicks().toArray(new ItemInvocation[this.getClicks().size()]));
-		withoutUserDrugPlans(this.getUserDrugPlans().toArray(new UserDrugPlan[this.getUserDrugPlans().size()]));
+		withoutUserDrugPlans(this.getUserDrugPlans().toArray(new UserDrugPlanItem[this.getUserDrugPlans().size()]));
 		withoutQuery(this.getQuery().toArray(new UserQuery[this.getQuery().size()]));
 		withoutDisease(this.getDisease().toArray(new Disease[this.getDisease().size()]));
 		firePropertyChange("REMOVE_YOU", this, null);
@@ -559,20 +559,20 @@ public class User extends SimpleUser {
 
 	public static final String PROPERTY_USER_DRUG_PLAN = "user_drug_plans";
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	private Set<UserDrugPlan> userDrugPlans = null;
+	private Set<UserDrugPlanItem> userDrugPlans = null;
 
-	public Set<UserDrugPlan> getUserDrugPlans() {
+	public Set<UserDrugPlanItem> getUserDrugPlans() {
 		if (this.userDrugPlans == null) {
 			return new HashSet<>();
 		}
 		return this.userDrugPlans;
 	}
 
-	public User withUserDrugPlans(UserDrugPlan... value) {
+	public User withUserDrugPlans(UserDrugPlanItem... value) {
 		if (value == null) {
 			return this;
 		}
-		for (final UserDrugPlan item : value) {
+		for (final UserDrugPlanItem item : value) {
 			if (item != null) {
 				if (this.userDrugPlans == null) {
 					this.userDrugPlans = new HashSet<>();
@@ -587,8 +587,8 @@ public class User extends SimpleUser {
 		return this;
 	}
 
-	public User withoutUserDrugPlans(UserDrugPlan... value) {
-		for (final UserDrugPlan item : value) {
+	public User withoutUserDrugPlans(UserDrugPlanItem... value) {
+		for (final UserDrugPlanItem item : value) {
 			if ((this.userDrugPlans != null) && (item != null)) {
 				if (this.userDrugPlans.remove(item)) {
 					item.setUser(null);

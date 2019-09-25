@@ -61,7 +61,7 @@ public class UserCreator implements SendableEntityCreatorNoIndex
       User.PROPERTY_GID,
       User.PROPERTY_TPA,
       User.PROPERTY_A7ID,
-       User.PROPERTY_WEIGHT,
+       User.PROPERTY_SLEEP_TIME,
        User.PROPERTY_BREAKFAST_TIME,
        User.PROPERTY_LUNCH_TIME,
        User.PROPERTY_DINNER_TIME
@@ -205,11 +205,10 @@ public class UserCreator implements SendableEntityCreatorNoIndex
          return ((User) target).getA7id();
       }
 
-       if (User.PROPERTY_WEIGHT.equalsIgnoreCase(attribute))
-       {
-           return ((User) target).getWeight();
-       }
-
+	   if (User.PROPERTY_SLEEP_TIME.equalsIgnoreCase(attribute))
+	   {
+	      return ((User) target).getSleepTime();
+	   }
       if (User.PROPERTY_BREAKFAST_TIME.equalsIgnoreCase(attribute))
       {
          return ((User) target).getBreakfastTime();
@@ -291,9 +290,9 @@ public class UserCreator implements SendableEntityCreatorNoIndex
          return true;
       }
 
-      if (User.PROPERTY_WEIGHT.equalsIgnoreCase(attrName))
+      if (User.PROPERTY_SLEEP_TIME.equalsIgnoreCase(attrName))
       {
-         ((User) target).setWeight((int) value);
+         ((User) target).setSleepTime((int) value);
          return true;
       }
 

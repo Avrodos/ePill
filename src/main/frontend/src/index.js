@@ -23,7 +23,7 @@ import DrugList from "./components/drug_list";
 import DrugDetail from "./components/drug_detail";
 import UserData from "./components/user/data";
 import MedicationPlan from "./components/medication_plan";
-import MedicationPlanView from "./components/medication_plan_view";
+import DrugIntakePlan from "./components/drug_intake_plan";
 
 
 class Root extends React.Component {
@@ -78,7 +78,7 @@ class Root extends React.Component {
 	                <Route path="/user/takenDrugs" component={DrugList}/>
 	                <Route path="/user/data"  render={(props) => (<UserData {...props} updateFontSize={this.updateFontSize} updateNavigation={this.updateNavigation} /> )}/>
                     <Route path="/medicationplan" component={MedicationPlan}/>
-                    <Route path="/medicationplanview" component={MedicationPlanView}/>
+                    <Route path="/drugintakeplan" component={DrugIntakePlan}/>
                     
 	                {/* Information sites */}
 	                <Route path="/about" component={About} />

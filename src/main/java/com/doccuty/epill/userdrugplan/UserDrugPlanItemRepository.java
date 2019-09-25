@@ -15,7 +15,7 @@ import com.doccuty.epill.user.User;
 
 @Repository
 @Transactional
-public interface UserDrugPlanRepository extends JpaRepository<UserDrugPlan, Long> {
+public interface UserDrugPlanItemRepository extends JpaRepository<UserDrugPlanItem, Long> {
 
 	/**
 	 * find all planned drugs for user
@@ -23,7 +23,7 @@ public interface UserDrugPlanRepository extends JpaRepository<UserDrugPlan, Long
 	 * @param user
 	 * @return
 	 */
-	List<UserDrugPlan> findByUser(User user);
+	List<UserDrugPlanItem> findByUser(User user);
 
 	/**
 	 * find all planned drugs for user between two dates
@@ -33,8 +33,8 @@ public interface UserDrugPlanRepository extends JpaRepository<UserDrugPlan, Long
 	 * @param endDate
 	 * @return
 	 */
-	@Query("SELECT p FROM UserDrugPlan p WHERE p.user.id = :userid AND p.dateTimePlanned >= :startDate AND p.dateTimePlanned <= :endDate ORDER BY p.dateTimePlanned")
-	List<UserDrugPlan> findByUserBetweenDates(@Param("userid") long id, @Param("startDate") Date startDate,
+	@Query("SELECT p FROM UserDrugPlanItem p WHERE p.user.id = :userid AND p.dateTimePlanned >= :startDate AND p.dateTimePlanned <= :endDate ORDER BY p.dateTimePlanned")
+	List<UserDrugPlanItem> findByUserBetweenDates(@Param("userid") long id, @Param("startDate") Date startDate,
 			@Param("endDate") Date endDate);
 
 	/**
@@ -47,7 +47,7 @@ public interface UserDrugPlanRepository extends JpaRepository<UserDrugPlan, Long
 	 */
 	@Transactional
 	@Modifying
-	@Query("DELETE FROM UserDrugPlan p WHERE p.user.id = :userid AND p.dateTimePlanned >= :startDate AND p.dateTimePlanned <= :endDate")
+	@Query("DELETE FROM UserDrugPlanItem p WHERE p.user.id = :userid AND p.dateTimePlanned >= :startDate AND p.dateTimePlanned <= :endDate")
 	void deleteByUserBetweenDates(@Param("userid") long id, @Param("startDate") Date startDate,
 			@Param("endDate") Date endDate);
 }

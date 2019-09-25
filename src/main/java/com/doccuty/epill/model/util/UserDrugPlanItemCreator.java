@@ -22,22 +22,20 @@
 package com.doccuty.epill.model.util;
 
 import com.doccuty.epill.drug.Drug;
-import com.doccuty.epill.iteminvocation.ItemInvocation;
-import com.doccuty.epill.packagingsection.PackagingSection;
 import com.doccuty.epill.user.User;
-import com.doccuty.epill.userdrugplan.UserDrugPlan;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
 import java.util.Date;
 
-public class UserDrugPlanCreator implements SendableEntityCreatorNoIndex
+public class UserDrugPlanItemCreator implements SendableEntityCreatorNoIndex
 {
    private final String[] properties = new String[]
    {
-      UserDrugPlan.PROPERTY_ID, UserDrugPlan.PROPERTY_DATETIME_INTAKE_PLANNED,
-           UserDrugPlan.PROPERTY_DRUG,
-           UserDrugPlan.PROPERTY_USER
+      UserDrugPlanItem.PROPERTY_ID, UserDrugPlanItem.PROPERTY_DATETIME_INTAKE_PLANNED,
+           UserDrugPlanItem.PROPERTY_DRUG,
+           UserDrugPlanItem.PROPERTY_USER
    };
 
    @Override
@@ -49,7 +47,7 @@ public class UserDrugPlanCreator implements SendableEntityCreatorNoIndex
    @Override
    public Object getSendableInstance(boolean reference)
    {
-      return new UserDrugPlan();
+      return new UserDrugPlanItem();
    }
 
    @Override
@@ -64,24 +62,24 @@ public class UserDrugPlanCreator implements SendableEntityCreatorNoIndex
          attribute = attrName.substring(0, pos);
       }
 
-      if (UserDrugPlan.PROPERTY_ID.equalsIgnoreCase(attribute))
+      if (UserDrugPlanItem.PROPERTY_ID.equalsIgnoreCase(attribute))
       {
-         return ((UserDrugPlan) target).getId();
+         return ((UserDrugPlanItem) target).getId();
       }
 
-      if (UserDrugPlan.PROPERTY_DATETIME_INTAKE_PLANNED.equalsIgnoreCase(attribute))
+      if (UserDrugPlanItem.PROPERTY_DATETIME_INTAKE_PLANNED.equalsIgnoreCase(attribute))
       {
-         return ((UserDrugPlan) target).getDatetimeIntakePlanned();
+         return ((UserDrugPlanItem) target).getDatetimeIntakePlanned();
       }
 
-      if (UserDrugPlan.PROPERTY_DRUG.equalsIgnoreCase(attribute))
+      if (UserDrugPlanItem.PROPERTY_DRUG.equalsIgnoreCase(attribute))
       {
-         return ((UserDrugPlan) target).getDrug();
+         return ((UserDrugPlanItem) target).getDrug();
       }
 
-      if (UserDrugPlan.PROPERTY_USER.equalsIgnoreCase(attribute))
+      if (UserDrugPlanItem.PROPERTY_USER.equalsIgnoreCase(attribute))
       {
-         return ((UserDrugPlan) target).getUser();
+         return ((UserDrugPlanItem) target).getUser();
       }
 
       return null;
@@ -90,15 +88,15 @@ public class UserDrugPlanCreator implements SendableEntityCreatorNoIndex
    @Override
    public boolean setValue(Object target, String attrName, Object value, String type)
    {
-      if (UserDrugPlan.PROPERTY_DATETIME_INTAKE_PLANNED.equalsIgnoreCase(attrName))
+      if (UserDrugPlanItem.PROPERTY_DATETIME_INTAKE_PLANNED.equalsIgnoreCase(attrName))
       {
-         ((UserDrugPlan) target).setDateTimePlanned((Date) value);
+         ((UserDrugPlanItem) target).setDateTimePlanned((Date) value);
          return true;
       }
 
-      if (UserDrugPlan.PROPERTY_ID.equalsIgnoreCase(attrName))
+      if (UserDrugPlanItem.PROPERTY_ID.equalsIgnoreCase(attrName))
       {
-         ((UserDrugPlan) target).setId(Long.parseLong(value.toString()));
+         ((UserDrugPlanItem) target).setId(Long.parseLong(value.toString()));
          return true;
       }
 
@@ -107,15 +105,15 @@ public class UserDrugPlanCreator implements SendableEntityCreatorNoIndex
          attrName = attrName + type;
       }
 
-      if (UserDrugPlan.PROPERTY_DRUG.equalsIgnoreCase(attrName))
+      if (UserDrugPlanItem.PROPERTY_DRUG.equalsIgnoreCase(attrName))
       {
-         ((UserDrugPlan) target).setDrug((Drug) value);
+         ((UserDrugPlanItem) target).setDrug((Drug) value);
          return true;
       }
 
-      if (UserDrugPlan.PROPERTY_USER.equalsIgnoreCase(attrName))
+      if (UserDrugPlanItem.PROPERTY_USER.equalsIgnoreCase(attrName))
       {
-         ((UserDrugPlan) target).setUser((User) value);
+         ((UserDrugPlanItem) target).setUser((User) value);
          return true;
       }
 
@@ -129,6 +127,6 @@ public class UserDrugPlanCreator implements SendableEntityCreatorNoIndex
    //==========================================================================
       public void removeObject(Object entity)
    {
-      ((UserDrugPlan) entity).removeYou();
+      ((UserDrugPlanItem) entity).removeYou();
    }
 }

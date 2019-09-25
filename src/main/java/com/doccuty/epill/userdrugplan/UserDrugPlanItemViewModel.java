@@ -140,4 +140,5 @@ public class UserDrugPlanItemViewModel {
 	public void setDrugDiseases(String drugDiseases) {
 		this.drugDiseases = drugDiseases;
 	}
+	
 }

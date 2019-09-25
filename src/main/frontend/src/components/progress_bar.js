@@ -10,7 +10,6 @@ class ProgressBar extends React.Component {
         this.state = {
             percentage: this.props.percentage
         }
-        console.log("progressBar, percentage=" + this.props.percentage);
     }
     componentWillReceiveProps(props) {
 		  this.setState({ percentage: props.percentage });  

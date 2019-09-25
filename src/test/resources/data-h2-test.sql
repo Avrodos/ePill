@@ -75,12 +75,12 @@ INSERT INTO country (id, name) VALUES (2,'Frankreich');
 -- Dumping data for table `user_simple`
 --
 
-INSERT INTO user_simple (id, date_of_birth, date_of_registration, email, firstname, lastname, level_of_detail, password, preferred_font_size, salt, username, red_green_colorblind, breakfast_time, lunch_time, dinner_time)
+INSERT INTO user_simple (id, date_of_birth, date_of_registration, email, firstname, lastname, level_of_detail, password, preferred_font_size, salt, username, red_green_colorblind, breakfast_time, lunch_time, dinner_time, sleep_time)
 	VALUES
-	(1,'1990-09-21','2015-06-27 13:16:01','n.kannengiesser@web.de','Niclas','Kannengiesser',3,'89794011ed99bae7b5062920bffbef2a334dca75628975cd9cce51ba9691b12843beaed302416bdee221796816346fdeb618903cfa887945174237c92dc2dd2a','defaultFontSize','[B@63ba2cf8','nic', true, 8, 13, 19);
-INSERT INTO user_simple (id, date_of_birth, date_of_registration, email, firstname, lastname, level_of_detail, password, preferred_font_size, salt, username, red_green_colorblind, breakfast_time, lunch_time, dinner_time)
+	(1,'1990-09-21','2015-06-27 13:16:01','n.kannengiesser@web.de','Niclas','Kannengiesser',3,'89794011ed99bae7b5062920bffbef2a334dca75628975cd9cce51ba9691b12843beaed302416bdee221796816346fdeb618903cfa887945174237c92dc2dd2a','defaultFontSize','[B@63ba2cf8','nic', true, 8, 13, 19, 22);
+INSERT INTO user_simple (id, date_of_birth, date_of_registration, email, firstname, lastname, level_of_detail, password, preferred_font_size, salt, username, red_green_colorblind, breakfast_time, lunch_time, dinner_time, sleep_time)
     VALUES
-    (2,'1995-09-18','2019-09-01 12:00:00','cs@test.de','Christina','Speck',3,'cca69a44146a648c096757dfa37984d0357dfcf2e40227905b730ccc5653f23e919e226c39380a091975c87fd369e87dbd7856018c4d7f99b2a4db8ddec22416','defaultFontSize','[B@63ba2cf8','cs', false, 7, 12, 18);
+    (2,'1995-09-18','2019-09-01 12:00:00','cs@test.de','Christina','Speck',3,'cca69a44146a648c096757dfa37984d0357dfcf2e40227905b730ccc5653f23e919e226c39380a091975c87fd369e87dbd7856018c4d7f99b2a4db8ddec22416','defaultFontSize','[B@63ba2cf8','cs', false, 7, 12, 18, 22);
 
 
 --
@@ -625,36 +625,36 @@ INSERT INTO tailored_text (id, idgender, iddrug, min_age, max_age, is_minimum, t
 INSERT INTO tailored_text (id, idgender, iddrug, min_age, max_age, is_minimum, text) VALUES (59, 1, 1, 18, 25, true, 'Jeden zweiten Tag eine Tablette lutschen.');
 INSERT INTO tailored_text (id, idgender, iddrug, min_age, max_age, is_minimum, text) VALUES (60, 2, 2, 21, 40, true, 'Jeden dritten Tag eine Tablette kauen und nicht in Chlorwasser schwimmen.');
 
--- user_drug_plan
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(1, 1, 2, '2019-08-21 09:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(2, 2, 2, '2019-08-21 13:00:00');
+-- user_drug_plan_item
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(1, 1, 2, '2019-08-21 09:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(2, 2, 2, '2019-08-21 13:00:00');
 
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(11, 1, 2, '2019-08-21 09:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(12, 2, 2, '2019-08-21 13:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(13, 1, 2, '2019-09-01 09:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(14, 2, 2, '2019-09-01 13:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(15, 1, 2, '2019-09-02 09:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(16, 2, 2, '2019-09-02 13:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(17, 1, 2, '2019-09-02 09:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(18, 2, 2, '2019-09-02 13:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(11, 1, 2, '2019-08-21 09:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(12, 2, 2, '2019-08-21 13:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(13, 1, 2, '2019-09-01 09:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(14, 2, 2, '2019-09-01 13:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(15, 1, 2, '2019-09-02 09:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(16, 2, 2, '2019-09-02 13:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(17, 1, 2, '2019-09-02 09:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(18, 2, 2, '2019-09-02 13:00:00');
 
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(19, 2, 2, '2019-09-10 07:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(20, 3, 2, '2019-09-10 07:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(21, 3, 2, '2019-09-10 11:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(22, 1, 2, '2019-09-10 15:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(23, 2, 2, '2019-09-10 18:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(24, 3, 2, '2019-09-10 18:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(19, 2, 2, '2019-09-10 07:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(20, 3, 2, '2019-09-10 07:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(21, 3, 2, '2019-09-10 11:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(22, 1, 2, '2019-09-10 15:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(23, 2, 2, '2019-09-10 18:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(24, 3, 2, '2019-09-10 18:00:00');
 
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(25, 2, 2, '2019-09-11 07:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(26, 3, 2, '2019-09-11 07:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(27, 1, 2, '2019-09-11 11:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(25, 2, 2, '2019-09-11 07:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(26, 3, 2, '2019-09-11 07:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(27, 1, 2, '2019-09-11 11:00:00');
 
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(28, 2, 2, '2019-09-12 07:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(29, 3, 2, '2019-09-12 07:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(30, 1, 2, '2019-09-12 11:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(31, 1, 2, '2019-09-12 14:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(32, 2, 2, '2019-09-12 18:00:00');
-INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(33, 3, 2, '2019-09-12 18:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(28, 2, 2, '2019-09-12 07:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(29, 3, 2, '2019-09-12 07:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(30, 1, 2, '2019-09-12 11:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(31, 1, 2, '2019-09-12 14:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(32, 2, 2, '2019-09-12 18:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(33, 3, 2, '2019-09-12 18:00:00');
 
 
 --

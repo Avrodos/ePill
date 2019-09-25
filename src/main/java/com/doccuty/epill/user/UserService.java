@@ -182,7 +182,12 @@ public class UserService {
 
 		if (usr.getFirstSignIn() != null)
 			user.setFirstSignIn(usr.getFirstSignIn());
-
+		
+		user.setBreakfastTime(usr.getBreakfastTime());
+		user.setLunchTime(usr.getLunchTime());
+		user.setDinnerTime(usr.getDinnerTime());
+		user.setSleepTime(usr.getSleepTime());
+		
 		user = repository.save(user);
 
 		LOG.info("User={} was updated ", user);

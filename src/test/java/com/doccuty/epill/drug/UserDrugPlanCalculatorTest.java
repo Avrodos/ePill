@@ -21,9 +21,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
 import com.doccuty.epill.userdrugplan.DateUtils;
-import com.doccuty.epill.userdrugplan.UserDrugPlan;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import com.doccuty.epill.userdrugplan.UserDrugPlanCalculator;
-import com.doccuty.epill.userdrugplan.UserDrugPlanRepository;;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItemRepository;;
 
 // Use Spring's testing support in JUnit
 @RunWith(SpringRunner.class)
@@ -39,7 +39,7 @@ public class UserDrugPlanCalculatorTest {
 	private UserService userService;
 
 	@Autowired
-	private UserDrugPlanRepository userDrugPlanRepository;
+	private UserDrugPlanItemRepository userDrugPlanRepository;
 
 	@Before
 	public void setup() {
@@ -63,7 +63,7 @@ public class UserDrugPlanCalculatorTest {
 	public void testCalculatePlan2() {
 		LOG.info("testing calculating plan");
 		final Date testDay = new Date();
-		final List<UserDrugPlan> planForDay = drugService.recalculateAndSaveUserDrugPlanForDay(testDay);
+		final List<UserDrugPlanItem> planForDay = drugService.recalculateAndSaveUserDrugPlanForDay(testDay);
 		assertTrue(planForDay.size() > 0);
 	}
 
@@ -77,7 +77,7 @@ public class UserDrugPlanCalculatorTest {
 		final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
 		final UserDrugPlanCalculator calculator = new UserDrugPlanCalculator(currentUser,
 				drugService.findUserDrugsTaking(currentUser));
-		final List<UserDrugPlan> planForDay = calculator.calculatePlanForDay(testDay);
+		final List<UserDrugPlanItem> planForDay = calculator.calculatePlanForDay(testDay);
 		assertTrue(planForDay.size() > 0);
 		userDrugPlanRepository.deleteByUserBetweenDates(currentUser.getId(), DateUtils.asDateStartOfDay(testDay),
 				DateUtils.asDateEndOfDay(testDay));

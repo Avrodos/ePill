@@ -21,7 +21,10 @@ class UserData extends React.Component {
 	        	dateOfBirth	: '',
 	        	gender		: {id : 0},
 	        	email		: '',
-				weight 		: 0,
+				breakfastTime  : 8, 
+				dinnerTime  : 19,
+				lunchTime : 13, 
+				sleepTime : 22,
 	        	redGreenColorblind    : false,
             levelOfDetail       : 3,
             preferredFontSize   : 'defaultFontSize',
@@ -36,7 +39,10 @@ class UserData extends React.Component {
         
         this.handleGenderChange			= this.handleGenderChange.bind(this);
         this.handleRedGreenColorblind    = this.handleRedGreenColorblind.bind(this);
-		this.handleWeightChange		= this.handleWeightChange.bind(this);
+        this.handleBreakfastTimeChange		= this.handleBreakfastTimeChange.bind(this);
+		this.handleLunchTimeChange		= this.handleLunchTimeChange.bind(this);
+		this.handleDinnerTimeChange		= this.handleDinnerTimeChange.bind(this);
+		this.handleSleepTimeChange		= this.handleSleepTimeChange.bind(this);
         
         this.handleEmailChange			= this.handleEmailChange.bind(this);
 
@@ -64,7 +70,10 @@ class UserData extends React.Component {
             		this.state.gender		= data.gender			|| {id : 0};
             		this.state.username		= data.username;
             		this.state.redGreenColorblind    = data.redGreenColorblind || false;
-					this.state.weight		= data.weight;
+            		this.state.breakfastTime  = data.breakfastTime;  
+            		this.state.dinnerTime  = data.dinnerTime;
+            		this.state.lunchTime = data.lunchTime;
+            		this.state.sleepTime = data.sleepTime;
             		this.state.levelOfDetail	    = data.levelOfDetail	|| 3;
             		this.state.preferredFontSize	= data.preferredFontSize   || 'defaultFontSize';
 				this.state.tpa = data.tpa || false;
@@ -107,8 +116,23 @@ class UserData extends React.Component {
         User.setRedGreenColorblind(this.state.redGreenColorblind);
     }
 
-	handleWeightChange(event) {
-		this.state.weight	= event.target.value;
+    handleBreakfastTimeChange(event) {
+		this.state.breakfastTime	= event.target.value;
+		this.setState(this.state);
+	}
+    
+    handleLunchTimeChange(event) {
+		this.state.lunchTime	= event.target.value;
+		this.setState(this.state);
+	}
+    
+    handleDinnerTimeChange(event) {
+		this.state.dinnerTime	= event.target.value;
+		this.setState(this.state);
+	}
+    
+    handleSleepTimeChange(event) {
+		this.state.sleepTime	= event.target.value;
 		this.setState(this.state);
 	}
 
@@ -174,7 +198,10 @@ class UserData extends React.Component {
 	        			redGreenColorblind   : this.state.redGreenColorblind,
     	        			levelOfDetail		: this.state.levelOfDetail,
 	    	        		preferredFontSize	: this.state.preferredFontSize,
-				   		weight : this.state.weight
+	    	        		sleepTime : this.state.sleepTime,
+		    	        	dinnerTime : this.state.dinnerTime,
+		    	        	breakfastTime : this.state.breakfastTime,
+		    	        	lunchTime : this.state.lunchTime
                 })
                 .then(({data, status}) => {
                      this.state.sending = false;
@@ -262,12 +289,30 @@ class UserData extends React.Component {
 					         <input type="text" name="email" id="email" className="form-control" value={this.state.email} onChange={this.handleEmailChange} />
 					      </div> 
 					    </fieldset>
-                           <fieldset>
-                               <div className="form-group col-lg-6 col-md-6">
-                                   <label htmlFor="weight">{t('weight')}</label>
-                                   <input type="text" name="weight" id="weight" className="form-control" value={this.state.weight} onChange={this.handleWeightChange} />
-                               </div>
-                           </fieldset>
+					    <fieldset>
+						   <div className="form-group col-lg-6 col-md-6">
+							   <label htmlFor="breakfastTime">{t('breakfastTime')}</label>
+							   <input type="text" name="breakfastTime" id="breakfastTime" className="form-control" value={this.state.breakfastTime} onChange={this.handleBreakfastTimeChange} />
+						   </div>
+					    </fieldset>
+					    <fieldset>
+						   <div className="form-group col-lg-6 col-md-6">
+							   <label htmlFor="lunchTime">{t('lunchTime')}</label>
+							   <input type="text" name="lunchTime" id="lunchTime" className="form-control" value={this.state.lunchTime} onChange={this.handleLunchTimeChange} />
+						   </div>
+					    </fieldset>
+					    <fieldset>
+						   <div className="form-group col-lg-6 col-md-6">
+							   <label htmlFor="dinnerTime">{t('dinnerTime')}</label>
+							   <input type="text" name="dinnerTime" id="dinnerTime" className="form-control" value={this.state.dinnerTime} onChange={this.handleDinnerTimeChange} />
+						   </div>
+					    </fieldset>
+					    <fieldset>
+						   <div className="form-group col-lg-6 col-md-6">
+							   <label htmlFor="sleepTime">{t('sleepTime')}</label>
+							   <input type="text" name="sleepTime" id="sleepTime" className="form-control" value={this.state.sleepTime} onChange={this.handleSleepTimeChange} />
+						   </div>
+					    </fieldset>
                            <fieldset disabled={this.state.tpa}>
                           <div className="form-group col-lg-6 col-md-6">
                             <p><b>{t("redGreenColorblind")}</b></p>

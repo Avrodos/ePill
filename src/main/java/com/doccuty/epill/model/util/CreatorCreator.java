@@ -30,7 +30,7 @@ class CreatorCreator{
       jsonIdMap.with(new DiseaseCreator());
       jsonIdMap.with(new DrugFeatureCreator());
       jsonIdMap.with(new ImageCreator());
-      jsonIdMap.with(new UserDrugPlanCreator());
+      jsonIdMap.with(new UserDrugPlanItemCreator());
       return jsonIdMap;
    }
 }
