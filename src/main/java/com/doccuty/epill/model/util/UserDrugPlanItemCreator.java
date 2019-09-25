@@ -35,7 +35,8 @@ public class UserDrugPlanItemCreator implements SendableEntityCreatorNoIndex
    {
       UserDrugPlanItem.PROPERTY_ID, UserDrugPlanItem.PROPERTY_DATETIME_INTAKE_PLANNED,
            UserDrugPlanItem.PROPERTY_DRUG,
-           UserDrugPlanItem.PROPERTY_USER
+           UserDrugPlanItem.PROPERTY_USER, 
+           UserDrugPlanItem.PROPERTY_DRUG_TAKEN
    };
 
    @Override
@@ -82,6 +83,11 @@ public class UserDrugPlanItemCreator implements SendableEntityCreatorNoIndex
          return ((UserDrugPlanItem) target).getUser();
       }
 
+      if (UserDrugPlanItem.PROPERTY_DRUG_TAKEN.equalsIgnoreCase(attribute))
+      {
+         return ((UserDrugPlanItem) target).getDrugTaken();
+      }
+
       return null;
    }
 
@@ -114,6 +120,12 @@ public class UserDrugPlanItemCreator implements SendableEntityCreatorNoIndex
       if (UserDrugPlanItem.PROPERTY_USER.equalsIgnoreCase(attrName))
       {
          ((UserDrugPlanItem) target).setUser((User) value);
+         return true;
+      }
+      
+      if (UserDrugPlanItem.PROPERTY_DRUG_TAKEN.equalsIgnoreCase(attrName))
+      {
+         ((UserDrugPlanItem) target).setDrugTaken( Boolean.parseBoolean( value.toString()));
          return true;
       }
 

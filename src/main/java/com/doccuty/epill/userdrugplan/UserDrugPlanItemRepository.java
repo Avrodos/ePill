@@ -50,4 +50,17 @@ public interface UserDrugPlanItemRepository extends JpaRepository<UserDrugPlanIt
 	@Query("DELETE FROM UserDrugPlanItem p WHERE p.user.id = :userid AND p.dateTimePlanned >= :startDate AND p.dateTimePlanned <= :endDate")
 	void deleteByUserBetweenDates(@Param("userid") long id, @Param("startDate") Date startDate,
 			@Param("endDate") Date endDate);
+	
+	/**
+	 * update drug taken for UserDrugPlanItem 
+	 * 
+	 * @param user
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	@Transactional
+	@Modifying
+	@Query("UPDATE UserDrugPlanItem SET drugTaken=true WHERE id = :userDrugPlanItemId")
+	void updateDrugTaken(@Param("userDrugPlanItemId") long userDrugPlanItemId);
 }

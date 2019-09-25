@@ -406,46 +406,12 @@ public class DrugController {
 	}
 
 	/**
-	 * get all planned drugs for user
-	 *
-	 * @return
-	 */
-	@RequestMapping(value = { "/list/userdrugplanned" }, method = RequestMethod.GET)
-	public ResponseEntity<JsonObject> getUserDrugsPlanned() {
-
-		// A pragmatic approach to security which does not use much
-		// framework-specific magic. While other approaches
-		// with annotations, etc. are possible they are much more complex while
-		// this is quite easy to understand and
-		// extend.
-		if (userService.isAnonymous()) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-
-		final List<UserDrugPlanItem> userDrugPlanList = service.getUserDrugPlansByUserId();
-		LOG.info("getUserDrugsPlanned, count of drugs={}", userDrugPlanList.size());
-		final IdMap map = UserDrugPlanItemCreator.createIdMap("");
-		map.withFilter(Filter.regard(Deep.create(2)));
-
-		final JsonObject json = new JsonObject();
-		final JsonArray userDrugPlanArray = new JsonArray();
-
-		for (final UserDrugPlanItem userDrugPlan : userDrugPlanList) {
-			userDrugPlanArray.add(map.toJsonObject(userDrugPlan));
-		}
-
-		json.add("value", userDrugPlanArray);
-
-		return new ResponseEntity<>(json, HttpStatus.OK);
-	}
-
-	/**
 	 * get planned drugs for user for day
 	 * 
 	 * @param day
 	 * @return
 	 */
-	@RequestMapping(value = { "/list/medicationplan/date" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/list/drugintakeplan/date" }, method = RequestMethod.GET)
 	@ResponseBody
 	public List<UserDrugPlanItemViewModel> getMedicationPlanForDay(
 			@RequestParam(value = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date day) {
@@ -503,12 +469,37 @@ public class DrugController {
 	}
 
 	/**
-	 * recalculate drug plan at day for logged in user
+	 * set drug taken / not taken
 	 * 
 	 * @param date
 	 * @return
 	 */
-	@RequestMapping(value = "/userdrugplanned/calculate/date", method = RequestMethod.POST)
+	@RequestMapping(value = "/drugintakeplan/taken", method = RequestMethod.POST)
+	public ResponseEntity<Object> setDrugTaken(@RequestBody long userDrugPlanItemId, String taken) {
+		// A pragmatic approach to security which does not use much
+		// framework-specific magic. While other approaches
+		// with annotations, etc. are possible they are much more complex while
+		// this is quite easy to understand and
+		// extend.
+		LOG.info("set drug taken for userDrugPlanItemId= {}, taken = {}", userDrugPlanItemId, taken);
+		if (userService.isAnonymous()) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		service.setDrugTaken(userDrugPlanItemId, true);
+
+		LOG.info("drug taken set");
+
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	/**
+	 * recalculate drug intake plan at day for logged in user
+	 * 
+	 * @param date
+	 * @return
+	 */
+	@RequestMapping(value = "/drugintakeplan/calculate/date", method = RequestMethod.POST)
 	public ResponseEntity<Object> recalculateDrugPlan(@RequestBody String dateString) {
 		// A pragmatic approach to security which does not use much
 		// framework-specific magic. While other approaches

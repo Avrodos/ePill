@@ -616,35 +616,35 @@ INSERT INTO tailored_text (id, idgender, iddrug, min_age, max_age, is_minimum, t
 INSERT INTO tailored_text (id, idgender, iddrug, min_age, max_age, is_minimum, text) VALUES (60, 2, 2, 21, 40, true, 'Jeden dritten Tag eine Tablette kauen und nicht in Chlorwasser schwimmen.');
 
 -- user_drug_plan_item
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(1, 1, 2, '2019-08-21 09:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(2, 2, 2, '2019-08-21 13:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(1, 1, 2, '2019-08-21 09:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(2, 2, 2, '2019-08-21 13:00:00', false);
 
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(11, 1, 2, '2019-08-21 09:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(12, 2, 2, '2019-08-21 13:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(13, 1, 2, '2019-09-01 09:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(14, 2, 2, '2019-09-01 13:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(15, 1, 2, '2019-09-02 09:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(16, 2, 2, '2019-09-02 13:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(17, 1, 2, '2019-09-02 09:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(18, 2, 2, '2019-09-02 13:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(11, 1, 2, '2019-08-21 09:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(12, 2, 2, '2019-08-21 13:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(13, 1, 2, '2019-09-01 09:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(14, 2, 2, '2019-09-01 13:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(15, 1, 2, '2019-09-02 09:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(16, 2, 2, '2019-09-02 13:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(17, 1, 2, '2019-09-02 09:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(18, 2, 2, '2019-09-02 13:00:00', false);
 
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(19, 2, 2, '2019-09-10 07:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(20, 3, 2, '2019-09-10 07:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(21, 3, 2, '2019-09-10 11:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(22, 1, 2, '2019-09-10 15:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(23, 2, 2, '2019-09-10 18:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(24, 3, 2, '2019-09-10 18:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(19, 2, 2, '2019-09-10 07:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(20, 3, 2, '2019-09-10 07:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(21, 3, 2, '2019-09-10 11:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(22, 1, 2, '2019-09-10 15:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(23, 2, 2, '2019-09-10 18:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(24, 3, 2, '2019-09-10 18:00:00', false);
 
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(25, 2, 2, '2019-09-11 07:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(26, 3, 2, '2019-09-11 07:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(27, 1, 2, '2019-09-11 11:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(25, 2, 2, '2019-09-11 07:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(26, 3, 2, '2019-09-11 07:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(27, 1, 2, '2019-09-11 11:00:00', false);
 
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(28, 2, 2, '2019-09-12 07:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(29, 3, 2, '2019-09-12 07:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(30, 1, 2, '2019-09-12 11:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(31, 1, 2, '2019-09-12 14:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(32, 2, 2, '2019-09-12 18:00:00');
-INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned) VALUES(33, 3, 2, '2019-09-12 18:00:00');
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(28, 2, 2, '2019-09-25 07:00:00', true);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(29, 3, 2, '2019-09-25 07:00:00', true);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(30, 1, 2, '2019-09-25 11:00:00', true);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(31, 1, 2, '2019-09-25 14:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(32, 2, 2, '2019-09-25 18:00:00', false);
+INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, drug_taken) VALUES(33, 3, 2, '2019-09-25 18:00:00', false);
 
 --
 -- Dumping data for table `user_drug_taking`

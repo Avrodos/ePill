@@ -335,7 +335,7 @@ public class DrugService {
 		if (userDrugPlanItem.getId() <= 0) {
 			// Intermediate Step
 			model.setDrugName("");
-			model.setIntake(false);
+			model.setDrugTaken(false);
 			model.setIntermediateStep(true);
 			model.setTakeOnEmptyStomach(false);
 			model.setTakeOnFullStomach(false);
@@ -344,9 +344,10 @@ public class DrugService {
 			model.setPersonalizedInformation("");
 		} else {
 			// intake 1 or more drugs
+			model.setUserDrugPlanItemId(userDrugPlanItem.getId());
 			model.setDrugName(userDrugPlanItem.getDrug().getName());
 			model.setDrugNamesSameTime(drugNamesSameTime);
-			model.setIntake(true);
+			model.setDrugTaken(userDrugPlanItem.getDrugTaken());
 			model.setIntermediateStep(false);
 			model.setTakeOnEmptyStomach(userDrugPlanItem.getDrug().getTakeOnEmptyStomach());
 			model.setTakeOnFullStomach(userDrugPlanItem.getDrug().getTakeOnFullStomach());
@@ -447,5 +448,15 @@ public class DrugService {
 			LOG.info("{}: drug {}: {}", message, item.getDrug().getName(), item.getDatetimeIntakePlanned());
 		}
 
+	}
+
+	/**
+	 * set flag if drug is taken or not
+	 * @param userDrugPlanItemId
+	 * @param drugTaken
+	 */
+	public void setDrugTaken(long userDrugPlanItemId, boolean drugTaken) {
+		LOG.info("set drug taken for userDrugPlanItemId {}", userDrugPlanItemId);
+		userDrugPlanRepository.updateDrugTaken(userDrugPlanItemId);
 	}
 }

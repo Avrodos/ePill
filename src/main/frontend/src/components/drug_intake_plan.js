@@ -36,7 +36,7 @@ class DrugIntakePlan extends React.Component {
         this.state.loading = true;
         this.state.percentage = 100;
         this.setState(this.state);
-        axios.get("/drug/list/medicationplan/date", {
+        axios.get("/drug/list/drugintakeplan/date", {
                         params: {
                           date: this.state.date
                         }
@@ -74,20 +74,44 @@ class DrugIntakePlan extends React.Component {
         this.setState({ expandedRows: newExpandedRows });
       }
     
+    handleCheckClick = (userDrugPlanItemId) => {
+    	console.log("userDrugPlanItemId=" + userDrugPlanItemId);
+    	this.setDrugTaken(userDrugPlanItemId);
+    }
+    
+    
+    
     handleCheckbox(drugplanned) {
-    		if (drugplanned.drugNamesSameTime !== null)	{
-    			return (
-    				<Popup trigger={<input type="checkbox" className="checkbox-position"></input>} modal closeOnDocumentClick>
-        				<DrugIntakeSuccessPopup/>
-        			</Popup>	
-    			)
-    		} else {
-    			return (
-    				<Popup trigger={<input type="checkbox" className="checkbox-position"></input>} modal closeOnDocumentClick>
-    	    			<ChangingDrugIntakePopup/>
-    	    		</Popup>	
-    			)    			
-    		}
+
+    	if (drugplanned.drugTaken) {
+	    	if (drugplanned.drugNamesSameTime !== null)	{
+				return (
+					<Popup trigger={<input type="checkbox" className="checkbox-position" onChange={this.handleCheckClick(drugplanned.userDrugPlanItemId)} checked ></input>} modal closeOnDocumentClick>
+	    				<DrugIntakeSuccessPopup/>
+	    			</Popup>	
+				)
+	    	} else {
+				return (
+					<Popup trigger={<input type="checkbox" className="checkbox-position"></input>} modal closeOnDocumentClick>
+		    			<ChangingDrugIntakePopup/>
+		    		</Popup>	
+				)    			
+	    	}
+    	} else {
+	    	if (drugplanned.drugNamesSameTime !== null)	{
+				return (
+					<Popup trigger={<input type="checkbox" className="checkbox-position" onChange={this.handleCheckClick(drugplanned.userDrugPlanItemId)}  ></input>} modal closeOnDocumentClick>
+	    				<DrugIntakeSuccessPopup/>
+	    			</Popup>	
+				)
+	    	} else {
+				return (
+					<Popup trigger={<input type="checkbox" className="checkbox-position"></input>} modal closeOnDocumentClick>
+		    			<ChangingDrugIntakePopup/>
+		    		</Popup>	
+				)    			
+	    	}
+    	}
     }
     
     renderDrugsPlanned(drugsplanned) { 
@@ -163,15 +187,8 @@ class DrugIntakePlan extends React.Component {
     	return "";
     }
     
-    /*checkForInteractions() {	
-        axios.get("drug/interactions/taking").then(({data}) => {
-	    		this.state.interactions = data.value;
-	    		this.setState(this.state);
-        });
-    }*/
-
     recalculatePlan() {
-                axios.post('/drug/userdrugplanned/calculate/date', { date: moment(this.state.date).format("DD.MM.YYYY")}, {
+                axios.post('/drug/drugintakeplan/calculate/date', { date: moment(this.state.date).format("DD.MM.YYYY")}, {
             validateStatus: (status) => {
                 console.log("status=" + status);
                 return (status >= 200 && status < 300) || status == 400 || status == 401
@@ -195,7 +212,30 @@ class DrugIntakePlan extends React.Component {
         });
     }
     
-    
+    setDrugTaken(userDrugPlanItemId) {
+	    axios.post('/drug/drugintakeplan/taken', { userDrugPlanItemId }, {
+		        validateStatus: (status) => {
+		            console.log("status=" + status);
+		            return (status >= 200 && status < 300) || status == 400 || status == 401
+		        }
+		            })
+		  .then(({data, status}) => {
+		     console.log("status=" + status);
+		     const {t} = this.props;
+		
+		     switch (status) {
+		         case 200:
+		             console.log("case status 200");
+		             this.getData();
+		             break;
+		         case 400:
+		             break;
+		         case 401:
+		            console.log(data, "not permitted");
+		                    break;
+		     }
+	    });
+    }
 
     render() {
         const { t } = this.props;

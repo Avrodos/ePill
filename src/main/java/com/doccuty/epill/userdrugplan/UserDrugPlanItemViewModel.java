@@ -5,7 +5,8 @@ package com.doccuty.epill.userdrugplan;
  */
 public class UserDrugPlanItemViewModel {
 
-	private boolean intake;
+	private long userDrugPlanItemId; 
+	private boolean drugTaken;	
 	private boolean intermediateStep;
 	private String dateString;
 	private String timeString;
@@ -45,12 +46,12 @@ public class UserDrugPlanItemViewModel {
 		this.timeString = timeString;
 	}
 
-	public boolean isIntake() {
-		return intake;
+	public boolean isDrugTaken() {
+		return drugTaken;
 	}
 
-	public void setIntake(boolean intake) {
-		this.intake = intake;
+	public void setDrugTaken(boolean drugTaken) {
+		this.drugTaken = drugTaken;
 	}
 
 	public String getDateString() {
@@ -103,6 +104,14 @@ public class UserDrugPlanItemViewModel {
 
 	public boolean isTakeOnFullStomach() {
 		return takeOnFullStomach;
+	}
+
+	public long getUserDrugPlanItemId() {
+		return userDrugPlanItemId;
+	}
+
+	public void setUserDrugPlanItemId(long userDrugPlanItemId) {
+		this.userDrugPlanItemId = userDrugPlanItemId;
 	}
 
 	public void setTakeOnFullStomach(boolean takeOnFullStomach) {

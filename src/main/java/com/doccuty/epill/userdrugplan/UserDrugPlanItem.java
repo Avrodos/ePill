@@ -17,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.doccuty.epill.drug.Drug;
+import com.doccuty.epill.model.LoginAttempt;
 import com.doccuty.epill.user.User;
 
 import de.uniks.networkparser.interfaces.SendableEntity;
@@ -99,6 +100,27 @@ public class UserDrugPlanItem implements SendableEntity {
         setDateTimePlanned(value);
         return this;
     }
+    
+    //indicates if drug is taken or not==========================================================================
+    public static final String PROPERTY_DRUG_TAKEN = "drug_taken";
+    private boolean drugTaken;	
+
+    public boolean getDrugTaken()
+    {
+        return this.drugTaken;
+    }
+
+    public void setDrugTaken(boolean drugTaken)
+    {
+        this.drugTaken = drugTaken;
+    }
+
+    public UserDrugPlanItem withDrugTaken(boolean drugTaken)
+    {
+        this.setDrugTaken(drugTaken);
+        return this;
+    }
+    
     //==========================================================================
 
     /********************************************************************
