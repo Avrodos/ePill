@@ -452,11 +452,11 @@ public class DrugService {
 
 	/**
 	 * set flag if drug is taken or not
-	 * @param userDrugPlanItemId
-	 * @param drugTaken
+	 * @param userDrugPlanItemId - id of UserDrugPlanItem
+	 * @param isTaken - 
 	 */
-	public void setDrugTaken(long userDrugPlanItemId, boolean drugTaken) {
-		LOG.info("set drug taken for userDrugPlanItemId {}", userDrugPlanItemId);
+	public void setDrugTaken(long userDrugPlanItemId, boolean isTaken) {
+		LOG.info("set drug taken for userDrugPlanItemId {} to {}", userDrugPlanItemId, isTaken);
 		userDrugPlanRepository.updateDrugTaken(userDrugPlanItemId);
 	}
 }

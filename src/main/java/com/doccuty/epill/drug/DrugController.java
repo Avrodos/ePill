@@ -475,18 +475,18 @@ public class DrugController {
 	 * @return
 	 */
 	@RequestMapping(value = "/drugintakeplan/taken", method = RequestMethod.POST)
-	public ResponseEntity<Object> setDrugTaken(@RequestBody long userDrugPlanItemId, String taken) {
+	public ResponseEntity<Object> setDrugTaken(@RequestBody DrugTakenRequestParameter requestParam) {
 		// A pragmatic approach to security which does not use much
 		// framework-specific magic. While other approaches
 		// with annotations, etc. are possible they are much more complex while
 		// this is quite easy to understand and
 		// extend.
-		LOG.info("set drug taken for userDrugPlanItemId= {}, taken = {}", userDrugPlanItemId, taken);
+		LOG.info("set drug taken for userDrugPlanItemId= {}, taken = {}", requestParam.getUserDrugPlanItemId(), requestParam.isTaken());
 		if (userService.isAnonymous()) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		service.setDrugTaken(userDrugPlanItemId, true);
+		service.setDrugTaken(requestParam.getUserDrugPlanItemId(), requestParam.isTaken());
 
 		LOG.info("drug taken set");
 

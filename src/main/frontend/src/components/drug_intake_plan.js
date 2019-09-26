@@ -12,7 +12,8 @@ import ProgressBar from "./progress_bar";
 import Popup from "reactjs-popup";
 import DrugIntakeSuccessPopup from "./drug_intake_success_popup";
 import ChangingDrugIntakePopup from "./changing_drug_intake_popup";
-
+import CheckBox from "./checkbox";
+import {toast} from 'react-toastify';
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about forms.
 class DrugIntakePlan extends React.Component {
@@ -20,11 +21,12 @@ class DrugIntakePlan extends React.Component {
         super(props);
         this.state = {
             drugsplanned: [],
-            interactions	: [],
+            interactions        : [],
             date : new Date(),
             percentage : 100,
             expandedRows: []
         };
+        this.output = this.handleTakenChange.bind(this)
     }
 
     // This function is called before render() to initialize its state.
@@ -46,8 +48,8 @@ class DrugIntakePlan extends React.Component {
          this.setState(this.state);
         });
         axios.get("drug/interactions/taking").then(({data}) => {
-    		this.state.interactions = data.value;
-    		this.setState(this.state);
+                this.state.interactions = data.value;
+                this.setState(this.state);
         });
     }
 
@@ -61,9 +63,9 @@ class DrugIntakePlan extends React.Component {
         this.setState(this.state);
         this.getData();
     }
-    
+
     handleRowClick(rowId) {
-        
+
         const currentExpandedRows = this.state.expandedRows;
         const isRowCurrentlyExpanded = currentExpandedRows.includes(rowId);
 
@@ -73,76 +75,51 @@ class DrugIntakePlan extends React.Component {
 
         this.setState({ expandedRows: newExpandedRows });
       }
-    
-    handleCheckClick = (userDrugPlanItemId) => {
-    	console.log("userDrugPlanItemId=" + userDrugPlanItemId);
-    	this.setDrugTaken(userDrugPlanItemId);
-    }
-    
-    
-    
-    handleCheckbox(drugplanned) {
 
-    	if (drugplanned.drugTaken) {
-	    	if (drugplanned.drugNamesSameTime !== null)	{
-				return (
-					<Popup trigger={<input type="checkbox" className="checkbox-position" onChange={this.handleCheckClick(drugplanned.userDrugPlanItemId)} checked ></input>} modal closeOnDocumentClick>
-	    				<DrugIntakeSuccessPopup/>
-	    			</Popup>	
-				)
-	    	} else {
-				return (
-					<Popup trigger={<input type="checkbox" className="checkbox-position"></input>} modal closeOnDocumentClick>
-		    			<ChangingDrugIntakePopup/>
-		    		</Popup>	
-				)    			
-	    	}
-    	} else {
-	    	if (drugplanned.drugNamesSameTime !== null)	{
-				return (
-					<Popup trigger={<input type="checkbox" className="checkbox-position" onChange={this.handleCheckClick(drugplanned.userDrugPlanItemId)}  ></input>} modal closeOnDocumentClick>
-	    				<DrugIntakeSuccessPopup/>
-	    			</Popup>	
-				)
-	    	} else {
-				return (
-					<Popup trigger={<input type="checkbox" className="checkbox-position"></input>} modal closeOnDocumentClick>
-		    			<ChangingDrugIntakePopup/>
-		    		</Popup>	
-				)    			
-	    	}
-    	}
+    handleTakenChange(isChecked, userDrugPlanItemId) {
+        // parent class change handler is always called with field name and value
+        //this.setState({[field]: value});
+        console.log("isChecked=" + isChecked + ", userDrugPlanItemId="+ userDrugPlanItemId);
+        this.setDrugTaken(isChecked, userDrugPlanItemId);
     }
-    
-    renderDrugsPlanned(drugsplanned) { 
+
+    renderCheckBox(drugplanned) {
+        //if (!drugplanned.intermediateStep && drugplanned.drugTaken)   {
+                        return (
+                                <CheckBox id={drugplanned.userDrugPlanItemId} checked={drugplanned.drugTaken}
+                                                onChange={this.handleTakenChange.bind(this)}/>
+                        )
+    }
+
+    renderDrugsPlanned(drugsplanned) {
         return drugsplanned.map(drugplanned => {
-        	
-        	const plannedRow = [
+
+                const plannedRow = [
                 <tr key={drugplanned} className="table-line-hover">
                         <td className="td-style">
-                        	{this.renderProgressBar(drugplanned)} 
+                                {this.renderProgressBar(drugplanned)}
                         </td>
                         <td className="td-style">
-                            {this.handleCheckbox(drugplanned)}
+                            {this.renderCheckBox(drugplanned)}
                         </td>
                         <td className="td-style">{drugplanned.timeString}</td>
                         <td className="td-style">
-                           	<b>{this.renderDrugName(drugplanned)}</b>
+                                <b>{this.renderDrugName(drugplanned)}</b>
                         </td>
                         <td className="td-style">
-                        	{this.renderExpandableButton(drugplanned)}
+                                {this.renderExpandableButton(drugplanned)}
                       </td>
                 </tr>                   
             ];
-        	if (drugplanned.drugNamesSameTime !== null) {
-        		if(this.state.expandedRows.includes(drugplanned)) {
+                if (drugplanned.drugNamesSameTime !== null) {
+                        if(this.state.expandedRows.includes(drugplanned)) {
                     plannedRow.push(
                         <tr key={"row-expanded-" + drugplanned}>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td>
-                            <p>{"used when: "+drugplanned.drugDiseases}</p>	
+                            <p>{"used when: "+drugplanned.drugDiseases}</p>     
                               <p className="information"><span class="glyphicon glyphicon-info-sign"></span> {drugplanned.takeOnEmptyStomach ? "take on an empty stomach" : ""}</p>
                               <p className="information"><span class="glyphicon glyphicon-info-sign"></span> {drugplanned.takeOnFullStomach ? "take on a full stomach" : ""}</p>
                               {drugplanned.personalizedInformation && <section className="minimum-summary" dangerouslySetInnerHTML={this.createMarkup(drugplanned.personalizedInformation)} />}
@@ -151,42 +128,42 @@ class DrugIntakePlan extends React.Component {
                         </tr>
                     );
                 }
-        	}
-        	return plannedRow;
+                }
+                return plannedRow;
         });
     }
-    
+
     renderProgressBar(drugplanned) {
-    	var drugplanned_percentage = drugplanned.percentage;
- 		return (
- 			<ProgressBar percentage={drugplanned_percentage} />	
-		);
+        var drugplanned_percentage = drugplanned.percentage;
+                return (
+                        <ProgressBar percentage={drugplanned_percentage} />     
+                );
     }
-    
+
     renderDrugName(drugplanned) {
-    	if (drugplanned.drugNamesSameTime !== undefined) {
-     		return drugplanned.drugNamesSameTime;
-     	} else if (drugplanned.drugName !== undefined) {
-    		return drugplanned.drugName;
-    	} else { 
-    		return "";
-    	};
+        if (drugplanned.drugNamesSameTime !== undefined) {
+                return drugplanned.drugNamesSameTime;
+        } else if (drugplanned.drugName !== undefined) {
+                return drugplanned.drugName;
+        } else {
+                return "";
+        };
     }
-    
+
     renderExpandableButton(drugplanned) {
-    	const clickCallback = () => this.handleRowClick(drugplanned);
-    	
-    	if (drugplanned.drugNamesSameTime !== null) {
-     		return (
-    				<button type="button" className="btn btn-sm btn add" onClick={clickCallback}>
+        const clickCallback = () => this.handleRowClick(drugplanned);
+
+        if (drugplanned.drugNamesSameTime !== null) {
+                return (
+                                <button type="button" className="btn btn-sm btn add" onClick={clickCallback}>
                     <span className={"glyphicon "+ ( this.state.expandedRows.includes(drugplanned) ? 'glyphicon-minus' : 'glyphicon-plus')}></span>
                     </button>
-    		);
-    	}
-    	
-    	return "";
+                );
+        }
+
+        return "";
     }
-    
+
     recalculatePlan() {
                 axios.post('/drug/drugintakeplan/calculate/date', { date: moment(this.state.date).format("DD.MM.YYYY")}, {
             validateStatus: (status) => {
@@ -211,30 +188,37 @@ class DrugIntakePlan extends React.Component {
          }
         });
     }
-    
-    setDrugTaken(userDrugPlanItemId) {
-	    axios.post('/drug/drugintakeplan/taken', { userDrugPlanItemId }, {
-		        validateStatus: (status) => {
-		            console.log("status=" + status);
-		            return (status >= 200 && status < 300) || status == 400 || status == 401
-		        }
-		            })
-		  .then(({data, status}) => {
-		     console.log("status=" + status);
-		     const {t} = this.props;
-		
-		     switch (status) {
-		         case 200:
-		             console.log("case status 200");
-		             this.getData();
-		             break;
-		         case 400:
-		             break;
-		         case 401:
-		            console.log(data, "not permitted");
-		                    break;
-		     }
-	    });
+
+    setDrugTaken(isChecked, userDrugPlanItemId) {
+    	const options = {
+                position: toast.POSITION.BOTTOM_CENTER
+            };
+        console.log("setDrugTaken(userDrugPlanItemId=" + userDrugPlanItemId + ")");
+        var idString = userDrugPlanItemId.toString();
+        console.log("idString=" + idString);
+        axios.post('/drug/drugintakeplan/taken', { "isChecked" : isChecked, "userDrugPlanItemId" : userDrugPlanItemId } , {
+                        validateStatus: (status) => {
+                            console.log("status=" + status);
+                            return (status >= 200 && status < 300) || status == 400 || status == 401
+                        }
+                            })
+                  .then(({data, status}) => {
+                     console.log("status=" + status);
+                     const {t} = this.props;
+
+                     switch (status) {
+                         case 200:
+                             console.log("case status 200");
+                             toast.success(t('Well done!'), options);
+                             this.getData();
+                             break;
+                         case 400:
+                             break;
+                         case 401:
+                            console.log(data, "not permitted");
+                                    break;
+                     }
+            });
     }
 
     render() {
@@ -275,14 +259,20 @@ class DrugIntakePlan extends React.Component {
                             <EmptyList />
                         )}
                         {!this.state.loading && drugsplanned && drugsplanned.length > 0 && (
-                        	<table id="drugsplanned" className="table-style">                 
-                        		<th className="th-style">half-time-period</th>
-                                <th className="th-style"></th>
-                                <th className="th-style">time</th>
-                                <th className="th-style">name</th>
-                                <th className="th-style"></th>
-                                {this.renderDrugsPlanned(drugsplanned)}
-                            </table> 
+                                <table id="drugsplanned" className="table-style">
+                                        <thead>
+                                                <tr>
+                                                        <th className="th-style">half-time-period</th>
+                                                <th className="th-style"></th>
+                                                <th className="th-style">time</th>
+                                                <th className="th-style">name</th>
+                                                <th className="th-style"></th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                        {this.renderDrugsPlanned(drugsplanned)}
+                                </tbody>
+                            </table>
                         )}
                     </div>
                 </div>
@@ -293,4 +283,3 @@ class DrugIntakePlan extends React.Component {
 }
 
 export default translate()(DrugIntakePlan);
-
