@@ -80,7 +80,8 @@ class DrugIntakePlan extends React.Component {
         // parent class change handler is always called with field name and value
         //this.setState({[field]: value});
         console.log("isChecked=" + isChecked + ", userDrugPlanItemId="+ userDrugPlanItemId);
-        this.setDrugTaken(isChecked, userDrugPlanItemId);
+        var isDrugTaken = !isChecked;  //toggle
+        this.setDrugTaken(isDrugTaken, userDrugPlanItemId);
     }
 
     renderCheckBox(drugplanned) {
@@ -189,14 +190,12 @@ class DrugIntakePlan extends React.Component {
         });
     }
 
-    setDrugTaken(isChecked, userDrugPlanItemId) {
+    setDrugTaken(isDrugTaken, userDrugPlanItemId) {
     	const options = {
                 position: toast.POSITION.BOTTOM_CENTER
             };
         console.log("setDrugTaken(userDrugPlanItemId=" + userDrugPlanItemId + ")");
-        var idString = userDrugPlanItemId.toString();
-        console.log("idString=" + idString);
-        axios.post('/drug/drugintakeplan/taken', { "isChecked" : isChecked, "userDrugPlanItemId" : userDrugPlanItemId } , {
+        axios.post('/drug/drugintakeplan/taken', { "drugTaken" : isDrugTaken, "userDrugPlanItemId" : userDrugPlanItemId } , {
                         validateStatus: (status) => {
                             console.log("status=" + status);
                             return (status >= 200 && status < 300) || status == 400 || status == 401
@@ -209,7 +208,12 @@ class DrugIntakePlan extends React.Component {
                      switch (status) {
                          case 200:
                              console.log("case status 200");
-                             toast.success(t('Well done!'), options);
+                             if (isDrugTaken) {
+                            	 toast.success(t('Well done!'), options);
+                             } else {
+                            	 toast.error(t('Remember to take it soon!'), options);
+                             }
+                             
                              this.getData();
                              break;
                          case 400:

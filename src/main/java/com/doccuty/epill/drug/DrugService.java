@@ -347,7 +347,7 @@ public class DrugService {
 			model.setUserDrugPlanItemId(userDrugPlanItem.getId());
 			model.setDrugName(userDrugPlanItem.getDrug().getName());
 			model.setDrugNamesSameTime(drugNamesSameTime);
-			model.setDrugTaken(userDrugPlanItem.getDrugTaken());
+			model.setDrugTaken(userDrugPlanItem.getDrugTaken() );
 			model.setIntermediateStep(false);
 			model.setTakeOnEmptyStomach(userDrugPlanItem.getDrug().getTakeOnEmptyStomach());
 			model.setTakeOnFullStomach(userDrugPlanItem.getDrug().getTakeOnFullStomach());
@@ -457,6 +457,8 @@ public class DrugService {
 	 */
 	public void setDrugTaken(long userDrugPlanItemId, boolean isTaken) {
 		LOG.info("set drug taken for userDrugPlanItemId {} to {}", userDrugPlanItemId, isTaken);
-		userDrugPlanRepository.updateDrugTaken(userDrugPlanItemId);
+		userDrugPlanRepository.updateDrugTaken(userDrugPlanItemId, isTaken);
+		UserDrugPlanItem item = userDrugPlanRepository.getOne(userDrugPlanItemId);
+		LOG.info("updated drugTaken for userDrugPlanItemId {} to {}", userDrugPlanItemId, item.getDrugTaken());
 	}
 }

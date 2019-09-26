@@ -61,6 +61,6 @@ public interface UserDrugPlanItemRepository extends JpaRepository<UserDrugPlanIt
 	 */
 	@Transactional
 	@Modifying
-	@Query("UPDATE UserDrugPlanItem SET drugTaken= true WHERE id = :userDrugPlanItemId")
-	void updateDrugTaken(@Param("userDrugPlanItemId") long userDrugPlanItemId);
+	@Query("UPDATE UserDrugPlanItem SET drugTaken= :isTaken WHERE id = :userDrugPlanItemId")
+	void updateDrugTaken(@Param("userDrugPlanItemId") long userDrugPlanItemId, @Param("isTaken") Boolean isTaken);
 }

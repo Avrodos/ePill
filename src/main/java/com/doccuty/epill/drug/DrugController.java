@@ -481,12 +481,12 @@ public class DrugController {
 		// with annotations, etc. are possible they are much more complex while
 		// this is quite easy to understand and
 		// extend.
-		LOG.info("set drug taken for userDrugPlanItemId= {}, taken = {}", requestParam.getUserDrugPlanItemId(), requestParam.isTaken());
+		LOG.info("set drug taken for userDrugPlanItemId= {}, taken = {}", requestParam.getUserDrugPlanItemId(), requestParam.getDrugTaken());
 		if (userService.isAnonymous()) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		service.setDrugTaken(requestParam.getUserDrugPlanItemId(), requestParam.isTaken());
+		service.setDrugTaken(requestParam.getUserDrugPlanItemId(), requestParam.getDrugTaken());
 
 		LOG.info("drug taken set");
 

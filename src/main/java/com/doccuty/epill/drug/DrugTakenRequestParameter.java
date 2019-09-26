@@ -5,7 +5,7 @@ package com.doccuty.epill.drug;
  * 
  * i.e.
  * {"DrugTakenRequestParameter": {
-		   "isTaken":true,"userDrugPlanItemId":31}
+		   "drugTaken":true,"userDrugPlanItemId":31}
 		}
  * 
  * @author cs
@@ -13,14 +13,14 @@ package com.doccuty.epill.drug;
  */
 public class DrugTakenRequestParameter {
 
-	private boolean isTaken;
+	private boolean drugTaken;
 	private long userDrugPlanItemId;
 	
-	public boolean isTaken() {
-		return isTaken;
+	public boolean getDrugTaken() {
+		return drugTaken;
 	}
-	public void setTaken(boolean isTaken) {
-		this.isTaken = isTaken;
+	public void setDrugTaken(boolean drugTaken) {
+		this.drugTaken = drugTaken;
 	}
 	public long getUserDrugPlanItemId() {
 		return userDrugPlanItemId;
@@ -29,3 +29,4 @@ public class DrugTakenRequestParameter {
 		this.userDrugPlanItemId = userDrugPlanItemId;
 	}
 }
+
