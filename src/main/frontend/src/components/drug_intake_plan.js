@@ -10,7 +10,6 @@ import moment from 'moment';
 import EmptyList from "./empty_list";
 import ProgressBar from "./progress_bar";
 import Popup from "reactjs-popup";
-import DrugIntakeSuccessPopup from "./drug_intake_success_popup";
 import ChangingDrugIntakePopup from "./changing_drug_intake_popup";
 import CheckBox from "./checkbox";
 import {toast} from 'react-toastify';

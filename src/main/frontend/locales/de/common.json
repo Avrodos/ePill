@@ -100,5 +100,14 @@
 	"Well done!": "Gut gemacht!",
 	"Remember to take it soon!": "Denk dran es bald einzunehmen!",
 	"for": "für den",
-	"recalculatePlan": "Plan neu berechnen"
+	"recalculatePlan": "Plan neu berechnen",
+	"intake pattern": "Einnahme Rhythmus",
+	"daily": "täglich",
+	"every other day": "alle zwei tage",
+	"intake times": "Einnahmezeite(n)",
+	"breakfast time": "Frühstückszeit",
+	"lunch time": "Mittagszeit",
+	"dinner time": "Abendessenszeit",
+	"before sleep": "Vor dem zu Bett gehen",
+	"cancel": "abbrechen"
 }

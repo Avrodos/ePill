@@ -100,5 +100,14 @@
 	"Well done!": "Well done!",
 	"Remember to take it soon!": "Remember to take it soon!",
 	"for": "for",
-	"recalculatePlan": "recalculate plan"
+	"recalculatePlan": "recalculate plan",
+	"intake pattern": "Intake Pattern",
+	"daily": "daily",
+	"every other day": "every other day",
+	"intake times": "Intake Time(s)",
+	"breakfast time": "breakfast time",
+	"lunch time": "lunch time",
+	"dinner time": "dinner time",
+	"before sleep": "before sleep",
+	"cancel": "cancel"
 }

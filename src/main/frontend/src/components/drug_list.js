@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import EmptyList from "./empty_list";
 import Loading from "./loading";
 import User from "./../util/User";
+import AddingDrugPopup from "./adding_drug_popup";
 
 class DrugList extends React.Component {
     constructor(props) {
@@ -114,7 +115,8 @@ class DrugList extends React.Component {
              
              switch (status) {
                  case 200:
-                	 	toast.success(t('addToTakingListSuccess'), options);
+                	 	//toast.success(t('addToTakingListSuccess'), options);
+                	 	this.renderAddingDrugPopup();
          			var idx = this.state.drugs.indexOf(drug);
          			drug.isTaken = !drug.isTaken;
          			this.state.drugs[idx] = drug;
@@ -387,6 +389,13 @@ class DrugList extends React.Component {
 		        	</li>
             );
         }));
+    }
+        
+    renderAddingDrugPopup() {
+    	const open_popup = true;
+    	return (
+    		<AddingDrugPopup open={open_popup}/>	
+    	)
     }
 
 
