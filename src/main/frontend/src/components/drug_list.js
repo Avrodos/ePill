@@ -4,6 +4,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {translate} from "react-i18next";
 import { toast } from 'react-toastify';
+import Popup from "reactjs-popup";
 
 import EmptyList from "./empty_list";
 import Loading from "./loading";
@@ -18,7 +19,8 @@ class DrugList extends React.Component {
         		drugs		: [],
         		interactions	: '',
         		cmd			: '',
-        		loading		: false
+        		loading		: false,
+        		open: false
         }
         
         this.checkForInteractions	= this.checkForInteractions.bind(this);
@@ -26,7 +28,17 @@ class DrugList extends React.Component {
         this.removeFromRememberList	= this.removeFromRememberList.bind(this);
         this.addToTakingList			= this.addToTakingList.bind(this);
         this.removeFromTakingList	= this.removeFromTakingList.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
     }
+    
+    openModal() {
+        this.setState({ open: true });
+      }
+      
+    closeModal() {
+        this.setState({ open: false });
+      }
 
     setCmd() {
         
@@ -97,7 +109,8 @@ class DrugList extends React.Component {
     		if(drug.isTaken) {
     			this.removeFromTakingList(drug);
     		} else {
-    			this.addToTakingList(drug);
+    			this.openModal();
+    			//this.addToTakingList(drug);
     		}
     }
 	
@@ -115,8 +128,7 @@ class DrugList extends React.Component {
              
              switch (status) {
                  case 200:
-                	 	//toast.success(t('addToTakingListSuccess'), options);
-                	 	this.renderAddingDrugPopup();
+                	 	toast.success(t('addToTakingListSuccess'), options);
          			var idx = this.state.drugs.indexOf(drug);
          			drug.isTaken = !drug.isTaken;
          			this.state.drugs[idx] = drug;
@@ -336,7 +348,7 @@ class DrugList extends React.Component {
 	        </p>
 		);
 	}
-    
+
     renderDrugs(drugs) {
     	
         return drugs.map((drug => {
@@ -366,9 +378,14 @@ class DrugList extends React.Component {
 				        		{User.isAuthenticated() &&
 				        			<ul>
 				        				<li>
-				        					<button type="button" className="btn btn-xs btn-like" onClick={() => this.toggleTaking(drug)}>
-				        						<span className={"glyphicon white "+(drug.isTaken ? 'glyphicon-minus' : 'glyphicon-heart' )}></span>
-				        					</button>
+				        					<div>
+					        					<button type="button" className="btn btn-xs btn-like" onClick={() => this.toggleTaking(drug)}>
+					        						<span className={"glyphicon white "+ (drug.isTaken ? 'glyphicon-minus' : 'glyphicon-heart' )}></span>
+					        					</button>
+					        					<Popup open={this.state.open} onClose={this.closeModal}>
+					        						<AddingDrugPopup {...this.props} updateNavigation={this.props.updateNavigation}></AddingDrugPopup>
+					        					</Popup>
+				        					</div>
 				        				</li>
 				        				<li>
 				        					<button type="button" className="btn btn-xs btn-add" onClick={() => this.toggleRemember(drug)}>
@@ -391,12 +408,6 @@ class DrugList extends React.Component {
         }));
     }
         
-    renderAddingDrugPopup() {
-    	const open_popup = true;
-    	return (
-    		<AddingDrugPopup open={open_popup}/>	
-    	)
-    }
 
 
     render() {
