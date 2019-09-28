@@ -104,14 +104,13 @@ class DrugList extends React.Component {
     
     //=============================
     
+	removeTaking(drug) {
+		this.removeFromTakingList(drug);
+	}
     
-    toggleTaking(drug) {
-    		if(drug.isTaken) {
-    			this.removeFromTakingList(drug);
-    		} else {
-    			this.openModal();
-    			//this.addToTakingList(drug);
-    		}
+    addTaking(drug) {
+		this.openModal();
+//		this.addToTakingList(drug);
     }
 	
     addToTakingList(drug) {
@@ -348,6 +347,25 @@ class DrugList extends React.Component {
 	        </p>
 		);
 	}
+	
+	renderHeartOrMinusButton(drug) {
+		
+		if (drug.isTaken) {
+			return (
+				<button type="button" className="btn btn-xs btn-like" onClick={() => this.removeTaking(drug)}>
+					<span className="glyphicon white glyphicon-minus"></span>
+				</button>
+			);
+		} else {
+			return (
+				<Popup trigger={<button type="button" className="btn btn-xs btn-like">
+					<span className="glyphicon white glyphicon-heart"></span>
+					</button>}>
+					<AddingDrugPopup updateNavigation={this.props.updateNavigation}></AddingDrugPopup>
+				</Popup>
+			);
+		}
+	}
 
     renderDrugs(drugs) {
     	
@@ -378,14 +396,7 @@ class DrugList extends React.Component {
 				        		{User.isAuthenticated() &&
 				        			<ul>
 				        				<li>
-				        					<div>
-					        					<button type="button" className="btn btn-xs btn-like" onClick={() => this.toggleTaking(drug)}>
-					        						<span className={"glyphicon white "+ (drug.isTaken ? 'glyphicon-minus' : 'glyphicon-heart' )}></span>
-					        					</button>
-					        					<Popup open={this.state.open} onClose={this.closeModal}>
-					        						<AddingDrugPopup {...this.props} updateNavigation={this.props.updateNavigation}></AddingDrugPopup>
-					        					</Popup>
-				        					</div>
+					        				{this.renderHeartOrMinusButton(drug)}
 				        				</li>
 				        				<li>
 				        					<button type="button" className="btn btn-xs btn-add" onClick={() => this.toggleRemember(drug)}>

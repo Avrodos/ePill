@@ -21,7 +21,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.doccuty.epill.user.UserService;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
-import com.doccuty.epill.userdrugplan.UserDrugPlanItemViewModel;;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItemViewModel;
+import com.doccuty.epill.userdrugplan.UserDrugPlanService;;
 
 // Use Spring's testing support in JUnit
 @RunWith(SpringRunner.class)
@@ -31,7 +32,7 @@ public class UserDrugPlanTest {
 	private static final Logger LOG = LoggerFactory.getLogger(UserDrugPlanTest.class);
 
 	@Autowired
-	private DrugService drugService;
+	private UserDrugPlanService drugService;
 
 	@Autowired
 	private UserService userService;

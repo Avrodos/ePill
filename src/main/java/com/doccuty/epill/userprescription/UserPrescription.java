@@ -1,8 +1,10 @@
-package com.doccuty.epill.userdrugplan;
+package com.doccuty.epill.userprescription;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.doccuty.epill.drug.Drug;
 import com.doccuty.epill.model.LoginAttempt;
@@ -23,17 +26,16 @@ import com.doccuty.epill.user.User;
 import de.uniks.networkparser.interfaces.SendableEntity;
 
 /**
- * UserDrugPlanItem contains plan data (for future intakes) and historical data 
- * (for intakes in the past)  per intake of one drug. 
+ * UserPrescription contains prescription information for user
  * 
  * @author cs
  *
  */
 @Entity
-@Table(name="user_drug_plan_item")
-public class UserDrugPlanItem implements SendableEntity {
+@Table(name="user_prescription")
+public class UserPrescription implements SendableEntity {
 
-    public UserDrugPlanItem() {
+    public UserPrescription() {
 
     }
 
@@ -59,7 +61,7 @@ public class UserDrugPlanItem implements SendableEntity {
         }
     }
 
-    public UserDrugPlanItem withId(long value)
+    public UserPrescription withId(long value)
     {
         setId(value);
         return this;
@@ -75,49 +77,26 @@ public class UserDrugPlanItem implements SendableEntity {
     }
 
     //Planned Timestamp for drug taking==========================================================================
-    public static final String PROPERTY_DATETIME_INTAKE_PLANNED = "datetime_intake_planned";
+    public static final String PROPERTY_PERIOD_IN_DAYS = "period_in_days";
 
-    @Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
-	private Date dateTimePlanned;
+	private int periodInDays;
 
-    public Date getDatetimeIntakePlanned()
+    public int getPeriodInDays()
     {
-        return this.dateTimePlanned;
+        return this.periodInDays;
     }
 
-    public void setDateTimePlanned(Date value)
+    public void setPeriodInDays(int value)
     {
-        if (this.dateTimePlanned != value) {
-            Date oldValue = this.dateTimePlanned;
-            this.dateTimePlanned = value;
-            this.firePropertyChange(PROPERTY_DATETIME_INTAKE_PLANNED, oldValue, value);
-        }
+            int oldValue = this.periodInDays;
+            this.periodInDays = value;
+            this.firePropertyChange(PROPERTY_PERIOD_IN_DAYS, oldValue, value);
     }
 
-    public UserDrugPlanItem withTimestamp(Date value)
+    public UserPrescription withPeriodInDays(int value)
     {
-        setDateTimePlanned(value);
-        return this;
-    }
-    
-    //indicates if drug is taken or not==========================================================================
-    public static final String PROPERTY_DRUG_TAKEN = "drug_taken";
-    private boolean drugTaken;	
-
-    public boolean getDrugTaken()
-    {
-        return this.drugTaken;
-    }
-
-    public void setDrugTaken(boolean drugTaken)
-    {
-        this.drugTaken = drugTaken;
-    }
-
-    public UserDrugPlanItem withDrugTaken(boolean drugTaken)
-    {
-        this.setDrugTaken(drugTaken);
+        setPeriodInDays(value);
         return this;
     }
     
@@ -126,8 +105,8 @@ public class UserDrugPlanItem implements SendableEntity {
     /********************************************************************
      * <pre>
      *              many                       one
-     * UserDrugPlanItem ----------------------------------- Drug
-     *              userDrugPlanItems                   drug
+     * UserPrescription ----------------------------------- Drug
+     *              userPrescriptions                   drug
      * </pre>
      */
 
@@ -153,13 +132,13 @@ public class UserDrugPlanItem implements SendableEntity {
             if (this.drug != null)
             {
                 this.drug = null;
-                oldValue.withUserDrugPlanItems(this);
+                oldValue.withUserPrescriptions(this);
             }
 
             this.drug = value;
             if (value != null)
             {
-                value.withUserDrugPlanItems(this);
+                value.withUserPrescriptions(this);
             }
 
             firePropertyChange(PROPERTY_DRUG, oldValue, value);
@@ -169,7 +148,7 @@ public class UserDrugPlanItem implements SendableEntity {
         return changed;
     }
 
-    public UserDrugPlanItem withDrug(Drug value)
+    public UserPrescription withDrug(Drug value)
     {
         setDrug(value);
         return this;
@@ -185,8 +164,8 @@ public class UserDrugPlanItem implements SendableEntity {
     /********************************************************************
      * <pre>
      *              many                       one
-     * UserDrugPlanItem ----------------------------------- User
-     *              userDrugPlanItems                   user
+     * UserPrescription ----------------------------------- User
+     *              userPrescriptions                   user
      * </pre>
      */
     public static final String PROPERTY_USER = "user";
@@ -209,12 +188,12 @@ public class UserDrugPlanItem implements SendableEntity {
             if (this.user != null)
             {
                 this.user = null;
-                oldValue.withoutUserDrugPlanItems(this);
+                oldValue.withUserPrescriptions(this);
             }
             this.user = value;
             if (value != null)
             {
-                value.withoutUserDrugPlanItems(this);
+                value.withUserPrescriptions(this);
             }
 
             firePropertyChange(PROPERTY_USER, oldValue, value);
@@ -224,7 +203,7 @@ public class UserDrugPlanItem implements SendableEntity {
         return changed;
     }
 
-    public UserDrugPlanItem withUser(User value)
+    public UserPrescription withUser(User value)
     {
         setUser(value);
         return this;
@@ -237,10 +216,62 @@ public class UserDrugPlanItem implements SendableEntity {
     {
         setDrug(null);
         setUser(null);
-        setDateTimePlanned(null);
+        setPeriodInDays(0);
         firePropertyChange("REMOVE_YOU", this, null);
     }
 
+	/********************************************************************
+	 * <pre>
+	 *              one                       many
+	 * UserPrescription ----------------------------------- UserPrescriptionItem
+	 *              userPrescription                   userPrescriptionItems
+	 * </pre>
+	 */
+
+	public static final String PROPERTY_USER_PRESCRIPTION_ITEMS = "user_prescription_items";
+
+	@Transient
+	private Set<UserPrescriptionItem> userPrescriptionItems = null;
+
+	public Set<UserPrescriptionItem> getUserPrescriptionItems() {
+		if (this.userPrescriptionItems == null) {
+			return new HashSet<>();
+		}
+		return this.userPrescriptionItems;
+	}
+
+	public UserPrescription withUserPrescriptionItems(UserPrescriptionItem... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final UserPrescriptionItem item : value) {
+			if (item != null) {
+				if (this.userPrescriptionItems == null) {
+					this.userPrescriptionItems = new HashSet<>();
+				}
+
+				final boolean changed = this.userPrescriptionItems.add(item);
+
+				if (changed) {
+					item.withPrescription(this);
+					firePropertyChange(PROPERTY_USER_PRESCRIPTION_ITEMS, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public UserPrescription withoutPrescriptionItems(UserPrescriptionItem... values) {
+		for (final UserPrescriptionItem item : values) {
+			if ((this.userPrescriptionItems != null) && (item != null)) {
+				if (this.userPrescriptionItems.remove(item)) {
+					item.setUserPrescription(null);
+					firePropertyChange(PROPERTY_USER_PRESCRIPTION_ITEMS, item, null);
+				}
+			}
+		}
+		return this;
+	}
 
     //TODO: listener really necessary here?==========================================================================
     protected PropertyChangeSupport listeners = null;

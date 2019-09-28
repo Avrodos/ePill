@@ -23,7 +23,8 @@ import com.doccuty.epill.user.UserService;
 import com.doccuty.epill.userdrugplan.DateUtils;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import com.doccuty.epill.userdrugplan.UserDrugPlanCalculator;
-import com.doccuty.epill.userdrugplan.UserDrugPlanItemRepository;;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItemRepository;
+import com.doccuty.epill.userdrugplan.UserDrugPlanService;;
 
 // Use Spring's testing support in JUnit
 @RunWith(SpringRunner.class)
@@ -33,10 +34,13 @@ public class UserDrugPlanCalculatorTest {
 	private static final Logger LOG = LoggerFactory.getLogger(UserDrugPlanCalculatorTest.class);
 
 	@Autowired
-	private DrugService drugService;
+	private UserDrugPlanService userDrugPlanService;
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private DrugService drugService;
 
 	@Autowired
 	private UserDrugPlanItemRepository userDrugPlanRepository;
@@ -51,7 +55,7 @@ public class UserDrugPlanCalculatorTest {
 	 */
 	@Test
 	public void notNull() {
-		assertNotNull("We should have an instance of drugService", drugService);
+		assertNotNull("We should have an instance of drugService", userDrugPlanService);
 		assertNotNull("We should have an instance of userService", userService);
 	}
 
@@ -63,7 +67,7 @@ public class UserDrugPlanCalculatorTest {
 	public void testCalculatePlan2() {
 		LOG.info("testing calculating plan");
 		final Date testDay = new Date();
-		final List<UserDrugPlanItem> planForDay = drugService.recalculateAndSaveUserDrugPlanForDay(testDay);
+		final List<UserDrugPlanItem> planForDay = userDrugPlanService.recalculateAndSaveUserDrugPlanForDay(testDay);
 		assertTrue(planForDay.size() > 0);
 	}
 

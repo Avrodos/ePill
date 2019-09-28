@@ -52,6 +52,7 @@ import com.doccuty.epill.model.util.UserSet;
 import com.doccuty.epill.packagingsection.PackagingSection;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
+import com.doccuty.epill.userprescription.UserPrescription;
 
 @Entity
 @Table(name = "drug")
@@ -673,60 +674,107 @@ public class Drug extends SimpleDrug {
 	/********************************************************************
 	 * <pre>
 	 *              one                       many
-	 * Drug ----------------------------------- UserDrugPlan
-	 *              drug                   userDrugPlans
+	 * Drug ----------------------------------- UserDrugPlanItem
+	 *              drug                   userDrugPlanItems
 	 * </pre>
 	 */
 
-	public static final String PROPERTY_USER_DRUG_PLANS = "user_drug_plans";
+	public static final String PROPERTY_USER_DRUG_PLAN_ITEMS = "user_drug_plan_items";
 
 	@Transient
-	private Set<UserDrugPlanItem> userDrugPlans = null;
+	private Set<UserDrugPlanItem> userDrugPlanItems = null;
 
-	public Set<UserDrugPlanItem> getUserDrugPlans() {
-		if (this.userDrugPlans == null) {
+	public Set<UserDrugPlanItem> getUserDrugPlanItems() {
+		if (this.userDrugPlanItems == null) {
 			return new HashSet<>();
 		}
-		return this.userDrugPlans;
+		return this.userDrugPlanItems;
 	}
 
-	public Drug withUserDrugPlans(UserDrugPlanItem... value) {
+	public Drug withUserDrugPlanItems(UserDrugPlanItem... value) {
 		if (value == null) {
 			return this;
 		}
 		for (final UserDrugPlanItem item : value) {
 			if (item != null) {
-				if (this.userDrugPlans == null) {
-					this.userDrugPlans = new HashSet<>();
+				if (this.userDrugPlanItems == null) {
+					this.userDrugPlanItems = new HashSet<>();
 				}
 
-				final boolean changed = this.userDrugPlans.add(item);
+				final boolean changed = this.userDrugPlanItems.add(item);
 
 				if (changed) {
 					item.withDrug(this);
-					firePropertyChange(PROPERTY_USER_DRUG_PLANS, null, item);
+					firePropertyChange(PROPERTY_USER_DRUG_PLAN_ITEMS, null, item);
 				}
 			}
 		}
 		return this;
 	}
 
-	public Drug withoutUserDrugPlans(UserDrugPlanItem... values) {
+	public Drug withoutUserDrugPlanItems(UserDrugPlanItem... values) {
 		for (final UserDrugPlanItem item : values) {
-			if ((this.userDrugPlans != null) && (item != null)) {
-				if (this.userDrugPlans.remove(item)) {
+			if ((this.userDrugPlanItems != null) && (item != null)) {
+				if (this.userDrugPlanItems.remove(item)) {
 					item.setDrug(null);
-					firePropertyChange(PROPERTY_CLICKS, item, null);
+					firePropertyChange(PROPERTY_USER_DRUG_PLAN_ITEMS, item, null);
+				}
+			}
+		}
+		return this;
+	}
+	
+	/********************************************************************
+	 * <pre>
+	 *              one                       many
+	 * Drug ----------------------------------- UserPresription
+	 *              drug                   userPrescriptions
+	 * </pre>
+	 */
+
+	public static final String PROPERTY_USER_PRESCRIPTIONS = "user_prescriptions";
+
+	@Transient
+	private Set<UserPrescription> userPrescriptions = null;
+
+	public Set<UserPrescription> getUserPrescriptions() {
+		if (this.userPrescriptions == null) {
+			return new HashSet<>();
+		}
+		return this.userPrescriptions;
+	}
+
+	public Drug withUserPrescriptions(UserPrescription... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final UserPrescription item : value) {
+			if (item != null) {
+				if (this.userPrescriptions == null) {
+					this.userPrescriptions = new HashSet<>();
+				}
+
+				final boolean changed = this.userPrescriptions.add(item);
+
+				if (changed) {
+					item.withDrug(this);
+					firePropertyChange(PROPERTY_USER_PRESCRIPTIONS, null, item);
 				}
 			}
 		}
 		return this;
 	}
 
-	public UserDrugPlanItem createUserDrugPlans() {
-		final UserDrugPlanItem value = new UserDrugPlanItem();
-		withUserDrugPlans(value);
-		return value;
+	public Drug withoutPrescriptions(UserPrescription... values) {
+		for (final UserPrescription item : values) {
+			if ((this.userPrescriptions != null) && (item != null)) {
+				if (this.userPrescriptions.remove(item)) {
+					item.setDrug(null);
+					firePropertyChange(PROPERTY_USER_PRESCRIPTIONS, item, null);
+				}
+			}
+		}
+		return this;
 	}
 
 	/********************************************************************

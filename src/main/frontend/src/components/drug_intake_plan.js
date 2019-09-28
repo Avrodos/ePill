@@ -37,7 +37,7 @@ class DrugIntakePlan extends React.Component {
         this.state.loading = true;
         this.state.percentage = 100;
         this.setState(this.state);
-        axios.get("/drug/list/drugintakeplan/date", {
+        axios.get("/drugplan/intake/date", {
                         params: {
                           date: this.state.date
                         }
@@ -165,7 +165,7 @@ class DrugIntakePlan extends React.Component {
     }
 
     recalculatePlan() {
-                axios.post('/drug/drugintakeplan/calculate/date', { date: moment(this.state.date).format("DD.MM.YYYY")}, {
+                axios.post('/drugplan/calculate/date', { date: moment(this.state.date).format("DD.MM.YYYY")}, {
             validateStatus: (status) => {
                 console.log("status=" + status);
                 return (status >= 200 && status < 300) || status == 400 || status == 401
@@ -194,7 +194,7 @@ class DrugIntakePlan extends React.Component {
                 position: toast.POSITION.BOTTOM_CENTER
             };
         console.log("setDrugTaken(userDrugPlanItemId=" + userDrugPlanItemId + ")");
-        axios.post('/drug/drugintakeplan/taken', { "drugTaken" : isDrugTaken, "userDrugPlanItemId" : userDrugPlanItemId } , {
+        axios.post('/drugplan/drug/taken', { "drugTaken" : isDrugTaken, "userDrugPlanItemId" : userDrugPlanItemId } , {
                         validateStatus: (status) => {
                             console.log("status=" + status);
                             return (status >= 200 && status < 300) || status == 400 || status == 401

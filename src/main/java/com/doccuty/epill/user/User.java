@@ -49,6 +49,7 @@ import com.doccuty.epill.model.util.ItemInvocationSet;
 import com.doccuty.epill.model.util.PackagingTopicSet;
 import com.doccuty.epill.model.util.UserQuerySet;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
+import com.doccuty.epill.userprescription.UserPrescription;
 
 /**
  * 
@@ -68,7 +69,7 @@ public class User extends SimpleUser {
 		setLanguage(null);
 		setGender(null);
 		withoutClicks(this.getClicks().toArray(new ItemInvocation[this.getClicks().size()]));
-		withoutUserDrugPlans(this.getUserDrugPlans().toArray(new UserDrugPlanItem[this.getUserDrugPlans().size()]));
+		withoutUserDrugPlanItems(this.getUserDrugPlanItems().toArray(new UserDrugPlanItem[this.getUserDrugPlanItems().size()]));
 		withoutQuery(this.getQuery().toArray(new UserQuery[this.getQuery().size()]));
 		withoutDisease(this.getDisease().toArray(new Disease[this.getDisease().size()]));
 		firePropertyChange("REMOVE_YOU", this, null);
@@ -544,65 +545,105 @@ public class User extends SimpleUser {
 		return this;
 	}
 
-	/*
-	 * public ItemInvocation createClicks() { ItemInvocation value = new
-	 * ItemInvocation(); withClicks(value); return value; }
-	 */
-
 	/********************************************************************
 	 * <pre>
 	 *              one                       many
-	 * User ----------------------------------- UserDrugPlan
-	 *              user                   clicks
+	 * User ----------------------------------- UserDrugPlanItem
+	 *              user                   userDrugPlanItems
 	 * </pre>
 	 */
 
-	public static final String PROPERTY_USER_DRUG_PLAN = "user_drug_plans";
+	public static final String PROPERTY_USER_DRUG_PLAN_ITEMS = "user_drug_plan_items";
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	private Set<UserDrugPlanItem> userDrugPlans = null;
+	private Set<UserDrugPlanItem> userDrugPlanItems = null;
 
-	public Set<UserDrugPlanItem> getUserDrugPlans() {
-		if (this.userDrugPlans == null) {
+	public Set<UserDrugPlanItem> getUserDrugPlanItems() {
+		if (this.userDrugPlanItems == null) {
 			return new HashSet<>();
 		}
-		return this.userDrugPlans;
+		return this.userDrugPlanItems;
 	}
 
-	public User withUserDrugPlans(UserDrugPlanItem... value) {
+	public User withUserDrugPlanItems(UserDrugPlanItem... value) {
 		if (value == null) {
 			return this;
 		}
 		for (final UserDrugPlanItem item : value) {
 			if (item != null) {
-				if (this.userDrugPlans == null) {
-					this.userDrugPlans = new HashSet<>();
+				if (this.userDrugPlanItems == null) {
+					this.userDrugPlanItems = new HashSet<>();
 				}
-				final boolean changed = this.userDrugPlans.add(item);
+				final boolean changed = this.userDrugPlanItems.add(item);
 				if (changed) {
 					item.withUser(this);
-					firePropertyChange(PROPERTY_USER_DRUG_PLAN, null, item);
+					firePropertyChange(PROPERTY_USER_DRUG_PLAN_ITEMS, null, item);
 				}
 			}
 		}
 		return this;
 	}
 
-	public User withoutUserDrugPlans(UserDrugPlanItem... value) {
+	public User withoutUserDrugPlanItems(UserDrugPlanItem... value) {
 		for (final UserDrugPlanItem item : value) {
-			if ((this.userDrugPlans != null) && (item != null)) {
-				if (this.userDrugPlans.remove(item)) {
+			if ((this.userDrugPlanItems != null) && (item != null)) {
+				if (this.userDrugPlanItems.remove(item)) {
 					item.setUser(null);
-					firePropertyChange(PROPERTY_USER_DRUG_PLAN, item, null);
+					firePropertyChange(PROPERTY_USER_DRUG_PLAN_ITEMS, item, null);
 				}
 			}
 		}
 		return this;
 	}
 
-	/*
-	 * public UserDrugPlan createUserDrugPlan() { UserDrugPlan value = new
-	 * UserDrugPlan(); withUserDrugPlans(value); return value; }
+	/********************************************************************
+	 * <pre>
+	 *              one                       many
+	 * User ----------------------------------- UserPrescription
+	 *              user                   userPrescriptions
+	 * </pre>
 	 */
+
+	public static final String PROPERTY_USER_PRESCRIPTIONS = "user_prescriptions";
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	private Set<UserPrescription> userPrescriptions = null;
+
+	public Set<UserPrescription> getUserPrescriptions() {
+		if (this.userPrescriptions == null) {
+			return new HashSet<>();
+		}
+		return this.userPrescriptions;
+	}
+
+	public User withUserPrescriptions(UserPrescription... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final UserPrescription item : value) {
+			if (item != null) {
+				if (this.userPrescriptions == null) {
+					this.userPrescriptions = new HashSet<>();
+				}
+				final boolean changed = this.userPrescriptions.add(item);
+				if (changed) {
+					item.withUser(this);
+					firePropertyChange(PROPERTY_USER_PRESCRIPTIONS, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public User withoutUserPrescriptions(UserPrescription... value) {
+		for (final UserPrescription item : value) {
+			if ((this.userPrescriptions != null) && (item != null)) {
+				if (this.userPrescriptions.remove(item)) {
+					item.setUser(null);
+					firePropertyChange(PROPERTY_USER_PRESCRIPTIONS, item, null);
+				}
+			}
+		}
+		return this;
+	}
 
 	/********************************************************************
 	 * <pre>
