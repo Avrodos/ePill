@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.doccuty.epill.authentication.ForbiddenException;
-import com.doccuty.epill.drug.DrugService;
-import com.doccuty.epill.drug.DrugTakenRequestParameter;
 import com.doccuty.epill.user.UserService;
 
 /**
@@ -73,7 +71,7 @@ public class UserDrugPlanController {
 		/**
 		 * set drug taken / not taken
 		 * 
-		 * @param date
+		 * @param DrugTakenRequestParameter
 		 * @return
 		 */
 		@RequestMapping(value = "/drug/taken", method = RequestMethod.POST)
@@ -120,6 +118,7 @@ public class UserDrugPlanController {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 
+		//TODO: make simpler
 		private Date parseDateString(String jsonDate) {
 			final JsonParser springParser = JsonParserFactory.getJsonParser();
 			final Map<String, Object> jsonMap = springParser.parseMap(jsonDate);
@@ -133,6 +132,54 @@ public class UserDrugPlanController {
 			} catch (final ParseException e) {
 				return new Date();
 			}
+		}
+		
+		/**
+		 * save user prescription
+		 * 
+		 * @param UserPrescriptionRequestParameter
+		 * @return
+		 */
+		@RequestMapping(value = "/userprescription", method = RequestMethod.POST)
+		public ResponseEntity<Object> saveUserPrescription(@RequestBody UserPrescriptionRequestParameter requestParam) {
+			// A pragmatic approach to security which does not use much
+			// framework-specific magic. While other approaches
+			// with annotations, etc. are possible they are much more complex while
+			// this is quite easy to understand and
+			// extend.
+			LOG.info("save user prescription for drug_id = {}, period in days={}", 
+					requestParam.getDrugId(), requestParam.getPeriodInDays());
+			if (userService.isAnonymous()) {
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+
+			service.saveUserPrescription(requestParam);
+
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		
+		/**
+		 * get user prescription for current user and drug
+		 * 
+		 * @param day
+		 * @return
+		 */
+		@RequestMapping(value = { "/userprescription" }, method = RequestMethod.GET)
+		@ResponseBody
+		public UserPrescriptionRequestParameter getUserPrescription(
+				@RequestParam(value = "drugid") long drugId) {
+
+			// A pragmatic approach to security which does not use much
+			// framework-specific magic. While other approaches
+			// with annotations, etc. are possible they are much more complex while
+			// this is quite easy to understand and
+			// extend.
+			if (userService.isAnonymous()) {
+				throw new ForbiddenException();
+			}
+
+			final UserPrescriptionRequestParameter userPrescriptionParameter = service.getUserPrescription(drugId);
+			return userPrescriptionParameter;
 		}
 
 }

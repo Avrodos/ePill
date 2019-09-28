@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -230,7 +231,10 @@ public class UserPrescription implements SendableEntity {
 
 	public static final String PROPERTY_USER_PRESCRIPTION_ITEMS = "user_prescription_items";
 
+//TODO	@OneToMany(cascade = CascadeType.ALL, mappedBy = "drug")
+
 	@Transient
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "drug")
 	private Set<UserPrescriptionItem> userPrescriptionItems = null;
 
 	public Set<UserPrescriptionItem> getUserPrescriptionItems() {

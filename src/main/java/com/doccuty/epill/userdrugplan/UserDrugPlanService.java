@@ -1,5 +1,8 @@
 package com.doccuty.epill.userdrugplan;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,10 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.doccuty.epill.disease.Disease;
+import com.doccuty.epill.drug.Drug;
 import com.doccuty.epill.drug.DrugService;
 import com.doccuty.epill.tailoredtext.TailoredTextService;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
+import com.doccuty.epill.userprescription.UserPrescription;
+import com.doccuty.epill.userprescription.UserPrescriptionItem;
+import com.doccuty.epill.userprescription.UserPrescriptionRepository;
 
 /**
  * service methods used for user drug plan
@@ -40,6 +47,9 @@ public class UserDrugPlanService {
 		
 		@Autowired
 		UserDrugPlanItemRepository userDrugPlanRepository;
+
+		@Autowired
+		private UserPrescriptionRepository userPrescriptionRepo;
 
 		public List<UserDrugPlanItem> getUserDrugPlansByUserId() {
 
@@ -251,5 +261,72 @@ public class UserDrugPlanService {
 			userDrugPlanRepository.updateDrugTaken(userDrugPlanItemId, isTaken);
 			UserDrugPlanItem item = userDrugPlanRepository.getOne(userDrugPlanItemId);
 			LOG.info("updated drugTaken for userDrugPlanItemId {} to {}", userDrugPlanItemId, item.getDrugTaken());
+		}
+
+		/**
+		 * save user prescription for drug and current user
+		 * @param requestParam
+		 */
+		public void saveUserPrescription(UserPrescriptionRequestParameter requestParam) {
+			LOG.info("save user prescription for drug_id = {}, period in days={}", 
+					requestParam.getDrugId(), requestParam.getPeriodInDays());
+			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
+			Drug drug = drugService.findDrugById(requestParam.getDrugId());
+			
+			//delete current prescription for user and drug
+			userPrescriptionRepo.deleteByUser(currentUser.getId(), drug.getId());
+			
+			UserPrescription up = new UserPrescription();
+			up.setDrug(drug);
+			up.setUser(currentUser);
+			up.setPeriodInDays(requestParam.getPeriodInDays());
+			if (requestParam.getIntakeBreakfastTime()) {
+				up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getBreakfastTime(), up));
+			}
+			if (requestParam.getIntakeLunchTime()) {
+				up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getLunchTime(), up));
+			}
+			if (requestParam.getIntakeDinnerTime()) {
+				up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getDinnerTime(), up));
+			}
+			if (requestParam.getIntakeSleepTime()) {
+				up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getSleepTime(), up));
+			}
+			
+			UserPrescription upSaved = userPrescriptionRepo.save(up);
+			LOG.info("user prescription saved: id = {}, items = {}", upSaved.getId(), upSaved.getUserPrescriptionItems().size() );
+		}
+
+		private UserPrescriptionItem getUserPrescription(final int hourOfDay, UserPrescription up) {
+			UserPrescriptionItem item = new UserPrescriptionItem();
+			item.setIntakeTime(hourOfDay);
+			item.setUserPrescription(up);
+			return item;
+		}
+
+		/**
+		 * get user prescription for current user and drug
+		 * 
+		 * @param drugId
+		 * @return
+		 */
+		public UserPrescriptionRequestParameter getUserPrescription(long drugId) {
+			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
+			List<UserPrescription> prescriptions = userPrescriptionRepo.findPrescriptions(
+					userService.getCurrentUser().getId(), drugId);
+			if (!prescriptions.isEmpty()) {
+				UserPrescriptionRequestParameter param = new UserPrescriptionRequestParameter();
+				UserPrescription firstPrescription = prescriptions.get(0);
+				param.setPeriodInDays(firstPrescription.getPeriodInDays());
+				for (UserPrescriptionItem item : firstPrescription.getUserPrescriptionItems()) {
+					param.setIntakeBreakfastTime(item.getIntakeTime() == currentUser.getBreakfastTime());
+					param.setIntakeLunchTime(item.getIntakeTime() == currentUser.getLunchTime());
+					param.setIntakeDinnerTime(item.getIntakeTime() == currentUser.getDinnerTime());
+					param.setIntakeSleepTime(item.getIntakeTime() == currentUser.getSleepTime());
+				}
+				return param;
+			} else {
+				return null;
+			}
 		}
 }

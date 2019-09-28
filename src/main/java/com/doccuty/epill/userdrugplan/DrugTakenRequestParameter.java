@@ -1,4 +1,4 @@
-package com.doccuty.epill.drug;
+package com.doccuty.epill.userdrugplan;
 
 /**
  * Request parameter for drug taken 

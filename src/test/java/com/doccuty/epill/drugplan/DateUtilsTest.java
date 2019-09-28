@@ -1,4 +1,4 @@
-package com.doccuty.epill.drug;
+package com.doccuty.epill.drugplan;
 
 import static org.junit.Assert.assertNotNull;
 

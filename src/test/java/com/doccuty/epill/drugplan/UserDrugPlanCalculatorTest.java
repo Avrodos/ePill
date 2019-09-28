@@ -1,4 +1,4 @@
-package com.doccuty.epill.drug;
+package com.doccuty.epill.drugplan;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -18,13 +18,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.doccuty.epill.drug.Drug;
+import com.doccuty.epill.drug.DrugService;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
 import com.doccuty.epill.userdrugplan.DateUtils;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import com.doccuty.epill.userdrugplan.UserDrugPlanCalculator;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItemRepository;
-import com.doccuty.epill.userdrugplan.UserDrugPlanService;;
+import com.doccuty.epill.userdrugplan.UserDrugPlanService;
+import com.doccuty.epill.userprescription.UserPrescription;
+import com.doccuty.epill.userprescription.UserPrescriptionRepository;;
 
 // Use Spring's testing support in JUnit
 @RunWith(SpringRunner.class)
@@ -44,7 +48,7 @@ public class UserDrugPlanCalculatorTest {
 
 	@Autowired
 	private UserDrugPlanItemRepository userDrugPlanRepository;
-
+	
 	@Before
 	public void setup() {
 		userService.setCurrentUser(2L, "cs@test.de");
