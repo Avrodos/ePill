@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -231,10 +232,7 @@ public class UserPrescription implements SendableEntity {
 
 	public static final String PROPERTY_USER_PRESCRIPTION_ITEMS = "user_prescription_items";
 
-//TODO	@OneToMany(cascade = CascadeType.ALL, mappedBy = "drug")
-
-	@Transient
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "drug")
+	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "userPrescription")
 	private Set<UserPrescriptionItem> userPrescriptionItems = null;
 
 	public Set<UserPrescriptionItem> getUserPrescriptionItems() {

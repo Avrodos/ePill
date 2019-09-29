@@ -65,8 +65,13 @@ public class UserPrescriptionRepositoryTest {
 		List<UserPrescription> prescriptions = userPrescriptionRepo.findPrescriptions(
 				userService.getCurrentUser().getId(), firstDrug.getId());
 		assertTrue(!prescriptions.isEmpty());
-		
-		userPrescriptionRepo.deleteByUser(currentUser.getId(), firstDrug.getId());
+		for (UserPrescription prescription : prescriptions) {
+			userPrescriptionRepo.deleteUserPrescriptionItems(prescription.getId());
+		}
+		for (UserPrescription prescription : prescriptions) {
+			userPrescriptionRepo.deletePrescription(prescription.getId());
+		}
+		userPrescriptionRepo.flush();
 		
 		UserPrescription up = new UserPrescription();
 		up.setDrug(firstDrug);

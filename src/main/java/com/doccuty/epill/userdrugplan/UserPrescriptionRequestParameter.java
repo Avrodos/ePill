@@ -5,6 +5,7 @@ package com.doccuty.epill.userdrugplan;
 * 
 * i.e.
 * {"UserPrescriptionRequestParameter": {
+*          "drugId": 2,
 		   "periodInDays":1,"intakeBreakfastTime":true, 
 		   "intakeSleepTime":false, 
 		   "intakeLunchTime":false, 

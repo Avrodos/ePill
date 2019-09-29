@@ -662,9 +662,11 @@ INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(2, 2, 
 
 -- user prescription item
 INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 7, 1);
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 18, 1); 
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 12, 2);
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(4, 22, 2); 
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 12, 1); 
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 18, 1);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(4, 22, 1);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(5, 12, 2);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(6, 22, 2); 
 
 --
 -- Dumping data for table `user_drug_taking`

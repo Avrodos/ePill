@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import com.doccuty.epill.drug.Drug;
 import com.doccuty.epill.model.Interaction;
 import com.doccuty.epill.user.User;
+import com.doccuty.epill.userprescription.UserPrescription;
+import com.doccuty.epill.userprescription.UserPrescriptionItem;
 
 public class UserDrugPlanCalculator {
         private static final Logger LOG = LoggerFactory.getLogger(UserDrugPlanCalculator.class);
@@ -123,7 +125,7 @@ public class UserDrugPlanCalculator {
                 return calendar.getTime();
         }
 
-        private List<UserDrugPlanItem> createDefaultUserDrugPlanItems(Drug drug, User user, Date day) {
+        private List<UserDrugPlanItem> createDefaultUserDrugPlanItemsOld(Drug drug, User user, Date day) {
                 final List<UserDrugPlanItem> userDrugPlanForDay = new ArrayList<>();
                 LOG.info("create default plan for day={} user={} drug={}", day, user.getUsername(), drug.getName());
                 if (drug.getCountPerDay() == 1) {
@@ -142,6 +144,19 @@ public class UserDrugPlanCalculator {
                                 drug.getName());
                 return userDrugPlanForDay;
         }
+        
+        private List<UserDrugPlanItem> createDefaultUserDrugPlanItems(Drug drug, User user, Date day) {
+            final List<UserDrugPlanItem> userDrugPlanForDay = new ArrayList<>();
+            LOG.info("create default plan for day={} user={} drug={}", day, user.getUsername(), drug.getName());
+            for (UserPrescription userPrescription : drug.getUserPrescriptions()) {
+            	for (UserPrescriptionItem item : userPrescription.getUserPrescriptionItems()) {
+            		userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, item.getIntakeTime()));
+            	}
+            }
+            LOG.info("created {} items day={} user={} drug={}", userDrugPlanForDay.size(), day, user.getUsername(),
+                            drug.getName());
+            return userDrugPlanForDay;
+    }
 
         private UserDrugPlanItem createDefaultUserDrugPlanItem(Drug drug, User user, Date day, int hourOfDay) {
                 final UserDrugPlanItem item = new UserDrugPlanItem();

@@ -72,7 +72,7 @@ public class UserDrugPlanService {
 			final List<UserDrugPlanItemViewModel> userDrugPlanView = new ArrayList<>();
 			final List<UserDrugPlanItem> userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
 			Date lastDateTime = (Date) dateFrom.clone();
-			for (int hour = currentUser.getBreakfastTime(); hour <= currentUser.getDinnerTime() + 2; hour++) {
+			for (int hour = currentUser.getBreakfastTime(); hour <= currentUser.getSleepTime() + 1; hour++) {
 				final int hourToCompare = hour;
 				final List<UserDrugPlanItem> plannedItemsForHour = userDrugItemsPlanned.stream().parallel()
 						.filter(p -> DateUtils.getHours(p.getDatetimeIntakePlanned()) == hourToCompare)
@@ -272,29 +272,49 @@ public class UserDrugPlanService {
 					requestParam.getDrugId(), requestParam.getPeriodInDays());
 			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
 			Drug drug = drugService.findDrugById(requestParam.getDrugId());
+			if (drug != null) {
+				List<UserPrescription> prescriptions = userPrescriptionRepo.findPrescriptions(
+						userService.getCurrentUser().getId(), requestParam.getDrugId());
+				deletePrescriptions(prescriptions);
+				
+				prescriptions = userPrescriptionRepo.findPrescriptions(
+						userService.getCurrentUser().getId(), requestParam.getDrugId());
+				if (prescriptions.isEmpty()) {
+					UserPrescription up = new UserPrescription();
+					up.setDrug(drug);
+					up.setUser(currentUser);
+					up.setPeriodInDays(requestParam.getPeriodInDays());
+					if (requestParam.getIntakeBreakfastTime()) {
+						up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getBreakfastTime(), up));
+					}
+					if (requestParam.getIntakeLunchTime()) {
+						up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getLunchTime(), up));
+					}
+					if (requestParam.getIntakeDinnerTime()) {
+						up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getDinnerTime(), up));
+					}
+					if (requestParam.getIntakeSleepTime()) {
+						up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getSleepTime(), up));
+					}
+					UserPrescription upSaved = userPrescriptionRepo.save(up);
+					LOG.info("user prescription saved: id = {}, items = {}", upSaved.getId(), upSaved.getUserPrescriptionItems().size() );
+				} else {
+					LOG.error("prescription not deleted");
+				}
+			} else {
+				LOG.error("drug not found");
+			}
 			
-			//delete current prescription for user and drug
-			userPrescriptionRepo.deleteByUser(currentUser.getId(), drug.getId());
-			
-			UserPrescription up = new UserPrescription();
-			up.setDrug(drug);
-			up.setUser(currentUser);
-			up.setPeriodInDays(requestParam.getPeriodInDays());
-			if (requestParam.getIntakeBreakfastTime()) {
-				up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getBreakfastTime(), up));
+		}
+
+		private void deletePrescriptions(List<UserPrescription> prescriptions) {
+			for (UserPrescription prescription : prescriptions) {
+				userPrescriptionRepo.deleteUserPrescriptionItems(prescription.getId());
 			}
-			if (requestParam.getIntakeLunchTime()) {
-				up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getLunchTime(), up));
+			for (UserPrescription prescription : prescriptions) {
+				userPrescriptionRepo.deletePrescription(prescription.getId());
 			}
-			if (requestParam.getIntakeDinnerTime()) {
-				up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getDinnerTime(), up));
-			}
-			if (requestParam.getIntakeSleepTime()) {
-				up.getUserPrescriptionItems().add(getUserPrescription(currentUser.getSleepTime(), up));
-			}
-			
-			UserPrescription upSaved = userPrescriptionRepo.save(up);
-			LOG.info("user prescription saved: id = {}, items = {}", upSaved.getId(), upSaved.getUserPrescriptionItems().size() );
+			userPrescriptionRepo.flush();
 		}
 
 		private UserPrescriptionItem getUserPrescription(final int hourOfDay, UserPrescription up) {
@@ -319,10 +339,15 @@ public class UserDrugPlanService {
 				UserPrescription firstPrescription = prescriptions.get(0);
 				param.setPeriodInDays(firstPrescription.getPeriodInDays());
 				for (UserPrescriptionItem item : firstPrescription.getUserPrescriptionItems()) {
-					param.setIntakeBreakfastTime(item.getIntakeTime() == currentUser.getBreakfastTime());
-					param.setIntakeLunchTime(item.getIntakeTime() == currentUser.getLunchTime());
-					param.setIntakeDinnerTime(item.getIntakeTime() == currentUser.getDinnerTime());
-					param.setIntakeSleepTime(item.getIntakeTime() == currentUser.getSleepTime());
+					if (item.getIntakeTime() == currentUser.getBreakfastTime()) {
+						param.setIntakeBreakfastTime(true);
+					} else if (item.getIntakeTime() == currentUser.getLunchTime()) {
+						param.setIntakeLunchTime(true);
+					} else if (item.getIntakeTime() == currentUser.getDinnerTime()) {
+						param.setIntakeDinnerTime(true);
+					} else if (item.getIntakeTime() == currentUser.getSleepTime()) {
+						param.setIntakeSleepTime(true);
+					}
 				}
 				return param;
 			} else {

@@ -681,6 +681,8 @@ public class Drug extends SimpleDrug {
 
 	public static final String PROPERTY_USER_DRUG_PLAN_ITEMS = "user_drug_plan_items";
 
+	//@OneToMany(cascade = CascadeType.ALL, mappedBy = "drug")
+
 	@Transient
 	private Set<UserDrugPlanItem> userDrugPlanItems = null;
 
@@ -734,7 +736,9 @@ public class Drug extends SimpleDrug {
 
 	public static final String PROPERTY_USER_PRESCRIPTIONS = "user_prescriptions";
 
-	@Transient
+	//@Transient
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "drug")	
 	private Set<UserPrescription> userPrescriptions = null;
 
 	public Set<UserPrescription> getUserPrescriptions() {

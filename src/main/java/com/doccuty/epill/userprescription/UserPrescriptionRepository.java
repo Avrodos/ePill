@@ -29,15 +29,23 @@ public interface UserPrescriptionRepository extends JpaRepository<UserPrescripti
 	//public List<UserPrescription> findByUser(User user, Drug drug);
 	
 	/**
-	 * delete prescription by user and drug 
-	 * @param user
-	 * @param drug
+	 * delete prescription items by userprescriptionid
+	 * @param userPrescriptionId
 	 * @return
 	 */
 	@Transactional
 	@Modifying
-	@Query("DELETE FROM UserPrescription p WHERE p.user.id = :userid AND p.drug.id = :drugid")
-	public void deleteByUser(@Param("userid") long userId, @Param("drugid") long drugId);
+	@Query("DELETE FROM UserPrescriptionItem i WHERE i.userPrescription.id = :userprescriptionid")
+	public void deleteUserPrescriptionItems(@Param("userprescriptionid") long userPrescriptionId);
 	
+	/**
+	 * delete prescription items by userprescriptionid
+	 * @param userPrescriptionId
+	 * @return
+	 */
+	@Transactional
+	@Modifying
+	@Query("DELETE FROM UserPrescription p WHERE p.id = :userprescriptionid")
+	public void deletePrescription(@Param("userprescriptionid") long userPrescriptionId);
 }
 

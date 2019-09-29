@@ -26,6 +26,7 @@ import com.doccuty.epill.userdrugplan.DateUtils;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import com.doccuty.epill.userdrugplan.UserDrugPlanCalculator;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItemRepository;
+import com.doccuty.epill.userdrugplan.UserDrugPlanItemViewModel;
 import com.doccuty.epill.userdrugplan.UserDrugPlanService;
 import com.doccuty.epill.userprescription.UserPrescription;
 import com.doccuty.epill.userprescription.UserPrescriptionRepository;;
@@ -80,8 +81,8 @@ public class UserDrugPlanCalculatorTest {
 	public void testCalculatePlan() {
 		LOG.info("testing calculating plan");
 
-		//test for 12.09.2019: 9 == 8!?
-		final Date testDay = new GregorianCalendar(2019, 8, 12).getTime();
+		//test for 29.09.2019: 9 == 8!?
+		final Date testDay = new GregorianCalendar(2019, 8, 29).getTime();
 		final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
 		final UserDrugPlanCalculator calculator = new UserDrugPlanCalculator(currentUser,
 				drugService.findUserDrugsTaking(currentUser));
@@ -89,6 +90,13 @@ public class UserDrugPlanCalculatorTest {
 		assertTrue(planForDay.size() > 0);
 		userDrugPlanRepository.deleteByUserBetweenDates(currentUser.getId(), DateUtils.asDateStartOfDay(testDay),
 				DateUtils.asDateEndOfDay(testDay));
-		userDrugPlanRepository.save(planForDay);
+		List<UserDrugPlanItem> savedItems = userDrugPlanRepository.save(planForDay);
+		assertTrue(savedItems.size() > 0);
+		
+		//check if saved correctly
+		final List<UserDrugPlanItemViewModel> userDrugPlanList = userDrugPlanService.getCompleteUserDrugPlansByUserIdAndDate(
+				DateUtils.asDateStartOfDay(testDay), DateUtils.asDateEndOfDay(testDay));
+		assertTrue(userDrugPlanList.size() > 0);
+		
 	}
 }

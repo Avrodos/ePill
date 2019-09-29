@@ -92,6 +92,7 @@ class DrugIntakePlan extends React.Component {
     }
 
     renderDrugsPlanned(drugsplanned) {
+    	const { t } = this.props;
         return drugsplanned.map(drugplanned => {
 
                 const plannedRow = [
@@ -119,10 +120,9 @@ class DrugIntakePlan extends React.Component {
                             <td></td>
                             <td></td>
                             <td>
-                            <p>{"used when: "+drugplanned.drugDiseases}</p>     
-                              <p className="information"><span class="glyphicon glyphicon-info-sign"></span> {drugplanned.takeOnEmptyStomach ? "take on an empty stomach" : ""}</p>
-                              <p className="information"><span class="glyphicon glyphicon-info-sign"></span> {drugplanned.takeOnFullStomach ? "take on a full stomach" : ""}</p>
-                              {drugplanned.personalizedInformation && <section className="minimum-summary" dangerouslySetInnerHTML={this.createMarkup(drugplanned.personalizedInformation)} />}
+                            <p>{(t("usedWhen"))+": "+drugplanned.drugDiseases}</p> 
+                            	{this.renderDrugIntakeIndications(drugplanned)}
+                                {drugplanned.personalizedInformation && <section className="minimum-summary" dangerouslySetInnerHTML={this.createMarkup(drugplanned.personalizedInformation)} />}
                             </td>
                             <td></td>
                         </tr>
@@ -132,7 +132,26 @@ class DrugIntakePlan extends React.Component {
                 return plannedRow;
         });
     }
-
+    
+    renderDrugIntakeIndications(drugplanned) {
+    	const { t } = this.props;
+    	if (drugplanned.takeOnEmptyStomach) {
+    		 return (
+    				 <p className="information"><span class="glyphicon glyphicon-info-sign"></span> {t("takeOnAnEmptyStomach")}</p> 
+    		 ) 
+    	}
+    	if (drugplanned.takeOnFullStomach) {
+    		return (
+    				<p className="information"><span class="glyphicon glyphicon-info-sign"></span> {t("takeOnAFullStomach")}</p>
+    		)
+    	}
+    	if (drugplanned.takeToMeals) {
+    		return (
+    				<p className="information"><span class="glyphicon glyphicon-info-sign"></span> {t("takeToMeals")}</p>
+    		)
+    	}
+    }
+    
     renderProgressBar(drugplanned) {
         var drugplanned_percentage = drugplanned.percentage;
                 return (
