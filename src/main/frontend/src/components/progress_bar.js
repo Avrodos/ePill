@@ -21,11 +21,26 @@ class ProgressBar extends React.Component {
 
     render() {
     	var progress_percentage = "" + this.props.percentage + "%"
-        return (
-        	<div className="progress">
-        		<div className="progress-bar" style={{ width: progress_percentage }}>{this.props.percentage}%</div>
-    		</div>    	
-        );
+    	if (this.props.percentage == 100) {
+    		return (
+    			<div className="progress">
+            		<div className="progress-bar-dark" style={{ width: progress_percentage }}>{this.props.percentage}%</div>
+        		</div> 
+    		)
+    	} else if ((this.props.percentage < 100) && (this.props.percentage > 50)) {
+    		return (
+        			<div className="progress">
+                		<div className="progress-bar-lighter" style={{ width: progress_percentage }}>{this.props.percentage}%</div>
+            		</div> 
+        	)
+    	} else if (this.props.percentage <= 50) {
+    		return (
+        			<div className="progress">
+                		<div className="progress-bar-very-light" style={{ width: progress_percentage }}>{this.props.percentage}%</div>
+            		</div> 
+        	)
+    	}
+        
     }
 }
 

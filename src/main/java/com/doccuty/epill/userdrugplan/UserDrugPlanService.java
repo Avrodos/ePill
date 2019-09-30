@@ -68,9 +68,15 @@ public class UserDrugPlanService {
 		 */
 		public List<UserDrugPlanItemViewModel> getCompleteUserDrugPlansByUserIdAndDate(Date dateFrom, Date dateTo) {
 			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
-
+			
 			final List<UserDrugPlanItemViewModel> userDrugPlanView = new ArrayList<>();
-			final List<UserDrugPlanItem> userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
+            List<UserDrugPlanItem> userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
+           if (userDrugItemsPlanned.isEmpty() && dateFrom.after(new Date())) {
+                   //if plan is empty recalculate it - only for future, don't overwrite history
+                   this.recalculateAndSaveUserDrugPlanForDay(dateFrom);
+                   userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
+           }
+
 			Date lastDateTime = (Date) dateFrom.clone();
 			for (int hour = currentUser.getBreakfastTime(); hour <= currentUser.getSleepTime() + 1; hour++) {
 				final int hourToCompare = hour;
@@ -81,6 +87,8 @@ public class UserDrugPlanService {
 					// Collect all items in one String, take the longest halftime period
 					lastDateTime = (Date) plannedItemsForHour.get(0).getDatetimeIntakePlanned().clone();
 					String drugNames = plannedItemsForHour.get(0).getDrug().getName();
+					//List <Drug> drugsSameTime = new ArrayList<>();
+					//drugsSameTime.add(plannedItemsForHour.get(0).getDrug());
 					String personalizedInformation = this.tailoringService.getTailoredMinimumSummaryByDrugAndUser(plannedItemsForHour.get(0).getDrug(), currentUser).getText();
 					List <Disease> gettingDiseases = plannedItemsForHour.get(0).getDrug().getDisease();
 					String drugDiseases = "";
@@ -91,6 +99,7 @@ public class UserDrugPlanService {
 					if (plannedItemsForHour.size() > 1) {
 						for (int i = 1; i < plannedItemsForHour.size(); i++) {
 							drugNames = String.format("%s, %s", drugNames, plannedItemsForHour.get(i).getDrug().getName());
+							//drugsSameTime.add(plannedItemsForHour.get(i).getDrug());
 							personalizedInformation = String.format("%s, %s", personalizedInformation, this.tailoringService.getTailoredMinimumSummaryByDrugAndUser(plannedItemsForHour.get(i).getDrug(), currentUser).getText());
 							List <Disease> diseasesDrugi = plannedItemsForHour.get(i).getDrug().getDisease();
 							String drugjDiseases = "";
@@ -156,6 +165,9 @@ public class UserDrugPlanService {
 				model.setHalfTimePeriod(halfTimePeriodMax);
 				model.setPersonalizedInformation(personalizedDrugInformation);
 				model.setDrugDiseases(drugDiseases);
+				//for (int i = 0; i<drugsSameTime.size(); i++) {
+				//	model.getDrugsSameTimeList().add(drugsSameTime.get(i));
+				//}
 			}
 			return model;
 		}

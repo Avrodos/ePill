@@ -357,7 +357,7 @@ class DrugList extends React.Component {
                         );
                 } else {
                         return (
-                                <Popup trigger={<button type="button" className="btn btn-xs btn-like">
+                                <Popup className="popup-druglist" trigger={<button type="button" className="btn btn-xs btn-like">
                                         <span className="glyphicon white glyphicon-heart"></span></button>}>
                                         <DrugIntakePopup drugId={drug.id} drugName={drug.name} updateNavigation={this.props.updateNavigation}/>
                                 </Popup>

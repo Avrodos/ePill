@@ -114,5 +114,9 @@
 	"cancel": "cancel",
 	"takeOnAnEmptyStomach": "take on an empty stomach",
 	"takeOnAFullStomach": "take on a full stomach",
-	"takeToMeals": "take to meals"
+	"takeToMeals": "take to meals",
+	"halfTimePeriod": "Drug dismantling in blood",
+	"time": "Time",
+	"name": "Name",
+	"forMoreInformation": "to the information leaflet"
 }

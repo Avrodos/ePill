@@ -1,5 +1,9 @@
 package com.doccuty.epill.userdrugplan;
 
+import java.util.List;
+import java.util.ArrayList;
+import com.doccuty.epill.drug.Drug;
+
 /**
  * view model for medication list:
  */
@@ -21,6 +25,7 @@ public class UserDrugPlanItemViewModel {
 	private int percentage;
 	private String personalizedInformation;
 	private String drugDiseases;
+	//private List<Drug> drugsSameTimeList = new ArrayList<>();
 
 	public boolean isIntermediateStep() {
 		return intermediateStep;
@@ -149,5 +154,9 @@ public class UserDrugPlanItemViewModel {
 	public void setDrugDiseases(String drugDiseases) {
 		this.drugDiseases = drugDiseases;
 	}
+	
+	//public List<Drug> getDrugsSameTimeList() {
+	  //  return drugsSameTimeList;
+	  //}
 	
 }

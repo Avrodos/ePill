@@ -114,5 +114,9 @@
 	"cancel": "abbrechen",
 	"takeOnAnEmptyStomach": "Einnahme auf leeren Magen",
 	"takeOnAFullStomach": "Einnahme auf vollen Magen",
-	"takeToMeals": "Zu Mahlzeiten einnehmen"
+	"takeToMeals": "Zu Mahlzeiten einnehmen",
+	"halfTimePeriod": "Medikamentenabnahme im Blut",
+	"time": "Zeit",
+	"name": "Name",
+	"forMoreInformation": "Zum Beipackzettel"
 }

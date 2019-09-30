@@ -104,7 +104,7 @@ class DrugIntakePlan extends React.Component {
                             {this.renderCheckBox(drugplanned)}
                         </td>
                         <td className="td-style">{drugplanned.timeString}</td>
-                        <td className="td-style">
+                        <td className="td-style drug-names">
                                 <b>{this.renderDrugName(drugplanned)}</b>
                         </td>
                         <td className="td-style">
@@ -122,7 +122,12 @@ class DrugIntakePlan extends React.Component {
                             <td>
                             <p>{(t("usedWhen"))+": "+drugplanned.drugDiseases}</p> 
                             	{this.renderDrugIntakeIndications(drugplanned)}
-                                {drugplanned.personalizedInformation && <section className="minimum-summary" dangerouslySetInnerHTML={this.createMarkup(drugplanned.personalizedInformation)} />}
+                                {drugplanned.personalizedInformation && <section className="minimum-summary" dangerouslySetInnerHTML={this.createMarkup(drugplanned.personalizedInformation)}/>}
+                                <div>
+                                <Link to={`/drug/${drugplanned.id}`}>
+                                	<h4>{t("forMoreInformation")}</h4>
+                                </Link>	
+                                </div>
                             </td>
                             <td></td>
                         </tr>
@@ -132,6 +137,7 @@ class DrugIntakePlan extends React.Component {
                 return plannedRow;
         });
     }
+    
     
     renderDrugIntakeIndications(drugplanned) {
     	const { t } = this.props;
@@ -160,6 +166,8 @@ class DrugIntakePlan extends React.Component {
     }
 
     renderDrugName(drugplanned) {
+    	
+    	//drugplanned.drugsSameTimeList.map(drug => {return drug.name+" "});
         if (drugplanned.drugNamesSameTime !== undefined) {
                 return drugplanned.drugNamesSameTime;
         } else if (drugplanned.drugName !== undefined) {
@@ -174,8 +182,8 @@ class DrugIntakePlan extends React.Component {
 
         if (drugplanned.drugNamesSameTime !== null) {
                 return (
-                                <button type="button" className="btn btn-sm btn add" onClick={clickCallback}>
-                    <span className={"glyphicon "+ ( this.state.expandedRows.includes(drugplanned) ? 'glyphicon-minus' : 'glyphicon-plus')}></span>
+                                <button type="button" className="btn btn-sm btn-like" onClick={clickCallback}>
+                    <span className={"glyphicon white "+ ( this.state.expandedRows.includes(drugplanned) ? 'glyphicon-minus' : 'glyphicon-plus')}></span>
                     </button>
                 );
         }
@@ -269,13 +277,6 @@ class DrugIntakePlan extends React.Component {
                         </div>
                 </div>
                 <div>
-                    {drugsplanned.length > 1 && User.isAuthenticated() && (
-                        <div>
-                            <p>you have {drugsplanned.length} planned drugs</p>
-                        </div>
-                    )}
-
-                    <div>
                         {this.state.loading && <Loading />}
                         {!this.state.loading && drugsplanned && drugsplanned.length == 0 && (
                             <EmptyList />
@@ -284,10 +285,10 @@ class DrugIntakePlan extends React.Component {
                                 <table id="drugsplanned" className="table-style">
                                         <thead>
                                                 <tr>
-                                                        <th className="th-style">half-time-period</th>
+                                                        <th className="th-style">{t("halfTimePeriod")}</th>
                                                 <th className="th-style"></th>
-                                                <th className="th-style">time</th>
-                                                <th className="th-style">name</th>
+                                                <th className="th-style">{t("time")}</th>
+                                                <th className="th-style">{t("name")}</th>
                                                 <th className="th-style"></th>
                                         </tr>
                                 </thead>
@@ -296,9 +297,7 @@ class DrugIntakePlan extends React.Component {
                                 </tbody>
                             </table>
                         )}
-                    </div>
-                </div>
-
+                 </div>
             </div>
         );
     }

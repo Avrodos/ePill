@@ -215,7 +215,7 @@ class DrugIntakePopup extends React.Component {
         const {t} = this.props;
 
         return (
-            <div>
+            <div className="popup-content">
                 <div>
                     {/* Popup content */}
                     <h3 className="centered-title">{this.props.drugName}</h3>
@@ -236,7 +236,7 @@ class DrugIntakePopup extends React.Component {
                                         </select>
                                     </div>
                             </fieldset>
-                        <p><b>{t("intakeTimes")}</b></p>               
+                        <label>{t("intakeTimes")}</label>               
                                 <fieldset>
                                     <div className="col-md-8">
                                 <label htmlFor="intake-breakfast" className="intake-times">

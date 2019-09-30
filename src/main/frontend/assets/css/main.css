@@ -788,8 +788,25 @@ a.wide { display : block }
 
 .progress-bar {
   display: block;
-  float: right;
-  background-color: #0ca49a; 
+  float: right; 
+}
+
+.progress-bar-dark{
+	display: block;
+  	float: right; 
+	background-color: #696969;
+}
+
+.progress-bar-lighter {
+	display: block;
+  	float: right; 
+	background-color: #C0C0C0;
+}
+
+.progress-bar-very-light {
+	display: block;
+  	float: right; 
+	background-color: #f2f2f2;
 }
 
 .checkbox-position{
@@ -873,4 +890,19 @@ a.wide { display : block }
 .btn-taking-padding {
 	height: 100%;
 	width: 100%;
+}
+
+.popup-druglist {
+	display: flex !important;
+	justify-content: center !important;
+	align-item: center !important;
+	
+}
+
+.popup-content {
+
+}
+
+.drug-names {
+	color: #0ca49a;
 }
