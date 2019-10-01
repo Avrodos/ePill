@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.doccuty.epill.user.UserService;
+import com.doccuty.epill.userdrugplan.DrugViewModel;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItemViewModel;
 import com.doccuty.epill.userdrugplan.UserDrugPlanService;;
@@ -75,16 +76,18 @@ public class UserDrugPlanTest {
 	@Transactional
 	public void testGetCompleteUserDrugPlansByDate() {
 		LOG.info("testing UserDrugPlan data access by date");
-		final Date dateFrom = new GregorianCalendar(2019, 9 - 1, 12).getTime();
-		final Date dateTo = new GregorianCalendar(2019, 9 - 1, 13).getTime();
+		final Date dateFrom = new GregorianCalendar(2019, 9 - 1, 25).getTime();
+		final Date dateTo = new GregorianCalendar(2019, 9 - 1, 26).getTime();
 		final List<UserDrugPlanItemViewModel> userDrugPlanList = drugService
 				.getCompleteUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
 		assertNotNull(userDrugPlanList);
 
 		for (final UserDrugPlanItemViewModel viewModel : userDrugPlanList) {
 			System.out.println("date: " + viewModel.getDateString() + "HT: " + viewModel.getPercentage() + "% | time ="
-					+ viewModel.getTimeString() + " | name = " + viewModel.getDrugName() + ", drugsSameTime="
-					+ viewModel.getDrugNamesSameTime());
+					+ viewModel.getTimeString() );
+			for (DrugViewModel drug : viewModel.getDrugsPlannedSameTime()) {
+				System.out.println("drug " + drug.getName());
+			}
 		}
 	}
 }

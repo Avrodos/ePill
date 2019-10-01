@@ -242,14 +242,14 @@ class DrugIntakePopup extends React.Component {
                                 <label htmlFor="intake-breakfast" className="intake-times">
                                     {t("breakfastTime")}
                                     <input type="checkbox" id="intake-breakfast"
-                                           name="intakeTimes" checked={this.state.intakeBreakfastTime}
+                                           className="intakeTimes" checked={this.state.intakeBreakfastTime}
                                            onChange={this.handleIntakeBreakfastChange}/>
                                            <span className="checkmark"></span>
                                 </label>
                                 <label htmlFor="intake-lunch" className="intake-times">
                                     {t("lunchTime")}
                                     <input type="checkbox" id="intake-lunch"
-                                           name="intakeTimes" checked={this.state.intakeLunchTime}
+                                    	className="intakeTimes" checked={this.state.intakeLunchTime}
                                            onChange={this.handleIntakeLunchChange}/>
                                            <span className="checkmark"></span>
                                 </label>
@@ -258,14 +258,14 @@ class DrugIntakePopup extends React.Component {
                                             <label htmlFor="intake-dinner" className="intake-times">
                                                 {t("dinnerTime")}
                                                 <input type="checkbox" value="3" id="intake-dinner"
-                                                       name="intakeTimes" checked={this.state.intakeDinnerTime}
+                                                	className="intakeTimes" checked={this.state.intakeDinnerTime}
                                                        onChange={this.handleIntakeDinnerChange}/>
                                                        <span className="checkmark"></span>
                                             </label>
                                             <label htmlFor="intake-sleep" className="intake-times">
                                                 {t("beforeSleep")}
                                                 <input type="checkbox" value="4" id="intake-sleep"
-                                                       name="intakeTimes" checked={this.state.intakeSleepTime}
+                                                	className="intakeTimes" checked={this.state.intakeSleepTime}
                                                        onChange={this.handleIntakeSleepChange}/>
                                                        <span className="checkmark"></span>
                                             </label>

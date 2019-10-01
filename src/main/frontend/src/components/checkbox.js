@@ -26,9 +26,12 @@ class CheckBox extends React.Component{
           }
 
           render(){
-            return <div>
-               <input type="checkbox" onChange={this.onChangeChecked.bind(this)} checked={this.state.isChecked} className="checkbox-position"  />
-            </div>
+            return (
+	            <div className="drug-taken-checkbox">
+	               <input type="checkbox" onChange={this.onChangeChecked.bind(this)} checked={this.state.isChecked}/>
+	            	   <span className="check"></span>
+	            </div>
+            );
           }
 }
 

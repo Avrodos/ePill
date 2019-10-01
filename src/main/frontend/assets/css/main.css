@@ -763,16 +763,27 @@ a.wide { display : block }
   background-color:#ddd;
 }
 
+.table-line-hover:hover .tab {
+  background-color:#ddd;
+  border: 1px solid #ddd;
+}
+
 .td-style {
   padding: 8px;
   text-align: left;
   line-height: 53px;
+  table-layout: fixed;
 }
 
 .th-style {
   padding: 8px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+}
+
+.th-name {
+  width: 50%;
+  overflow: hidden;
 }
 
 .table-style {
@@ -809,9 +820,67 @@ a.wide { display : block }
 	background-color: #f2f2f2;
 }
 
-.checkbox-position{
+.drug-taken-checkbox {
+  display: block;
+  position: relative;  
+  padding-left: 35px;
+  margin-bottom: 10px;
   float: right;
+  cursor: pointer;
+  font-weight: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
+
+.drug-taken-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.check {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+.drug-taken-checkbox:hover input ~ .check {
+  background-color: #0ca49a;
+}
+
+.drug-taken-checkbox input:checked ~ .check {
+	background-color: #0ca49a; 
+}
+
+.check:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.drug-taken-checkbox input:checked ~ .check:after {
+  display: block;
+}
+
+.drug-taken-checkbox .check:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
 
 .information {
   margin: 0 !important;
@@ -906,3 +975,35 @@ a.wide { display : block }
 .drug-names {
 	color: #0ca49a;
 }
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ffffff;
+  background-color: #ffffff;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #C0C0C0;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+
+

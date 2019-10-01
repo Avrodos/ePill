@@ -1,8 +1,6 @@
 package com.doccuty.epill.userdrugplan;
 
 import java.util.List;
-import java.util.ArrayList;
-import com.doccuty.epill.drug.Drug;
 
 /**
  * view model for medication list:
@@ -10,22 +8,12 @@ import com.doccuty.epill.drug.Drug;
 public class UserDrugPlanItemViewModel {
 
 	private long userDrugPlanItemId; 
-	private boolean drugTaken;	
 	private boolean intermediateStep;
 	private String dateString;
 	private String timeString;
-	private String drugName;
-	private String drugNamesSameTime;
-	private String hints;
-	private boolean hasInteractions;
-	private boolean takeOnEmptyStomach;
-	private boolean takeOnFullStomach;
-	private boolean takeToMeals;
 	private int halfTimePeriod;
 	private int percentage;
-	private String personalizedInformation;
-	private String drugDiseases;
-	//private List<Drug> drugsSameTimeList = new ArrayList<>();
+	private List<DrugViewModel> drugsPlannedSameTime;
 
 	public boolean isIntermediateStep() {
 		return intermediateStep;
@@ -51,64 +39,12 @@ public class UserDrugPlanItemViewModel {
 		this.timeString = timeString;
 	}
 
-	public boolean isDrugTaken() {
-		return drugTaken;
-	}
-
-	public void setDrugTaken(boolean drugTaken) {
-		this.drugTaken = drugTaken;
-	}
-
 	public String getDateString() {
 		return dateString;
 	}
 
 	public void setDateString(String dateString) {
 		this.dateString = dateString;
-	}
-
-	public String getDrugName() {
-		return drugName;
-	}
-
-	public void setDrugName(String drugName) {
-		this.drugName = drugName;
-	}
-
-	public String getDrugNamesSameTime() {
-		return drugNamesSameTime;
-	}
-
-	public void setDrugNamesSameTime(String drugNamesSameTime) {
-		this.drugNamesSameTime = drugNamesSameTime;
-	}
-
-	public String getHints() {
-		return hints;
-	}
-
-	public void setHints(String hints) {
-		this.hints = hints;
-	}
-
-	public boolean isHasInteractions() {
-		return hasInteractions;
-	}
-
-	public void setHasInteractions(boolean hasInteractions) {
-		this.hasInteractions = hasInteractions;
-	}
-
-	public boolean isTakeOnEmptyStomach() {
-		return takeOnEmptyStomach;
-	}
-
-	public void setTakeOnEmptyStomach(boolean takeOnEmptyStomach) {
-		this.takeOnEmptyStomach = takeOnEmptyStomach;
-	}
-
-	public boolean isTakeOnFullStomach() {
-		return takeOnFullStomach;
 	}
 
 	public long getUserDrugPlanItemId() {
@@ -119,10 +55,6 @@ public class UserDrugPlanItemViewModel {
 		this.userDrugPlanItemId = userDrugPlanItemId;
 	}
 
-	public void setTakeOnFullStomach(boolean takeOnFullStomach) {
-		this.takeOnFullStomach = takeOnFullStomach;
-	}
-
 	public int getHalfTimePeriod() {
 		return halfTimePeriod;
 	}
@@ -131,32 +63,11 @@ public class UserDrugPlanItemViewModel {
 		this.halfTimePeriod = halfTimePeriod;
 	}
 
-	public String getPersonalizedInformation() {
-		return personalizedInformation;
+	public List<DrugViewModel> getDrugsPlannedSameTime() {
+		return drugsPlannedSameTime;
 	}
 
-	public void setPersonalizedInformation(String personalizedInformation) {
-		this.personalizedInformation = personalizedInformation;
+	public void setDrugsPlannedSameTime(List<DrugViewModel> drugsSameTime) {
+		this.drugsPlannedSameTime = drugsSameTime;
 	}
-
-	public boolean isTakeToMeals() {
-		return takeToMeals;
-	}
-
-	public void setTakeToMeals(boolean takeToMeals) {
-		this.takeToMeals = takeToMeals;
-	}
-
-	public String getDrugDiseases() {
-		return drugDiseases;
-	}
-
-	public void setDrugDiseases(String drugDiseases) {
-		this.drugDiseases = drugDiseases;
-	}
-	
-	//public List<Drug> getDrugsSameTimeList() {
-	  //  return drugsSameTimeList;
-	  //}
-	
 }

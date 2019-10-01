@@ -64,7 +64,7 @@ class DrugIntakePlan extends React.Component {
     }
 
     handleRowClick(rowId) {
-
+    	
         const currentExpandedRows = this.state.expandedRows;
         const isRowCurrentlyExpanded = currentExpandedRows.includes(rowId);
 
@@ -83,16 +83,8 @@ class DrugIntakePlan extends React.Component {
         this.setDrugTaken(isDrugTaken, userDrugPlanItemId);
     }
 
-    renderCheckBox(drugplanned) {
-        //if (!drugplanned.intermediateStep && drugplanned.drugTaken)   {
-                        return (
-                                <CheckBox id={drugplanned.userDrugPlanItemId} checked={drugplanned.drugTaken}
-                                                onChange={this.handleTakenChange.bind(this)}/>
-                        )
-    }
-
     renderDrugsPlanned(drugsplanned) {
-    	const { t } = this.props;
+        const { t } = this.props;
         return drugsplanned.map(drugplanned => {
 
                 const plannedRow = [
@@ -101,94 +93,127 @@ class DrugIntakePlan extends React.Component {
                                 {this.renderProgressBar(drugplanned)}
                         </td>
                         <td className="td-style">
-                            {this.renderCheckBox(drugplanned)}
+                            <div>{this.renderCheckBox(drugplanned)}</div>
                         </td>
                         <td className="td-style">{drugplanned.timeString}</td>
-                        <td className="td-style drug-names">
-                                <b>{this.renderDrugName(drugplanned)}</b>
-                        </td>
                         <td className="td-style">
-                                {this.renderExpandableButton(drugplanned)}
-                      </td>
+                                <div className="tab"><b>{this.renderDrugName(drugplanned)}</b></div>
+                        </td>
                 </tr>                   
             ];
-                if (drugplanned.drugNamesSameTime !== null) {
-                        if(this.state.expandedRows.includes(drugplanned)) {
-                    plannedRow.push(
-                        <tr key={"row-expanded-" + drugplanned}>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                            <p>{(t("usedWhen"))+": "+drugplanned.drugDiseases}</p> 
-                            	{this.renderDrugIntakeIndications(drugplanned)}
-                                {drugplanned.personalizedInformation && <section className="minimum-summary" dangerouslySetInnerHTML={this.createMarkup(drugplanned.personalizedInformation)}/>}
-                                <div>
-                                <Link to={`/drug/${drugplanned.id}`}>
-                                	<h4>{t("forMoreInformation")}</h4>
-                                </Link>	
-                                </div>
-                            </td>
-                            <td></td>
-                        </tr>
-                    );
-                }
+                if (drugplanned.drugsPlannedSameTime.length > 0) {
+                   for (var i = 0; i < drugplanned.drugsPlannedSameTime.length; i++) {
+                	   if(this.state.expandedRows.includes(drugplanned.drugsPlannedSameTime[i])) {
+                           plannedRow.push(
+                               <tr key={"row-expanded-" + drugplanned +"drug-name-clicked-"+ drugplanned.drugsPlannedSameTime[i]}>
+                                   <td></td>
+                                   <td></td>
+                                   <td></td>
+                                   <td>
+                                   <p><b>{(t("usedWhen")) +": "}</b>{this.renderDiseases(drugplanned.drugsPlannedSameTime[i])}</p>
+                                       <ul>
+                                       	{this.renderDrugIntakeIndications(drugplanned.drugsPlannedSameTime[i])}
+                                       	{drugplanned.drugsPlannedSameTime[i].personalizedInformation && <section className="minimum-summary" dangerouslySetInnerHTML={this.createMarkup(drugplanned.drugsPlannedSameTime[i].personalizedInformation)}/>}
+                                       </ul>
+                                       <div>
+                                       {drugplanned.drugsPlannedSameTime.length > 1 && drugplanned.drugsPlannedSameTime[i].interactions.length > 0 &&
+                                           <div className={"alert alert-dismissable" + (User.redGreenColorblind ? " danger-red-green-colorblind" : " alert-danger") }>
+                                                   <h5>{t("interaction")}</h5>
+                                                   <span dangerouslySetInnerHTML={this.createMarkup(drugplanned.drugsPlannedSameTime[i].interactions)} />
+                                           </div>
+                       			     	}
+                                       <Link to={`/drug/${drugplanned.drugsPlannedSameTime[i].link}`}>
+                                               <h4>{t("forMoreInformation")}</h4>
+                                       </Link>
+                                       </div>
+                                   </td>
+                               </tr>
+                             );
+                           }
+                   }
+                	
                 }
                 return plannedRow;
         });
     }
-    
-    
-    renderDrugIntakeIndications(drugplanned) {
-    	const { t } = this.props;
-    	if (drugplanned.takeOnEmptyStomach) {
-    		 return (
-    				 <p className="information"><span class="glyphicon glyphicon-info-sign"></span> {t("takeOnAnEmptyStomach")}</p> 
-    		 ) 
-    	}
-    	if (drugplanned.takeOnFullStomach) {
-    		return (
-    				<p className="information"><span class="glyphicon glyphicon-info-sign"></span> {t("takeOnAFullStomach")}</p>
-    		)
-    	}
-    	if (drugplanned.takeToMeals) {
-    		return (
-    				<p className="information"><span class="glyphicon glyphicon-info-sign"></span> {t("takeToMeals")}</p>
-    		)
-    	}
+
+    renderDiseases(drug) {
+        if (drug.diseases.length > 0) {
+                return this.getDiseases(drug);
+        } else {
+                return "";
+        };
     }
-    
+
+    getDiseases(drug) {
+        var diseases = "";
+                for (var j = 0; j <  drug.diseases.length; j++) {
+                	if (j == 0) {
+                		diseases = diseases + " " +  drug.diseases[j];
+                	} else {
+                		diseases = diseases + ", " +  drug.diseases[j];
+                	}
+                }
+        return diseases;
+    }
+
+    renderDrugIntakeIndications(drugplanned) {
+        const { t } = this.props;
+        if (drugplanned.takeOnEmptyStomach) {
+                 return (
+                                 <p className="information"><span className="glyphicon glyphicon-info-sign"></span> {t("takeOnAnEmptyStomach")}</p>
+                 )
+        }
+        if (drugplanned.takeOnFullStomach) {
+                return (
+                                <p className="information"><span className="glyphicon glyphicon-info-sign"></span> {t("takeOnAFullStomach")}</p>
+                )
+        }
+        if (drugplanned.takeToMeals) {
+                return (
+                                <p className="information"><span className="glyphicon glyphicon-info-sign"></span> {t("takeToMeals")}</p>
+                )
+        }
+    }
+
     renderProgressBar(drugplanned) {
         var drugplanned_percentage = drugplanned.percentage;
                 return (
                         <ProgressBar percentage={drugplanned_percentage} />     
                 );
     }
-
+    
     renderDrugName(drugplanned) {
-    	
-    	//drugplanned.drugsSameTimeList.map(drug => {return drug.name+" "});
-        if (drugplanned.drugNamesSameTime !== undefined) {
-                return drugplanned.drugNamesSameTime;
-        } else if (drugplanned.drugName !== undefined) {
-                return drugplanned.drugName;
+        if (drugplanned.drugsPlannedSameTime.length > 0) {     
+        	return drugplanned.drugsPlannedSameTime.map(drug => {
+        	const clickCallback = () => this.handleRowClick(drug);
+        	const drugNameButtons = [
+        		<button className="tablinks drug-names" onClick={clickCallback}>{drug.name}</button>
+        	];
+        	return drugNameButtons;
+        	});
         } else {
-                return "";
+        	return "";
         };
     }
-
-    renderExpandableButton(drugplanned) {
-        const clickCallback = () => this.handleRowClick(drugplanned);
-
-        if (drugplanned.drugNamesSameTime !== null) {
-                return (
-                                <button type="button" className="btn btn-sm btn-like" onClick={clickCallback}>
-                    <span className={"glyphicon white "+ ( this.state.expandedRows.includes(drugplanned) ? 'glyphicon-minus' : 'glyphicon-plus')}></span>
-                    </button>
-                );
-        }
-
-        return "";
+    
+    renderCheckBox(drugplanned) {
+        //if (!drugplanned.intermediateStep && drugplanned.drugTaken)   {
+    	if (drugplanned.drugsPlannedSameTime.length > 0) {     
+        	return drugplanned.drugsPlannedSameTime.map(drug => {
+        	const checkboxId = drugplanned.userDrugPlanItemId + drug.id;
+        		const drugCheckboxes = [
+                                <CheckBox id={checkboxId} checked={drug.drugTaken}
+                                                onChange={this.handleTakenChange.bind(this)}/>
+                ];
+        		return drugCheckboxes;
+        	});
+    	} else {
+    		return (
+    				<CheckBox id={drugplanned.userDrugPlanItemId} checked={drugplanned.drugTaken}
+                    onChange={this.handleTakenChange.bind(this)}/>	
+    		)
+    	}
     }
 
     recalculatePlan() {
@@ -217,7 +242,7 @@ class DrugIntakePlan extends React.Component {
     }
 
     setDrugTaken(isDrugTaken, userDrugPlanItemId) {
-    	const options = {
+        const options = {
                 position: toast.POSITION.BOTTOM_CENTER
             };
         console.log("setDrugTaken(userDrugPlanItemId=" + userDrugPlanItemId + ")");
@@ -235,11 +260,11 @@ class DrugIntakePlan extends React.Component {
                          case 200:
                              console.log("case status 200");
                              if (isDrugTaken) {
-                            	 toast.success(t('Well done!'), options);
+                                 toast.success(t('Well done!'), options);
                              } else {
-                            	 toast.error(t('Remember to take it soon!'), options);
+                                 toast.error(t('Remember to take it soon!'), options);
                              }
-                             
+
                              this.getData();
                              break;
                          case 400:
@@ -285,13 +310,12 @@ class DrugIntakePlan extends React.Component {
                                 <table id="drugsplanned" className="table-style">
                                         <thead>
                                                 <tr>
-                                                        <th className="th-style">{t("halfTimePeriod")}</th>
+                                                <th className="th-style">{t("halfTimePeriod")}</th>
                                                 <th className="th-style"></th>
                                                 <th className="th-style">{t("time")}</th>
-                                                <th className="th-style">{t("name")}</th>
-                                                <th className="th-style"></th>
-                                        </tr>
-                                </thead>
+                                                <th className="th-style th-name">{t("name")}</th>
+                                                </tr>
+                                        </thead>
                                 <tbody>
                                         {this.renderDrugsPlanned(drugsplanned)}
                                 </tbody>

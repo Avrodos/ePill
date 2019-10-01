@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.doccuty.epill.disease.Disease;
 import com.doccuty.epill.drug.Drug;
 import com.doccuty.epill.drug.DrugService;
+import com.doccuty.epill.model.Interaction;
 import com.doccuty.epill.tailoredtext.TailoredTextService;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
@@ -68,15 +69,14 @@ public class UserDrugPlanService {
 		 */
 		public List<UserDrugPlanItemViewModel> getCompleteUserDrugPlansByUserIdAndDate(Date dateFrom, Date dateTo) {
 			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
-			
-			final List<UserDrugPlanItemViewModel> userDrugPlanView = new ArrayList<>();
-            List<UserDrugPlanItem> userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
-           if (userDrugItemsPlanned.isEmpty() && dateFrom.after(new Date())) {
-                   //if plan is empty recalculate it - only for future, don't overwrite history
-                   this.recalculateAndSaveUserDrugPlanForDay(dateFrom);
-                   userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
-           }
 
+			final List<UserDrugPlanItemViewModel> userDrugPlanView = new ArrayList<>();
+			 List<UserDrugPlanItem> userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
+			if (userDrugItemsPlanned.isEmpty() && dateFrom.after(new Date())) {
+				//if plan is empty recalculate it - only for future, don't overwrite history
+				this.recalculateAndSaveUserDrugPlanForDay(dateFrom);
+				userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
+			}
 			Date lastDateTime = (Date) dateFrom.clone();
 			for (int hour = currentUser.getBreakfastTime(); hour <= currentUser.getSleepTime() + 1; hour++) {
 				final int hourToCompare = hour;
@@ -85,93 +85,93 @@ public class UserDrugPlanService {
 						.collect(Collectors.toList());
 				if (!plannedItemsForHour.isEmpty()) {
 					// Collect all items in one String, take the longest halftime period
-					lastDateTime = (Date) plannedItemsForHour.get(0).getDatetimeIntakePlanned().clone();
-					String drugNames = plannedItemsForHour.get(0).getDrug().getName();
-					//List <Drug> drugsSameTime = new ArrayList<>();
-					//drugsSameTime.add(plannedItemsForHour.get(0).getDrug());
-					String personalizedInformation = this.tailoringService.getTailoredMinimumSummaryByDrugAndUser(plannedItemsForHour.get(0).getDrug(), currentUser).getText();
-					List <Disease> gettingDiseases = plannedItemsForHour.get(0).getDrug().getDisease();
-					String drugDiseases = "";
-					for (int j = 0; j < gettingDiseases.size(); j++) {
-						drugDiseases = drugDiseases + " " + gettingDiseases.get(j).getName();
-					}
-					int halfTimePeriodMax = plannedItemsForHour.get(0).getDrug().getPeriod();
-					if (plannedItemsForHour.size() > 1) {
-						for (int i = 1; i < plannedItemsForHour.size(); i++) {
-							drugNames = String.format("%s, %s", drugNames, plannedItemsForHour.get(i).getDrug().getName());
-							//drugsSameTime.add(plannedItemsForHour.get(i).getDrug());
-							personalizedInformation = String.format("%s, %s", personalizedInformation, this.tailoringService.getTailoredMinimumSummaryByDrugAndUser(plannedItemsForHour.get(i).getDrug(), currentUser).getText());
-							List <Disease> diseasesDrugi = plannedItemsForHour.get(i).getDrug().getDisease();
-							String drugjDiseases = "";
-							for (int j = 0; j < diseasesDrugi.size(); j++) {
-								drugjDiseases = drugjDiseases + " " + diseasesDrugi.get(j).getName();
-							}
-							drugDiseases = String.format("%s, %s", drugDiseases, drugjDiseases); 
-							if (halfTimePeriodMax < plannedItemsForHour.get(i).getDrug().getPeriod()) {
-								halfTimePeriodMax = plannedItemsForHour.get(i).getDrug().getPeriod();
-							}
-						}
-					}
-					userDrugPlanView.add(mapUserDrugPlanToView(plannedItemsForHour.get(0), drugNames, halfTimePeriodMax, personalizedInformation, drugDiseases));
+					lastDateTime = (Date) plannedItemsForHour.get(0).getDatetimeIntakePlanned();
+					userDrugPlanView.add(mapUserDrugPlanToView(plannedItemsForHour, currentUser));
 				} else {
 					// intermediate step
 					final UserDrugPlanItem userDrugPlanItemIntermediate = new UserDrugPlanItem();
 					userDrugPlanItemIntermediate.setUser(currentUser);
-					userDrugPlanItemIntermediate.setDateTimePlanned(DateUtils.setHoursOfDate(lastDateTime, hour));
-					userDrugPlanView.add(mapUserDrugPlanToView(userDrugPlanItemIntermediate, "", 0, "", ""));
+					userDrugPlanItemIntermediate.setDateTimePlanned(DateUtils.setHoursOfDate(lastDateTime, hour)); 
+					List<UserDrugPlanItem> items = new ArrayList<>();
+					items.add(userDrugPlanItemIntermediate);
+					
+					userDrugPlanView.add(mapUserDrugPlanToView(items, currentUser));
 				}
 			}
 			LOG.info("items={} in UserDrugPlan with intermediate steps", userDrugPlanView.size());
 			return setHalftimeAndPercentagePerDrugPlanItem(userDrugPlanView);
 		}
-
+		
 		/**
 		 * map UserDrugPlan to UserDrugPlanItemViewModel
 		 * 
-		 * @param userDrugPlanItem
-		 * @param drugNamesSameTime
-		 * @param halfTimePeriodMax
-		 * @param halfTimePeriodMax
+		 * @param plannedItemsForHour
+		 * @param user
 		 * @return
 		 */
-		private UserDrugPlanItemViewModel mapUserDrugPlanToView(UserDrugPlanItem userDrugPlanItem, String drugNamesSameTime,
-				int halfTimePeriodMax, String personalizedDrugInformation, String drugDiseases) {
+		private UserDrugPlanItemViewModel mapUserDrugPlanToView(List<UserDrugPlanItem> plannedItemsForHour, User currentUser) {
 			final UserDrugPlanItemViewModel model = new UserDrugPlanItemViewModel();
 			final Calendar calendar = GregorianCalendar.getInstance();
-			calendar.setTime(userDrugPlanItem.getDatetimeIntakePlanned());
+			calendar.setTime(plannedItemsForHour.get(0).getDatetimeIntakePlanned());
 			model.setTimeString(String.format("%02d:00", calendar.get(Calendar.HOUR_OF_DAY)));
 			final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 			model.setDateString(format.format(calendar.getTime()));
-			if (userDrugPlanItem.getId() <= 0) {
+			
+			int halfTimePeriodMax = 0;
+			for (int i = 0; i < plannedItemsForHour.size(); i++) {
+				if (plannedItemsForHour.get(i).getDrug() != null && halfTimePeriodMax < plannedItemsForHour.get(i).getDrug().getPeriod()) {
+					halfTimePeriodMax = plannedItemsForHour.get(i).getDrug().getPeriod();
+				}
+			}
+			
+			if (plannedItemsForHour.get(0).getId() <= 0) {
 				// Intermediate Step
-				model.setDrugName("");
-				model.setDrugTaken(false);
 				model.setIntermediateStep(true);
-				model.setTakeOnEmptyStomach(false);
-				model.setTakeOnFullStomach(false);
 				model.setPercentage(0);
 				model.setHalfTimePeriod(0);
-				model.setPersonalizedInformation("");
+				model.setDrugsPlannedSameTime(new ArrayList<>());
 			} else {
 				// intake 1 or more drugs
-				model.setUserDrugPlanItemId(userDrugPlanItem.getId());
-				model.setDrugName(userDrugPlanItem.getDrug().getName());
-				model.setDrugNamesSameTime(drugNamesSameTime);
-				model.setDrugTaken(userDrugPlanItem.getDrugTaken() );
 				model.setIntermediateStep(false);
-				model.setTakeOnEmptyStomach(userDrugPlanItem.getDrug().getTakeOnEmptyStomach());
-				model.setTakeOnFullStomach(userDrugPlanItem.getDrug().getTakeOnFullStomach());
 				model.setPercentage(100);
+				model.setUserDrugPlanItemId(plannedItemsForHour.get(0).getId());
 				model.setHalfTimePeriod(halfTimePeriodMax);
-				model.setPersonalizedInformation(personalizedDrugInformation);
-				model.setDrugDiseases(drugDiseases);
-				//for (int i = 0; i<drugsSameTime.size(); i++) {
-				//	model.getDrugsSameTimeList().add(drugsSameTime.get(i));
-				//}
+				List<DrugViewModel> drugsSameTime = new ArrayList<>();
+				for (UserDrugPlanItem item : plannedItemsForHour)
+				{
+					DrugViewModel drugViewModel = new DrugViewModel();
+					drugViewModel.setName(item.getDrug().getName());
+					drugViewModel.setDrugTaken(item.getDrugTaken());
+					drugViewModel.setTakeOnEmptyStomach(item.getDrug().getTakeOnEmptyStomach());
+					drugViewModel.setTakeOnFullStomach(item.getDrug().getTakeOnFullStomach());
+					drugViewModel.setDiseases(getDiseases(item));
+					drugViewModel.setInteractions(getInteractions(item));
+					drugViewModel.setPersonalizedInformation(this.tailoringService.getTailoredMinimumSummaryByDrugAndUser(item.getDrug(), currentUser).getText());
+					drugViewModel.setLink(item.getDrug().getId());
+					drugsSameTime.add(drugViewModel);
+				}
+				model.setDrugsPlannedSameTime(drugsSameTime);
 			}
+
 			return model;
 		}
+		
+		private List<String> getInteractions(UserDrugPlanItem item) {
+			List<String> interactions = new ArrayList<>();
+			for (Interaction interaction : item.getDrug().getInteraction()) {
+				interactions.add(interaction.getInteraction());
+			}
+			return interactions;
+		}
 
+		private List<String> getDiseases(UserDrugPlanItem item) {
+			List<String> diseases = new ArrayList<>();
+			for (Disease disease : item.getDrug().getDisease()) {
+				diseases.add(disease.getName());
+			}
+			return diseases;
+		}
+		
 		/**
 		 * set halftime period and percentage for intermediate steps depending on drugs
 		 * taken
