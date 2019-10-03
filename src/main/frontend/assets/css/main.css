@@ -769,9 +769,9 @@ a.wide { display : block }
 }
 
 .td-style {
-  padding: 8px;
+  /*padding: 8px;*/
   text-align: left;
-  line-height: 53px;
+  /*line-height: 53px;*/
   table-layout: fixed;
 }
 

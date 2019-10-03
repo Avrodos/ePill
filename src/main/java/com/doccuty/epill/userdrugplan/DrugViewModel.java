@@ -6,6 +6,7 @@ import java.util.List;
 public class DrugViewModel {
 	private static final long serialVersionUID = 4465215282796960562L;
 	private long id;
+	private long userDrugPlanItemId;
 	private String name;
 	private long link;
 	private boolean drugTaken;	
@@ -34,6 +35,12 @@ public class DrugViewModel {
 	}
 	public void setLink(long link) {
 		this.link = link;
+	}
+	public long getUserDrugPlanItemId() {
+		return userDrugPlanItemId;
+	}
+	public void setUserDrugPlanItemId(long userDrugPlanItemId) {
+		this.userDrugPlanItemId = userDrugPlanItemId;
 	}
 	public List<String> getDiseases() {
 		return diseases;

@@ -349,22 +349,27 @@ class DrugList extends React.Component {
         }
 
         renderHeartOrMinusButton(drug) {
-                if (drug.isTaken) {
-                        return (
-                                <button type="button" className="btn btn-xs btn-like" onClick={() => this.removeTaking(drug)}>
-                                        <span className="glyphicon white glyphicon-minus"></span>
-                                </button>
-                        );
-                } else {
-                        return (
-                                <Popup className="popup-druglist" trigger={<button type="button" className="btn btn-xs btn-like">
-                                        <span className="glyphicon white glyphicon-heart"></span></button>}>
-                                        <DrugIntakePopup drugId={drug.id} drugName={drug.name} updateNavigation={this.props.updateNavigation}/>
-                                </Popup>
-
-                        );
-                }
-        }
+            if (drug.isTaken) {
+                return (
+                        <button type="button" className="btn btn-xs btn-like" onClick={() => this.removeTaking(drug)}>
+                                <span className="glyphicon white glyphicon-minus"></span>
+                        </button>
+                );
+            } else {
+                    return (                             
+                            <Popup className="popup-druglist" 
+                                    trigger={<button type="button" className="btn btn-xs btn-like" >
+                                            <span className="glyphicon white glyphicon-heart"></span></button>}>
+                            {close =>
+                            <div>
+                               <a className="close" onClick={close}>&times;</a>
+                               <DrugIntakePopup drugId={drug.id} drugName={drug.name} updateNavigation={this.props.updateNavigation}/>
+                       </div>
+                    }
+                            </Popup>
+                            );
+            }
+    }
 
         renderDrugIntakePopupEditButton(drug) {
                 if (drug.isTaken) {
@@ -372,7 +377,12 @@ class DrugList extends React.Component {
                             <li>
                                         <Popup trigger={<button type="button" className="btn btn-xs btn-like">
                                                 <span className="glyphicon white glyphicon glyphicon-pencil"></span></button>}>
+                                        {close =>
+                                        <div>
+                                           <a className="close" onClick={close}>&times;</a>
                                                 <DrugIntakePopup drugId={drug.id} drugName={drug.name} updateNavigation={this.props.updateNavigation}/>
+                                                </div>
+                                        } 
                                         </Popup>
                                 </li>
                         );

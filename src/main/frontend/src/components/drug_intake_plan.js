@@ -186,7 +186,7 @@ class DrugIntakePlan extends React.Component {
         	return drugplanned.drugsPlannedSameTime.map(drug => {
         	const clickCallback = () => this.handleRowClick(drug);
         	const drugNameButtons = [
-        		<button className="tablinks drug-names" onClick={clickCallback}>{drug.name}</button>
+        		<button key={drug.userDrugPlanItemId} className="tablinks drug-names" onClick={clickCallback}>{drug.name}</button>
         	];
         	return drugNameButtons;
         	});
@@ -200,7 +200,7 @@ class DrugIntakePlan extends React.Component {
     	if (drugplanned.drugsPlannedSameTime.length > 0) {     
         	return drugplanned.drugsPlannedSameTime.map(drug => {
         			const drugCheckboxes = [
-                        <CheckBox id={drugplanned.userDrugPlanItemId++} checked={drug.drugTaken}
+                        <CheckBox id={drug.userDrugPlanItemId} key={drug.userDrugPlanItemId} checked={drug.drugTaken}
                                         onChange={this.handleTakenChange.bind(this)}/>
                         	];
         		
@@ -209,7 +209,7 @@ class DrugIntakePlan extends React.Component {
         	});
     	} else {
     		return (
-    				<CheckBox id={drugplanned.userDrugPlanItemId} checked={false}
+    				<CheckBox id={drugplanned.userDrugPlanItemId} key={drugplanned.userDrugPlanItemId} checked={false}
                     onChange={this.handleTakenChange.bind(this)}/>	
     		)
     	}

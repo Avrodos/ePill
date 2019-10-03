@@ -20,6 +20,7 @@ import com.doccuty.epill.disease.Disease;
 import com.doccuty.epill.drug.Drug;
 import com.doccuty.epill.drug.DrugService;
 import com.doccuty.epill.model.Interaction;
+import com.doccuty.epill.tailoredtext.TailoredText;
 import com.doccuty.epill.tailoredtext.TailoredTextService;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
@@ -78,6 +79,7 @@ public class UserDrugPlanService {
 				userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
 			}
 			Date lastDateTime = (Date) dateFrom.clone();
+			int counterIntermediateSteps = -1;
 			for (int hour = currentUser.getBreakfastTime(); hour <= currentUser.getSleepTime() + 1; hour++) {
 				final int hourToCompare = hour;
 				final List<UserDrugPlanItem> plannedItemsForHour = userDrugItemsPlanned.stream().parallel()
@@ -86,7 +88,7 @@ public class UserDrugPlanService {
 				if (!plannedItemsForHour.isEmpty()) {
 					// Collect all items in one String, take the longest halftime period
 					lastDateTime = (Date) plannedItemsForHour.get(0).getDatetimeIntakePlanned();
-					userDrugPlanView.add(mapUserDrugPlanToView(plannedItemsForHour, currentUser));
+					userDrugPlanView.add(mapUserDrugPlanToView(plannedItemsForHour, currentUser, 0));
 				} else {
 					// intermediate step
 					final UserDrugPlanItem userDrugPlanItemIntermediate = new UserDrugPlanItem();
@@ -95,7 +97,7 @@ public class UserDrugPlanService {
 					List<UserDrugPlanItem> items = new ArrayList<>();
 					items.add(userDrugPlanItemIntermediate);
 					
-					userDrugPlanView.add(mapUserDrugPlanToView(items, currentUser));
+					userDrugPlanView.add(mapUserDrugPlanToView(items, currentUser, counterIntermediateSteps--));
 				}
 			}
 			LOG.info("items={} in UserDrugPlan with intermediate steps", userDrugPlanView.size());
@@ -106,10 +108,11 @@ public class UserDrugPlanService {
 		 * map UserDrugPlan to UserDrugPlanItemViewModel
 		 * 
 		 * @param plannedItemsForHour
+		 * @param counterIntermediateSteps 
 		 * @param user
 		 * @return
 		 */
-		private UserDrugPlanItemViewModel mapUserDrugPlanToView(List<UserDrugPlanItem> plannedItemsForHour, User currentUser) {
+		private UserDrugPlanItemViewModel mapUserDrugPlanToView(List<UserDrugPlanItem> plannedItemsForHour, User currentUser, int counterIntermediateSteps) {
 			final UserDrugPlanItemViewModel model = new UserDrugPlanItemViewModel();
 			final Calendar calendar = GregorianCalendar.getInstance();
 			calendar.setTime(plannedItemsForHour.get(0).getDatetimeIntakePlanned());
@@ -130,6 +133,7 @@ public class UserDrugPlanService {
 				model.setPercentage(0);
 				model.setHalfTimePeriod(0);
 				model.setDrugsPlannedSameTime(new ArrayList<>());
+				model.setUserDrugPlanItemId(counterIntermediateSteps);
 			} else {
 				// intake 1 or more drugs
 				model.setIntermediateStep(false);
@@ -141,13 +145,18 @@ public class UserDrugPlanService {
 				for (UserDrugPlanItem item : plannedItemsForHour)
 				{
 					DrugViewModel drugViewModel = new DrugViewModel();
+					drugViewModel.setUserDrugPlanItemId(item.getId());
 					drugViewModel.setName(item.getDrug().getName());
 					drugViewModel.setDrugTaken(item.getDrugTaken());
 					drugViewModel.setTakeOnEmptyStomach(item.getDrug().getTakeOnEmptyStomach());
 					drugViewModel.setTakeOnFullStomach(item.getDrug().getTakeOnFullStomach());
 					drugViewModel.setDiseases(getDiseases(item));
 					drugViewModel.setInteractions(getInteractions(item));
-					drugViewModel.setPersonalizedInformation(this.tailoringService.getTailoredMinimumSummaryByDrugAndUser(item.getDrug(), currentUser).getText());
+					TailoredText tt = this.tailoringService.getTailoredMinimumSummaryByDrugAndUser(item.getDrug(), currentUser);
+					if (tt != null) {
+						drugViewModel.setPersonalizedInformation(tt.getText());
+					}
+					
 					drugViewModel.setLink(item.getDrug().getId());
 					drugsSameTime.add(drugViewModel);
 				}
