@@ -13,7 +13,16 @@ public class UserDrugPlanItemViewModel {
 	private String timeString;
 	private int halfTimePeriod;
 	private int percentage;
+	private String interaction;
 	private List<DrugViewModel> drugsPlannedSameTime;
+	
+	public String getInteraction() {
+		return interaction;
+	}
+
+	public void setInteraction(String interaction) {
+		this.interaction = interaction;
+	}
 
 	public boolean isIntermediateStep() {
 		return intermediateStep;

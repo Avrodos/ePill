@@ -209,6 +209,7 @@ class DrugIntakePopup extends React.Component {
         this.state.sending = true;
         this.setState(this.state);
         console.log("...user presciption posted...");
+        
     }
 
      render() {

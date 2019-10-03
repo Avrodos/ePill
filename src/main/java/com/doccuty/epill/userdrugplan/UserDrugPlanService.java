@@ -136,6 +136,7 @@ public class UserDrugPlanService {
 				model.setPercentage(100);
 				model.setUserDrugPlanItemId(plannedItemsForHour.get(0).getId());
 				model.setHalfTimePeriod(halfTimePeriodMax);
+				model.setInteraction(this.getInteractions(plannedItemsForHour));
 				List<DrugViewModel> drugsSameTime = new ArrayList<>();
 				for (UserDrugPlanItem item : plannedItemsForHour)
 				{
@@ -162,6 +163,26 @@ public class UserDrugPlanService {
 				interactions.add(interaction.getInteraction());
 			}
 			return interactions;
+		}
+		
+		private String getInteractions(List<UserDrugPlanItem> item) {
+			List<Drug> drugsForHour = new ArrayList<>();
+			final StringBuilder interactionText = new StringBuilder();
+			for (UserDrugPlanItem plannedItemForHour : item) {
+				drugsForHour.add(plannedItemForHour.getDrug());
+			}
+			for (final Drug drug : drugsForHour) {
+				for (final Interaction interaction : drug.getInteraction()) {
+					for (final Drug drugCompare : drugsForHour) {
+						if (interaction.getInteractionDrug().contains(drugCompare)) {
+							interactionText.append("<p>" + drug.getName() + "</p> - " + drugCompare.getName() + ": "
+									+ interaction.getInteraction() + "</p>");
+						}
+					}
+				}
+			}
+
+			return interactionText.toString();
 		}
 
 		private List<String> getDiseases(UserDrugPlanItem item) {

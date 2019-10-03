@@ -852,7 +852,7 @@ a.wide { display : block }
 }
 
 .drug-taken-checkbox:hover input ~ .check {
-  background-color: #0ca49a;
+  background-color: #555753;
 }
 
 .drug-taken-checkbox input:checked ~ .check {

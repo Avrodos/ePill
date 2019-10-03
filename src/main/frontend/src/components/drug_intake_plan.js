@@ -105,21 +105,19 @@ class DrugIntakePlan extends React.Component {
                    for (var i = 0; i < drugplanned.drugsPlannedSameTime.length; i++) {
                 	   if(this.state.expandedRows.includes(drugplanned.drugsPlannedSameTime[i])) {
                            plannedRow.push(
-                               <tr key={"row-expanded-" + drugplanned +"drug-name-clicked-"+ drugplanned.drugsPlannedSameTime[i]}>
+                               <tr key={"row-expanded-" + drugplanned}>
                                    <td></td>
                                    <td></td>
                                    <td></td>
                                    <td>
                                    <p><b>{(t("usedWhen")) +": "}</b>{this.renderDiseases(drugplanned.drugsPlannedSameTime[i])}</p>
-                                       <ul>
                                        	{this.renderDrugIntakeIndications(drugplanned.drugsPlannedSameTime[i])}
                                        	{drugplanned.drugsPlannedSameTime[i].personalizedInformation && <section className="minimum-summary" dangerouslySetInnerHTML={this.createMarkup(drugplanned.drugsPlannedSameTime[i].personalizedInformation)}/>}
-                                       </ul>
                                        <div>
                                        {drugplanned.drugsPlannedSameTime.length > 1 && drugplanned.drugsPlannedSameTime[i].interactions.length > 0 &&
                                            <div className={"alert alert-dismissable" + (User.redGreenColorblind ? " danger-red-green-colorblind" : " alert-danger") }>
                                                    <h5>{t("interaction")}</h5>
-                                                   <span dangerouslySetInnerHTML={this.createMarkup(drugplanned.drugsPlannedSameTime[i].interactions)} />
+                                                   <span dangerouslySetInnerHTML={this.createMarkup(drugplanned.interaction)} />
                                            </div>
                        			     	}
                                        <Link to={`/drug/${drugplanned.drugsPlannedSameTime[i].link}`}>
@@ -201,16 +199,17 @@ class DrugIntakePlan extends React.Component {
         //if (!drugplanned.intermediateStep && drugplanned.drugTaken)   {
     	if (drugplanned.drugsPlannedSameTime.length > 0) {     
         	return drugplanned.drugsPlannedSameTime.map(drug => {
-        	const checkboxId = drugplanned.userDrugPlanItemId + drug.id;
-        		const drugCheckboxes = [
-                                <CheckBox id={checkboxId} checked={drug.drugTaken}
-                                                onChange={this.handleTakenChange.bind(this)}/>
-                ];
+        			const drugCheckboxes = [
+                        <CheckBox id={drugplanned.userDrugPlanItemId++} checked={drug.drugTaken}
+                                        onChange={this.handleTakenChange.bind(this)}/>
+                        	];
+        		
+        		
         		return drugCheckboxes;
         	});
     	} else {
     		return (
-    				<CheckBox id={drugplanned.userDrugPlanItemId} checked={drugplanned.drugTaken}
+    				<CheckBox id={drugplanned.userDrugPlanItemId} checked={false}
                     onChange={this.handleTakenChange.bind(this)}/>	
     		)
     	}
