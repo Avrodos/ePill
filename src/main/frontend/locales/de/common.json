@@ -119,5 +119,6 @@
 	"halfTimePeriod": "Medikamentenabnahme im Blut",
 	"time": "Zeit",
 	"name": "Name",
-	"forMoreInformation": "Zum Beipackzettel"
+	"forMoreInformation": "Zum Beipackzettel",
+	"showHideHalfTimePeriod" : "Anzeigen/Ausblenden"
 }

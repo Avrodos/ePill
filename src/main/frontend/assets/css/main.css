@@ -755,6 +755,10 @@ a.wide { display : block }
 	background-color: #555753;
 }
 
+.table-line-hover {
+	height : 65px;
+}
+
 .table-line-hover:hover {
   background-color:#ddd;
 }
@@ -1005,8 +1009,17 @@ a.wide { display : block }
   background-color: #ccc;
 }
 
-.active-drug-name {
-	background-color: #ccc;
+.btn-drug-names-active {
+	background-color: #babdb6 !important;
+}
+
+.btn-drug-names-inactive {
+	background-color: #ffffff;
+}
+
+.btn-half-time-period {
+	background-color: white;
+	border: white;
 }
 
 

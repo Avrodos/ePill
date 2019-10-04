@@ -23,9 +23,11 @@ class DrugIntakePlan extends React.Component {
             interactions        : [],
             date : new Date(),
             percentage : 100,
-            expandedRows: []
+            expandedRows: [],
+            showProgressBar: false
         };
         this.output = this.handleTakenChange.bind(this);
+        this.handleShowProgressBar = this.handleShowProgressBar.bind(this);
     }
 
     // This function is called before render() to initialize its state.
@@ -63,14 +65,21 @@ class DrugIntakePlan extends React.Component {
         this.getData();
     }
 
-    handleRowClick(rowId) {
+    handleRowClick(rowId, drugsplanned) {
     	
         const currentExpandedRows = this.state.expandedRows;
         const isRowCurrentlyExpanded = currentExpandedRows.includes(rowId);
-
-        const newExpandedRows = isRowCurrentlyExpanded
+        
+        var newExpandedRows = isRowCurrentlyExpanded
           ? currentExpandedRows.filter(id => id !== rowId)
           : currentExpandedRows.concat(rowId);
+        for (var i = 0; i < drugsplanned.drugsPlannedSameTime.length; i++) {
+        	if (newExpandedRows.includes(drugsplanned.drugsPlannedSameTime[i]) && newExpandedRows.includes(rowId)) {
+        		if (drugsplanned.drugsPlannedSameTime[i] != rowId){
+        			newExpandedRows = newExpandedRows.filter(id => id !== drugsplanned.drugsPlannedSameTime[i])
+        		}
+            }
+        }
 
         this.setState({ expandedRows: newExpandedRows });
       }
@@ -81,6 +90,11 @@ class DrugIntakePlan extends React.Component {
         console.log("isChecked=" + isChecked + ", userDrugPlanItemId="+ userDrugPlanItemId);
         var isDrugTaken = !isChecked;  //toggle
         this.setDrugTaken(isDrugTaken, userDrugPlanItemId);
+    }
+    
+    handleShowProgressBar() {
+    	console.log("showProgressBar " + this.state.showProgressBar);
+    	this.setState({ showProgressBar: !this.state.showProgressBar});
     }
 
     renderDrugsPlanned(drugsplanned) {
@@ -177,18 +191,16 @@ class DrugIntakePlan extends React.Component {
     
     renderProgressBar(drugplanned) {
     	var drugplanned_percentage = drugplanned.percentage;
-        	return (
-                    <ProgressBar percentage={drugplanned_percentage} />     
-            );
-                
+        const progressBar = this.state.showProgressBar ? <ProgressBar percentage={drugplanned_percentage}/> : null;
+    	return progressBar;        
     }
     
     renderDrugName(drugplanned) {
         if (drugplanned.drugsPlannedSameTime.length > 0) {     
         	return drugplanned.drugsPlannedSameTime.map(drug => {
-        	const clickCallback = () => this.handleRowClick(drug);
+        	const clickCallback = () => this.handleRowClick(drug, drugplanned);
         	const drugNameButtons = [
-        		<button key={drug.userDrugPlanItemId} className="tablinks drug-names" onClick={clickCallback}>{drug.name}</button>
+        		<button key={drug.userDrugPlanItemId} className={"tablinks drug-names " + (this.state.expandedRows.includes(drug) ? 'btn-drug-names-active' : 'btn-drug-names-inactive')} onClick={clickCallback}>{drug.name}</button>
         	];
         	return drugNameButtons;
         	});
@@ -321,7 +333,9 @@ class DrugIntakePlan extends React.Component {
                                 <table id="drugsplanned" className="table-style">
                                         <thead>
                                                 <tr>
-                                                <th className="th-style">{t("halfTimePeriod")}</th>
+                                                <th className="th-style"><Popup trigger={<button type="button" className="btn-half-time-period" onClick={() => this.handleShowProgressBar()}>{t("halfTimePeriod")}</button>} position="bottom center" on="hover">
+                                                {t("showHideHalfTimePeriod")}
+                                                </Popup></th>
                                                 <th className="th-style"></th>
                                                 <th className="th-style">{t("time")}</th>
                                                 <th className="th-style th-name">{t("name")}</th>
