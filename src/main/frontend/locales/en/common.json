@@ -44,6 +44,7 @@
 	"drugTakingListDescriptionText": "%User.firstname%, this is an overview about all drugs you are frequently taking. You can add new drugs to or remove drugs from this list.",
 	"drugsRemember": "Remembered Drugs",
 	"drugRememberListDescriptionText": "%User.firstname%, this is an overview about all drugs you added to your remember list. Du kannst neue Medikamente hinzufügen und gelistete aus der Liste entfernen.",
+	"drugIntakePlanDescriptionText": "%User.firstname%, this is an overview about all your planned drug intakes. You can add drugs to your Drug Intake Plan. You can tick off drug intakes you took as planned. You can see what to consider for your drug intakes.",
 	"emptyList": "This list is still empty...",
 	"articles"		: "Articles",
 	"team"			: "Team",

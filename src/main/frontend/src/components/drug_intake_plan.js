@@ -25,7 +25,7 @@ class DrugIntakePlan extends React.Component {
             percentage : 100,
             expandedRows: []
         };
-        this.output = this.handleTakenChange.bind(this)
+        this.output = this.handleTakenChange.bind(this);
     }
 
     // This function is called before render() to initialize its state.
@@ -173,12 +173,14 @@ class DrugIntakePlan extends React.Component {
                 )
         }
     }
-
+    
+    
     renderProgressBar(drugplanned) {
-        var drugplanned_percentage = drugplanned.percentage;
-                return (
-                        <ProgressBar percentage={drugplanned_percentage} />     
-                );
+    	var drugplanned_percentage = drugplanned.percentage;
+        	return (
+                    <ProgressBar percentage={drugplanned_percentage} />     
+            );
+                
     }
     
     renderDrugName(drugplanned) {
@@ -279,6 +281,9 @@ class DrugIntakePlan extends React.Component {
         const { t } = this.props;
         const drugsplanned = this.state.drugsplanned;
         var formatted_date = moment(this.state.date).format("DD.MM.YYYY");
+        const firstname = User.firstname;
+        const lastname = User.lastname;
+        const description = t('drugIntakePlanDescriptionText');
 
         return (
             <div className="container no-banner">
@@ -301,6 +306,13 @@ class DrugIntakePlan extends React.Component {
                         </div>
                 </div>
                 <div>
+                	{User.isAuthenticated() && User.levelOfDetail > 1 &&
+                		<div className="alert alert-info">
+                                        <span className="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                                        <span className="sr-only">Info:</span>&nbsp;
+                                        {description.replace("%User.firstname%", firstname).replace("%User.lastname%", lastname)}
+                        </div>
+                     }
                         {this.state.loading && <Loading />}
                         {!this.state.loading && drugsplanned && drugsplanned.length == 0 && (
                             <EmptyList />

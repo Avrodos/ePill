@@ -1001,8 +1001,12 @@ a.wide { display : block }
 }
 
 /* Create an active/current tablink class */
-.tab button.active {
+.tab button:after {
   background-color: #ccc;
+}
+
+.active-drug-name {
+	background-color: #ccc;
 }
 
 

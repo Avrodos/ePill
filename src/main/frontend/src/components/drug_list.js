@@ -375,7 +375,7 @@ class DrugList extends React.Component {
                 if (drug.isTaken) {
                         return (
                             <li>
-                                        <Popup trigger={<button type="button" className="btn btn-xs btn-like">
+                                        <Popup trigger={<button type="button" className="btn btn-xs btn-like" position="left top">
                                                 <span className="glyphicon white glyphicon glyphicon-pencil"></span></button>}>
                                         {close =>
                                         <div>
