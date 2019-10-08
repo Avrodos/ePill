@@ -1,21 +1,15 @@
 package com.doccuty.epill.drug;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.doccuty.epill.disease.Disease;
 import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.iteminvocation.ItemInvocationRepository;
 import com.doccuty.epill.model.DrugFeature;
@@ -24,10 +18,8 @@ import com.doccuty.epill.tailoredtext.TailoredText;
 import com.doccuty.epill.tailoredtext.TailoredTextService;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
-import com.doccuty.epill.userdrugplan.DateUtils;
-import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
-import com.doccuty.epill.userdrugplan.UserDrugPlanCalculator;
-import com.doccuty.epill.userdrugplan.UserDrugPlanItemViewModel;
+import com.doccuty.epill.userdrugplan.FoodToAvoid;
+import com.doccuty.epill.userdrugplan.FoodToAvoidRepository;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItemRepository;
 
 @Service
@@ -56,6 +48,9 @@ public class DrugService {
 
 	@Autowired
 	TailoredTextService tailoringService;
+	
+	@Autowired
+	FoodToAvoidRepository foodRepository;
 
 	public List<Drug> findAllDrugs() {
 		final List<Drug> drugs = repository.findAllOrderByName();
@@ -147,6 +142,10 @@ public class DrugService {
 
 	public List<DrugFeature> findAllDrugFeaturesSimple() {
 		return featureRepository.findAllSimple();
+	}
+	
+	public List<FoodToAvoid> findAllFoodToAvoid() {
+		return foodRepository.findAllSimple();
 	}
 
 	/**

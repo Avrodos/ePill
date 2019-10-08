@@ -113,12 +113,14 @@
 	"dinnerTime": "dinner time",
 	"beforeSleep": "before sleep",
 	"cancel": "cancel",
-	"takeOnAnEmptyStomach": "take on an empty stomach",
-	"takeOnAFullStomach": "take on a full stomach",
-	"takeToMeals": "take to meals",
+	"takeOnAnEmptyStomach": "Take on an empty stomach",
+	"takeOnAFullStomach": "Take on a full stomach",
+	"takeToMeals": "Take to meals",
 	"halfTimePeriod": "Drug dismantling in blood",
 	"time": "Time",
 	"name": "Name",
 	"forMoreInformation": "Information leaflet",
-	"showHideHalfTimePeriod" : "Show/Hide"
+	"showHideHalfTimePeriod" : "Show/Hide",
+	"WhatDrug" : "What drug have you been planning to take at ",
+	"tryToAvoid": "Try to avoid"
 }

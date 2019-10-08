@@ -42,6 +42,7 @@ import com.doccuty.epill.model.PharmaceuticalForm;
 import com.doccuty.epill.model.AdverseEffect;
 import com.doccuty.epill.model.Interaction;
 import com.doccuty.epill.model.Packaging;
+import com.doccuty.epill.userdrugplan.FoodToAvoid;
 
 public class DrugCreator implements SendableEntityCreatorNoIndex
 {
@@ -70,7 +71,8 @@ public class DrugCreator implements SendableEntityCreatorNoIndex
       Drug.PROPERTY_HALF_TIME_PERIOD,
       Drug.PROPERTY_TAKE_ON_EMPTY_STOMACH,
       Drug.PROPERTY_TAKE_ON_FULL_STOMACH,
-      Drug.PROPERTY_TAKE_TO_MEALS
+      Drug.PROPERTY_TAKE_TO_MEALS,
+      Drug.PROPERTY_FOOD_TO_AVOID
    };
    
    @Override
@@ -219,6 +221,11 @@ public class DrugCreator implements SendableEntityCreatorNoIndex
       if (Drug.PROPERTY_COUNT_PER_DAY.equalsIgnoreCase(attribute))
       {
          return ((Drug) target).getCountPerDay();
+      }
+      
+      if (Drug.PROPERTY_FOOD_TO_AVOID.equalsIgnoreCase(attribute))
+      {
+         return ((Drug) target).getFoodToAvoid();
       }
       
       return null;
@@ -428,6 +435,12 @@ public class DrugCreator implements SendableEntityCreatorNoIndex
       if (Drug.PROPERTY_COUNT_PER_DAY.equalsIgnoreCase(attrName))
       {
          ((Drug) target).setCountPerDay((int) value);
+         return true;
+      }
+      
+      if (Drug.PROPERTY_FOOD_TO_AVOID.equalsIgnoreCase(attrName))
+      {
+         ((Drug) target).withFoodToAvoid((FoodToAvoid) value);
          return true;
       }
       

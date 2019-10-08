@@ -120,5 +120,7 @@
 	"time": "Zeit",
 	"name": "Name",
 	"forMoreInformation": "Zum Beipackzettel",
-	"showHideHalfTimePeriod" : "Anzeigen/Ausblenden"
+	"showHideHalfTimePeriod" : "Anzeigen/Ausblenden",
+	"WhatDrug" : "Welches Medikament planen Sie um zu nehmen",
+	"tryToAvoid" : "Meide"
 }

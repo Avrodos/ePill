@@ -17,6 +17,7 @@ public class DrugViewModel {
 	String personalizedInformation;
 	private List<String> diseases;
 	private List<String> interactions;
+	private List<String> food;
 	
 	public long getId() {
 		return id;
@@ -29,6 +30,12 @@ public class DrugViewModel {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public List<String> getFood() {
+		return food;
+	}
+	public void setFood(List<String> food) {
+		this.food = food;
 	}
 	public long getLink() {
 		return link;

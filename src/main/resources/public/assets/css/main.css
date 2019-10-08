@@ -790,6 +790,11 @@ a.wide { display : block }
   overflow: hidden;
 }
 
+.th-time {
+  width: 108px;
+  overflow: hidden;
+}
+
 .table-style {
   border-collapse: collapse;
   width: 100%;

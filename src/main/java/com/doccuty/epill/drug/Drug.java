@@ -53,6 +53,7 @@ import com.doccuty.epill.packagingsection.PackagingSection;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import com.doccuty.epill.userprescription.UserPrescription;
+import com.doccuty.epill.userdrugplan.FoodToAvoid;
 
 @Entity
 @Table(name = "drug")
@@ -1049,5 +1050,67 @@ public class Drug extends SimpleDrug {
 	public boolean getIsTaken() {
 		return this.taken;
 	}
+	
+	/********************************************************************
+	 * <pre>
+	 *              many                       many
+	 * Drug ----------------------------------- FoodToAvoid
+	 *              drug                   	foodToAvoid
+	 * </pre>
+	 */
+
+	public static final String PROPERTY_FOOD_TO_AVOID = "foodToAvoid";
+
+	@ManyToMany(cascade = CascadeType.MERGE)
+	@JoinTable(name = "drug_food_to_avoid", joinColumns = @JoinColumn(name = "iddrug"), inverseJoinColumns = @JoinColumn(name = "idfood_to_avoid"))
+	private List<FoodToAvoid> foodToAvoid = null;
+
+	public List<FoodToAvoid> getFoodToAvoid() {
+		if (this.foodToAvoid == null) {
+			return new ArrayList<FoodToAvoid>();
+		}
+
+		return this.foodToAvoid;
+	}
+
+	public Drug withFoodToAvoid(FoodToAvoid... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final FoodToAvoid item : value) {
+			if (item != null) {
+				if (this.foodToAvoid == null) {
+					this.foodToAvoid = new ArrayList<FoodToAvoid>();
+				}
+
+				final boolean changed = this.foodToAvoid.add(item);
+
+				if (changed) {
+					item.withDrug(this);
+					firePropertyChange(PROPERTY_ACTIVESUBSTANCE, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Drug withoutFoodToAvoid(FoodToAvoid... value) {
+		for (final FoodToAvoid item : value) {
+			if ((this.foodToAvoid != null) && (item != null)) {
+				if (this.foodToAvoid.remove(item)) {
+					item.withoutDrug(this);
+					firePropertyChange(PROPERTY_ACTIVESUBSTANCE, item, null);
+				}
+			}
+		}
+		return this;
+	}
+
+	public FoodToAvoid createFoodToAvoid() {
+		final FoodToAvoid value = new FoodToAvoid();
+		withFoodToAvoid(value);
+		return value;
+	}
+
 
 }

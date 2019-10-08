@@ -1,17 +1,12 @@
 package com.doccuty.epill.drug;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.List;
-import java.util.Map;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,19 +14,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.doccuty.epill.authentication.ForbiddenException;
 import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.model.DrugFeature;
 import com.doccuty.epill.model.util.DrugCreator;
 import com.doccuty.epill.model.util.ItemInvocationCreator;
-import com.doccuty.epill.model.util.UserDrugPlanItemCreator;
 import com.doccuty.epill.user.UserService;
-import com.doccuty.epill.userdrugplan.DateUtils;
-import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
-import com.doccuty.epill.userdrugplan.UserDrugPlanItemViewModel;
+import com.doccuty.epill.userdrugplan.FoodToAvoid;
 
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
@@ -401,6 +391,34 @@ public class DrugController {
 		for (final ItemInvocation invocation : list) {
 			json.add(map.toJsonObject(invocation));
 		}
+
+		return new ResponseEntity<>(json, HttpStatus.OK);
+	}
+	
+	/**
+	 * get all foods to avoid
+	 * 
+	 * @return
+	 */
+
+	@RequestMapping(value = "/food/all", method = RequestMethod.GET)
+	public ResponseEntity<JsonObject> findAllFoodToAvoid() {
+
+		final List<FoodToAvoid> list = service.findAllFoodToAvoid();
+
+		// generate JSON formatted string
+
+		final IdMap map = DrugCreator.createIdMap("");
+		map.withFilter(Filter.regard(Deep.create(1)));
+
+		final JsonObject json = new JsonObject();
+		final JsonArray drugArray = new JsonArray();
+
+		for (final FoodToAvoid food : list) {
+			drugArray.add(map.toJsonObject(food));
+		}
+
+		json.add("value", drugArray);
 
 		return new ResponseEntity<>(json, HttpStatus.OK);
 	}

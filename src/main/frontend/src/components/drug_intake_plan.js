@@ -13,6 +13,7 @@ import Popup from "reactjs-popup";
 import ChangingDrugIntakePopup from "./changing_drug_intake_popup";
 import CheckBox from "./checkbox";
 import {toast} from 'react-toastify';
+import Clock from "./clock";
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about forms.
 class DrugIntakePlan extends React.Component {
@@ -109,7 +110,9 @@ class DrugIntakePlan extends React.Component {
                         <td className="td-style">
                             <div>{this.renderCheckBox(drugplanned)}</div>
                         </td>
-                        <td className="td-style">{drugplanned.timeString}</td>
+                        <td className="td-style">
+                        	{this.renderTimeString(drugplanned.timeString)}
+                        </td>
                         <td className="td-style">
                                 <div className="tab"><b>{this.renderDrugName(drugplanned)}</b></div>
                         </td>
@@ -125,15 +128,12 @@ class DrugIntakePlan extends React.Component {
                                    <td></td>
                                    <td>
                                    <p><b>{(t("usedWhen")) +": "}</b>{this.renderDiseases(drugplanned.drugsPlannedSameTime[i])}</p>
-                                       	{this.renderDrugIntakeIndications(drugplanned.drugsPlannedSameTime[i])}
-                                       	{drugplanned.drugsPlannedSameTime[i].personalizedInformation && <section className="minimum-summary" dangerouslySetInnerHTML={this.createMarkup(drugplanned.drugsPlannedSameTime[i].personalizedInformation)}/>}
+                                       	<div>
+                                       		{this.renderDrugIntakeIndications(drugplanned.drugsPlannedSameTime[i])}
+                                       		{this.renderFoodtoAvoid(drugplanned.drugsPlannedSameTime[i])}
+                                       	</div>
                                        <div>
-                                       {drugplanned.drugsPlannedSameTime.length > 1 && drugplanned.drugsPlannedSameTime[i].interactions.length > 0 &&
-                                           <div className={"alert alert-dismissable" + (User.redGreenColorblind ? " danger-red-green-colorblind" : " alert-danger") }>
-                                                   <h5>{t("interaction")}</h5>
-                                                   <span dangerouslySetInnerHTML={this.createMarkup(drugplanned.interaction)} />
-                                           </div>
-                       			     	}
+                                       {this.renderInteractions(drugplanned)}
                                        <Link to={`/drug/${drugplanned.drugsPlannedSameTime[i].link}`}>
                                                <h4>{t("forMoreInformation")}</h4>
                                        </Link>
@@ -147,6 +147,20 @@ class DrugIntakePlan extends React.Component {
                 }
                 return plannedRow;
         });
+    }
+    
+    renderInteractions(drugplanned) {
+    	const { t } = this.props;
+    	if (drugplanned.drugsPlannedSameTime.length > 1) {
+    		return (
+    				<div className={"alert alert-dismissable" + (User.redGreenColorblind ? " danger-red-green-colorblind" : " alert-danger") }>
+                    	<h5>{t("interaction")}</h5>
+                    	<span dangerouslySetInnerHTML={this.createMarkup(drugplanned.interaction)} />
+                    </div>	
+    		);
+    	} else {
+    		return "";
+    	} 
     }
 
     renderDiseases(drug) {
@@ -185,6 +199,21 @@ class DrugIntakePlan extends React.Component {
                 return (
                                 <p className="information"><span className="glyphicon glyphicon-info-sign"></span> {t("takeToMeals")}</p>
                 )
+        }
+        
+    }
+    
+    renderFoodtoAvoid(drugplanned) {
+    	const { t } = this.props;
+    	if (drugplanned.food.length != 0) {
+        	return drugplanned.food.map(foodName => {
+            	const drugFoodToAvoid = [
+            		<p className="information" key={foodName}><span className="glyphicon glyphicon-info-sign"></span> {t("tryToAvoid")+ " " +foodName}</p>
+            	];
+            	return drugFoodToAvoid;
+            	});
+        } else {
+        	return "";
         }
     }
     
@@ -227,6 +256,16 @@ class DrugIntakePlan extends React.Component {
                     onChange={this.handleTakenChange.bind(this)}/>	
     		)
     	}
+    }
+    
+    //render either timeString or Clock!!!
+    renderTimeString(timeString) {
+        var currentDate = new Date();
+        if (currentDate.getHours() == parseInt(timeString)) {
+                return ( <Clock showSeconds={true} />);
+        } else {
+                return timeString;
+        }
     }
 
     recalculatePlan() {
@@ -337,7 +376,7 @@ class DrugIntakePlan extends React.Component {
                                                 {t("showHideHalfTimePeriod")}
                                                 </Popup></th>
                                                 <th className="th-style"></th>
-                                                <th className="th-style">{t("time")}</th>
+                                                <th className="th-style th-time">{t("time")}</th>
                                                 <th className="th-style th-name">{t("name")}</th>
                                                 </tr>
                                         </thead>

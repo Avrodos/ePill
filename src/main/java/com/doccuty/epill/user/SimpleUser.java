@@ -560,7 +560,7 @@ public class SimpleUser implements SendableEntity {
 
 	// ==========================================================================
 
-	public static final String PROPERTY_SLEEP_TIME = "sleeptime";
+	public static final String PROPERTY_SLEEP_TIME = "sleepTime";
 
 	@Column(name = "sleep_time")
 	private int sleepTime;
@@ -584,7 +584,7 @@ public class SimpleUser implements SendableEntity {
 	
 	// ==========================================================================
 
-	public static final String PROPERTY_BREAKFAST_TIME = "breakfasttime";
+	public static final String PROPERTY_BREAKFAST_TIME = "breakfastTime";
 
 	@Column(name = "breakfast_time")
 	private int breakfastTime;
@@ -608,7 +608,7 @@ public class SimpleUser implements SendableEntity {
 
 	// ==========================================================================
 
-	public static final String PROPERTY_LUNCH_TIME = "lunchtime";
+	public static final String PROPERTY_LUNCH_TIME = "lunchTime";
 
 	@Column(name = "lunch_time")
 	private int lunchTime;
@@ -632,7 +632,7 @@ public class SimpleUser implements SendableEntity {
 
 	// ==========================================================================
 
-	public static final String PROPERTY_DINNER_TIME = "dinnertime";
+	public static final String PROPERTY_DINNER_TIME = "dinnerTime";
 
 	@Column(name = "dinner_time")
 	private int dinnerTime;

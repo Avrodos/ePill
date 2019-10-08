@@ -27,6 +27,7 @@ import com.doccuty.epill.user.UserService;
 import com.doccuty.epill.userprescription.UserPrescription;
 import com.doccuty.epill.userprescription.UserPrescriptionItem;
 import com.doccuty.epill.userprescription.UserPrescriptionRepository;
+import com.doccuty.epill.userdrugplan.FoodToAvoid;
 
 /**
  * service methods used for user drug plan
@@ -151,6 +152,7 @@ public class UserDrugPlanService {
 					drugViewModel.setTakeOnEmptyStomach(item.getDrug().getTakeOnEmptyStomach());
 					drugViewModel.setTakeOnFullStomach(item.getDrug().getTakeOnFullStomach());
 					drugViewModel.setDiseases(getDiseases(item));
+					drugViewModel.setFood(getFoods(item));
 					drugViewModel.setInteractions(getInteractions(item));
 					TailoredText tt = this.tailoringService.getTailoredMinimumSummaryByDrugAndUser(item.getDrug(), currentUser);
 					if (tt != null) {
@@ -200,6 +202,14 @@ public class UserDrugPlanService {
 				diseases.add(disease.getName());
 			}
 			return diseases;
+		}
+		
+		private List<String> getFoods(UserDrugPlanItem item) {
+			List<String> foods = new ArrayList<>();
+			for (FoodToAvoid food : item.getDrug().getFoodToAvoid()) {
+				foods.add(food.getFoodToAvoid());
+			}
+			return foods;
 		}
 		
 		/**
