@@ -34,7 +34,19 @@ public interface UserDrugPlanItemRepository extends JpaRepository<UserDrugPlanIt
 	 * @return
 	 */
 	@Query("SELECT p FROM UserDrugPlanItem p WHERE p.user.id = :userid AND p.dateTimePlanned >= :startDate AND p.dateTimePlanned <= :endDate ORDER BY p.dateTimePlanned")
-	List<UserDrugPlanItem> findByUserBetweenDates(@Param("userid") long id, @Param("startDate") Date startDate,
+	List<UserDrugPlanItem> findByUserBetweenDates(@Param("userid") long userid, @Param("startDate") Date startDate,
+			@Param("endDate") Date endDate);
+	
+	/**
+	 * find not taken drugs for user between two date times 
+	 * 
+	 * @param user
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	@Query("SELECT p FROM UserDrugPlanItem p WHERE p.drugTaken=false AND p.user.id = :userid AND p.dateTimePlanned >= :startDate AND p.dateTimePlanned <= :endDate ORDER BY p.dateTimePlanned")
+	List<UserDrugPlanItem> findNotTakenBetweenDates(@Param("userid") long userid, @Param("startDate") Date startDate,
 			@Param("endDate") Date endDate);
 
 	/**
@@ -54,9 +66,8 @@ public interface UserDrugPlanItemRepository extends JpaRepository<UserDrugPlanIt
 	/**
 	 * update drug taken for UserDrugPlanItem 
 	 * 
-	 * @param user
-	 * @param startDate
-	 * @param endDate
+	 * @param userDrugPlanItemId
+	 * @param isTaken
 	 * @return
 	 */
 	@Transactional

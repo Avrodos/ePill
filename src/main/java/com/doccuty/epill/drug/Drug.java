@@ -1055,7 +1055,7 @@ public class Drug extends SimpleDrug {
 	 * <pre>
 	 *              many                       many
 	 * Drug ----------------------------------- FoodToAvoid
-	 *              drug                   	foodToAvoid
+	 *              drugs                   	foodsToAvoid
 	 * </pre>
 	 */
 

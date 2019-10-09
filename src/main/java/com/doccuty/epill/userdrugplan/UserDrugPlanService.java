@@ -80,43 +80,55 @@ public class UserDrugPlanService {
 				userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
 			}
 			Date lastDateTime = (Date) dateFrom.clone();
-			int counterIntermediateSteps = -1;
 			for (int hour = currentUser.getBreakfastTime(); hour <= currentUser.getSleepTime() + 1; hour++) {
 				final int hourToCompare = hour;
 				final List<UserDrugPlanItem> plannedItemsForHour = userDrugItemsPlanned.stream().parallel()
-						.filter(p -> DateUtils.getHours(p.getDatetimeIntakePlanned()) == hourToCompare)
+						.filter(p -> DateUtils.getHours(p.getDateTimeIntake()) == hourToCompare)
 						.collect(Collectors.toList());
 				if (!plannedItemsForHour.isEmpty()) {
 					// Collect all items in one String, take the longest halftime period
-					lastDateTime = (Date) plannedItemsForHour.get(0).getDatetimeIntakePlanned();
-					userDrugPlanView.add(mapUserDrugPlanToView(plannedItemsForHour, currentUser, 0));
+					lastDateTime = (Date) plannedItemsForHour.get(0).getDateTimeIntake();
+					userDrugPlanView.add(mapUserDrugPlanToView(plannedItemsForHour, currentUser));
 				} else {
 					// intermediate step
 					final UserDrugPlanItem userDrugPlanItemIntermediate = new UserDrugPlanItem();
 					userDrugPlanItemIntermediate.setUser(currentUser);
 					userDrugPlanItemIntermediate.setDateTimePlanned(DateUtils.setHoursOfDate(lastDateTime, hour)); 
+					userDrugPlanItemIntermediate.setDateTimeIntake(userDrugPlanItemIntermediate.getDateTimePlanned());
 					List<UserDrugPlanItem> items = new ArrayList<>();
 					items.add(userDrugPlanItemIntermediate);
 					
-					userDrugPlanView.add(mapUserDrugPlanToView(items, currentUser, counterIntermediateSteps--));
+					userDrugPlanView.add(mapUserDrugPlanToView(items, currentUser));
 				}
 			}
 			LOG.info("items={} in UserDrugPlan with intermediate steps", userDrugPlanView.size());
 			return setHalftimeAndPercentagePerDrugPlanItem(userDrugPlanView);
 		}
 		
+		
+		public List<UserDrugPlanItemViewModel> getDrugPlanItemsNotTakenBetweenDates(Date dateFrom, Date dateTo) {
+			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
+			final List<UserDrugPlanItemViewModel> drugsNotTaken = new ArrayList<>();
+			List<UserDrugPlanItem> drugsNotTakenBetweenDates = this.getDrugsNotTakenBetweenDates(dateFrom, dateTo);
+			for (UserDrugPlanItem item : drugsNotTakenBetweenDates) {
+				List<UserDrugPlanItem> items = new ArrayList<>();
+				items.add(item);
+				drugsNotTaken.add(mapUserDrugPlanToView(items, currentUser));
+			}
+			return drugsNotTaken;
+		}
+		
 		/**
 		 * map UserDrugPlan to UserDrugPlanItemViewModel
 		 * 
 		 * @param plannedItemsForHour
-		 * @param counterIntermediateSteps 
 		 * @param user
 		 * @return
 		 */
-		private UserDrugPlanItemViewModel mapUserDrugPlanToView(List<UserDrugPlanItem> plannedItemsForHour, User currentUser, int counterIntermediateSteps) {
+		private UserDrugPlanItemViewModel mapUserDrugPlanToView(List<UserDrugPlanItem> plannedItemsForHour, User currentUser) {
 			final UserDrugPlanItemViewModel model = new UserDrugPlanItemViewModel();
 			final Calendar calendar = GregorianCalendar.getInstance();
-			calendar.setTime(plannedItemsForHour.get(0).getDatetimeIntakePlanned());
+			calendar.setTime(plannedItemsForHour.get(0).getDateTimeIntake());
 			model.setTimeString(String.format("%02d:00", calendar.get(Calendar.HOUR_OF_DAY)));
 			final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 			model.setDateString(format.format(calendar.getTime()));
@@ -134,7 +146,7 @@ public class UserDrugPlanService {
 				model.setPercentage(0);
 				model.setHalfTimePeriod(0);
 				model.setDrugsPlannedSameTime(new ArrayList<>());
-				model.setUserDrugPlanItemId(counterIntermediateSteps);
+				model.setUserDrugPlanItemId(- calendar.get(Calendar.HOUR_OF_DAY));  //store negative hourOfDay
 			} else {
 				// intake 1 or more drugs
 				model.setIntermediateStep(false);
@@ -257,7 +269,7 @@ public class UserDrugPlanService {
 		}
 
 		/**
-		 * get User drug plan between two dates (only for planned intake timestamps)
+		 * get User drug plan items between two dates (only for planned intake timestamps)
 		 * 
 		 * @param dateFrom
 		 * @param dateTo
@@ -267,6 +279,22 @@ public class UserDrugPlanService {
 
 			final Long userId = userService.getCurrentUser().getId();
 			final List<UserDrugPlanItem> userDrugPlans = userDrugPlanRepository.findByUserBetweenDates(userId, dateFrom,
+					dateTo);
+			LOG.info("found items={} in UserDrugPlan", userDrugPlans.size());
+			return userDrugPlans;
+		}
+		
+		/**
+		 * get User drug plan items not taken between two date times - 
+		 * 
+		 * @param dateFrom
+		 * @param dateTo
+		 * @return
+		 */
+		public List<UserDrugPlanItem> getDrugsNotTakenBetweenDates(Date dateFrom, Date dateTo) {
+
+			final Long userId = userService.getCurrentUser().getId();
+			final List<UserDrugPlanItem> userDrugPlans = userDrugPlanRepository.findNotTakenBetweenDates(userId, dateFrom,
 					dateTo);
 			LOG.info("found items={} in UserDrugPlan", userDrugPlans.size());
 			return userDrugPlans;
@@ -298,7 +326,7 @@ public class UserDrugPlanService {
 
 		private void logDrugPlanItems(String message, List<UserDrugPlanItem> items) {
 			for (final UserDrugPlanItem item : items) {
-				LOG.info("{}: drug {}: {}", message, item.getDrug().getName(), item.getDatetimeIntakePlanned());
+				LOG.info("{}: drug {}: {}", message, item.getDrug().getName(), item.getDateTimeIntake());
 			}
 
 		}
@@ -306,13 +334,24 @@ public class UserDrugPlanService {
 		/**
 		 * set flag if drug is taken or not
 		 * @param userDrugPlanItemId - id of UserDrugPlanItem
-		 * @param isTaken - 
+		 * @param isTaken - true/false
+		 * @param intakeHour - hour of intake 
 		 */
-		public void setDrugTaken(long userDrugPlanItemId, boolean isTaken) {
-			LOG.info("set drug taken for userDrugPlanItemId {} to {}", userDrugPlanItemId, isTaken);
-			userDrugPlanRepository.updateDrugTaken(userDrugPlanItemId, isTaken);
+		public void setDrugTaken(long userDrugPlanItemId, boolean isTaken, Integer intakeHour) {
+			LOG.info("set drug taken {} for userDrugPlanItemId {}, intake hour = {}", userDrugPlanItemId, isTaken, intakeHour);
 			UserDrugPlanItem item = userDrugPlanRepository.getOne(userDrugPlanItemId);
-			LOG.info("updated drugTaken for userDrugPlanItemId {} to {}", userDrugPlanItemId, item.getDrugTaken());
+			if (intakeHour != null && intakeHour > 0) {
+				Date dateTimeIntake = DateUtils.setHoursOfDate(item.getDateTimeIntake(), intakeHour);
+				LOG.info("datetime intake = {}", dateTimeIntake);
+				item.setDateTimeIntake(dateTimeIntake);
+				item.setDateTimePlanned(dateTimeIntake);  //TODO
+				item.setDrugTaken(isTaken);
+				userDrugPlanRepository.save(item);
+			} else {
+				userDrugPlanRepository.updateDrugTaken(userDrugPlanItemId, isTaken);
+			}
+			item = userDrugPlanRepository.getOne(userDrugPlanItemId);
+			LOG.info("updated drugTaken = {} for userDrugPlanItemId {}, intakeTime = {}", userDrugPlanItemId, item.getDrugTaken(), item.getDateTimeIntake());
 		}
 
 		/**

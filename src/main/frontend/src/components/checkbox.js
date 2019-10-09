@@ -20,8 +20,6 @@ class CheckBox extends React.Component{
 
           onChangeChecked(event) {
                 // pass isChecked and id of changed CheckBox to parent
-                //const fieldName = event.target.name;
-                //const fieldValue = event.target.value;
                 this.props.onChange(this.props.checked, this.props.id);
           }
 

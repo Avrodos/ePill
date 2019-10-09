@@ -15,6 +15,7 @@ public class DrugTakenRequestParameter {
 
 	private boolean drugTaken;
 	private long userDrugPlanItemId;
+	private Integer intakeHour;
 	
 	public boolean getDrugTaken() {
 		return drugTaken;
@@ -28,5 +29,10 @@ public class DrugTakenRequestParameter {
 	public void setUserDrugPlanItemId(long userDrugPlanItemId) {
 		this.userDrugPlanItemId = userDrugPlanItemId;
 	}
+	public Integer getIntakeHour() {
+		return intakeHour;
+	}
+	public void setIntakeHour(Integer intakeHour) {
+		this.intakeHour = intakeHour;
+	}
 }
-

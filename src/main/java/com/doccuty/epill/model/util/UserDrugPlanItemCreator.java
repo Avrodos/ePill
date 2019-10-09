@@ -36,7 +36,8 @@ public class UserDrugPlanItemCreator implements SendableEntityCreatorNoIndex
       UserDrugPlanItem.PROPERTY_ID, UserDrugPlanItem.PROPERTY_DATETIME_INTAKE_PLANNED,
            UserDrugPlanItem.PROPERTY_DRUG,
            UserDrugPlanItem.PROPERTY_USER, 
-           UserDrugPlanItem.PROPERTY_DRUG_TAKEN
+           UserDrugPlanItem.PROPERTY_DRUG_TAKEN,
+           UserDrugPlanItem.PROPERTY_DATETIME_INTAKE
    };
 
    @Override
@@ -70,7 +71,7 @@ public class UserDrugPlanItemCreator implements SendableEntityCreatorNoIndex
 
       if (UserDrugPlanItem.PROPERTY_DATETIME_INTAKE_PLANNED.equalsIgnoreCase(attribute))
       {
-         return ((UserDrugPlanItem) target).getDatetimeIntakePlanned();
+         return ((UserDrugPlanItem) target).getDateTimePlanned();
       }
 
       if (UserDrugPlanItem.PROPERTY_DRUG.equalsIgnoreCase(attribute))
@@ -86,6 +87,11 @@ public class UserDrugPlanItemCreator implements SendableEntityCreatorNoIndex
       if (UserDrugPlanItem.PROPERTY_DRUG_TAKEN.equalsIgnoreCase(attribute))
       {
          return ((UserDrugPlanItem) target).getDrugTaken();
+      }
+      
+      if (UserDrugPlanItem.PROPERTY_DATETIME_INTAKE.equalsIgnoreCase(attribute))
+      {
+         return ((UserDrugPlanItem) target).getDateTimeIntake();
       }
 
       return null;
@@ -126,6 +132,12 @@ public class UserDrugPlanItemCreator implements SendableEntityCreatorNoIndex
       if (UserDrugPlanItem.PROPERTY_DRUG_TAKEN.equalsIgnoreCase(attrName))
       {
          ((UserDrugPlanItem) target).setDrugTaken( Boolean.parseBoolean( value.toString()));
+         return true;
+      }
+      
+      if (UserDrugPlanItem.PROPERTY_DATETIME_INTAKE.equalsIgnoreCase(attrName))
+      {
+         ((UserDrugPlanItem) target).setDateTimeIntake((Date) value);
          return true;
       }
 

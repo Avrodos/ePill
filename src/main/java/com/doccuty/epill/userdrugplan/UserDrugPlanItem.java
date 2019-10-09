@@ -81,7 +81,7 @@ public class UserDrugPlanItem implements SendableEntity {
 	@Column(nullable = false)
 	private Date dateTimePlanned;
 
-    public Date getDatetimeIntakePlanned()
+    public Date getDateTimePlanned()
     {
         return this.dateTimePlanned;
     }
@@ -95,9 +95,36 @@ public class UserDrugPlanItem implements SendableEntity {
         }
     }
 
-    public UserDrugPlanItem withTimestamp(Date value)
+    public UserDrugPlanItem withDateTimePlanned(Date value)
     {
         setDateTimePlanned(value);
+        return this;
+    }
+
+    //Planned Timestamp for drug taking==========================================================================
+    public static final String PROPERTY_DATETIME_INTAKE = "datetime_intake";
+
+    @Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false)
+	private Date dateTimeIntake;
+
+    public Date getDateTimeIntake()
+    {
+        return this.dateTimeIntake;
+    }
+
+    public void setDateTimeIntake(Date value)
+    {
+        if (this.dateTimeIntake != value) {
+            Date oldValue = this.dateTimeIntake;
+            this.dateTimeIntake = value;
+            this.firePropertyChange(PROPERTY_DATETIME_INTAKE, oldValue, value);
+        }
+    }
+
+    public UserDrugPlanItem withDateTimeIntake(Date value)
+    {
+        setDateTimeIntake(value);
         return this;
     }
     
@@ -238,6 +265,7 @@ public class UserDrugPlanItem implements SendableEntity {
         setDrug(null);
         setUser(null);
         setDateTimePlanned(null);
+        setDateTimeIntake(null);
         firePropertyChange("REMOVE_YOU", this, null);
     }
 

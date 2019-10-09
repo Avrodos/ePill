@@ -49,9 +49,9 @@ public class DateUtils {
 		return newDate;
 	}
 
-	public static int getHours(Date datetimeIntakePlanned) {
+	public static int getHours(Date date) {
 		final Calendar calendar = GregorianCalendar.getInstance();
-		calendar.setTime(datetimeIntakePlanned);
+		calendar.setTime(date);
 		return calendar.get(Calendar.HOUR_OF_DAY);
 	}
 

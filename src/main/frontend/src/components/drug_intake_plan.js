@@ -25,10 +25,21 @@ class DrugIntakePlan extends React.Component {
             date : new Date(),
             percentage : 100,
             expandedRows: [],
-            showProgressBar: false
+            showProgressBar: false,
+            errorMessage: '',
+            backendError: false,
+            showDrugIntakePopup: false,
+            showDrugsNotTakenBeforeHour: 0
         };
         this.output = this.handleTakenChange.bind(this);
         this.handleShowProgressBar = this.handleShowProgressBar.bind(this);
+    }
+    
+    setBackendError(backendError, errorMessage) {
+        this.state.backendError = backendError;
+        this.state.errorMessage = errorMessage;
+        this.setState(this.state);
+        console.log("backendError=" + backendError + ", error message = " + errorMessage);
     }
 
     // This function is called before render() to initialize its state.
@@ -54,7 +65,48 @@ class DrugIntakePlan extends React.Component {
                 this.setState(this.state);
         });
     }
+    
+ getDrugsNotTakenBefore(beforeHour) {
+    	
+        console.log("getDrugsNotTakenBefore hour: " + beforeHour);
+    	
+        this.state.loading = true;
+        this.setState(this.state);
+        return axios.get("/drugplan/nottaken/date", {
+                        params: {
+                          date: this.state.date, 
+                          hour: beforeHour
+                        }
+                      }, {
+                          validateStatus: (status) => {
+                              console.log("status=" + status);
+                              return (status >= 200 && status < 300) || status == 400 || status == 401
+                          }
+                      }).then(({ data, status }) => {
+                    	  console.log("status=" + status);
+                          const {t} = this.props;
 
+                          switch (status) {
+                              case 200:
+                                  console.log("getDrugsNotTakenBefore status 200");
+                                  this.setBackendError(false, '');
+                                  this.state.drugsNotTaken = data;
+                                  this.state.loading = false;
+                                  this.setState(this.state);
+                                  return true;  //success
+                                  break;
+                              case 400:
+                                 this.setBackendError(true, 'backend error (400)');
+                                  break;
+                              case 401:
+                                 this.setBackendError(true, 'backend error (401)');
+                                 break;
+                          }
+                          return false;
+                      }
+        );
+    }
+    
     // for html conversion
     createMarkup(text) {
         return { __html: text };
@@ -86,16 +138,38 @@ class DrugIntakePlan extends React.Component {
       }
 
     handleTakenChange(isChecked, userDrugPlanItemId) {
-        // parent class change handler is always called with field name and value
-        //this.setState({[field]: value});
         console.log("isChecked=" + isChecked + ", userDrugPlanItemId="+ userDrugPlanItemId);
-        var isDrugTaken = !isChecked;  //toggle
-        this.setDrugTaken(isDrugTaken, userDrugPlanItemId);
+        if (userDrugPlanItemId < 0) {
+        	//intermediate step: find items before time
+        	var beforeHour = - userDrugPlanItemId;
+        	this.getDrugsNotTakenBefore(beforeHour).then(() => {
+                console.log("getDrugsNotTakenBefore succeeded...");
+                this.state.showDrugIntakePopup = true;
+                this.state.showDrugsNotTakenBeforeHour = beforeHour;
+                this.setState(this.state);
+            })
+            .catch(err => {
+                console.log("error getDrugsNotTakenBefore...${err}");
+            });
+        } else {
+        	//update drug taken
+            var isDrugTaken = !isChecked;  //toggle
+            this.setDrugTaken(isDrugTaken, userDrugPlanItemId);
+        }
     }
     
     handleShowProgressBar() {
     	console.log("showProgressBar " + this.state.showProgressBar);
     	this.setState({ showProgressBar: !this.state.showProgressBar});
+    }
+    
+    renderTimeString(timeString) {
+    	var currentDate = new Date();
+    	if (currentDate.getHours() == parseInt(timeString)) {
+    		return ( <Clock showSeconds={true} />);
+    	} else {
+    		return timeString;
+    	}
     }
 
     renderDrugsPlanned(drugsplanned) {
@@ -258,15 +332,6 @@ class DrugIntakePlan extends React.Component {
     	}
     }
     
-    //render either timeString or Clock!!!
-    renderTimeString(timeString) {
-        var currentDate = new Date();
-        if (currentDate.getHours() == parseInt(timeString)) {
-                return ( <Clock showSeconds={true} />);
-        } else {
-                return timeString;
-        }
-    }
 
     recalculatePlan() {
                 axios.post('/drugplan/calculate/date', { date: moment(this.state.date).format("DD.MM.YYYY")}, {
@@ -368,6 +433,22 @@ class DrugIntakePlan extends React.Component {
                         {!this.state.loading && drugsplanned && drugsplanned.length == 0 && (
                             <EmptyList />
                         )}
+                        {this.state.showDrugIntakePopup && (
+                            	<Popup 
+                            	    open={this.state.showDrugIntakePopup}
+                              	    position="right center" modal
+                                    trigger={<button type="button">Drugs Not Taken</button>}>
+    	                            {close =>
+    		                            <div>
+    		                               <a className="close" onClick={close}>&times;</a>
+    		                               <ChangingDrugIntakePopup drugsNotTaken={this.state.drugsNotTaken} 
+    		                               		intakeHour={this.state.showDrugsNotTakenBeforeHour}
+    		                                    updateNavigation={this.props.updateNavigation}/>
+    		                            </div>
+    	                            }
+    	                            </Popup>
+    	                        )
+                          }
                         {!this.state.loading && drugsplanned && drugsplanned.length > 0 && (
                                 <table id="drugsplanned" className="table-style">
                                         <thead>

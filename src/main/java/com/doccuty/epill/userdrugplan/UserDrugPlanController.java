@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.h2.util.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,39 @@ public class UserDrugPlanController {
 			LOG.info("getUserDrugsPlanned, count of drugs={}", userDrugPlanList.size());
 			return userDrugPlanList;
 		}
+		
+		/**
+		 * get not taken drugs for user for day before date time
+		 * 
+		 * @param day
+		 * @param hours
+		 * @return
+		 */
+		@RequestMapping(value = { "/nottaken/date" }, method = RequestMethod.GET)
+		@ResponseBody
+		public List<UserDrugPlanItemViewModel> getDrugsNotTakenForDayBeforeHour(
+				@RequestParam(value = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date day, 
+				@RequestParam(value = "hour") int hours) {
+			
+			LOG.info("getDrugsNotTakenForDayBeforeHour(" + day + ", " + hours + ")");
 
+			// A pragmatic approach to security which does not use much
+			// framework-specific magic. While other approaches
+			// with annotations, etc. are possible they are much more complex while
+			// this is quite easy to understand and
+			// extend.
+			if (userService.isAnonymous()) {
+				throw new ForbiddenException();
+			}
+			
+			Date beforeDateTime = DateUtils.setHoursOfDate(day, hours);
+			LOG.info("beforeDateTime: " + beforeDateTime);
+			final List<UserDrugPlanItemViewModel> drugsNotTaken = service.getDrugPlanItemsNotTakenBetweenDates(
+					DateUtils.asDateStartOfDay(day), beforeDateTime);
+			LOG.info("get drugs not taken, count of drugs={}", drugsNotTaken.size());
+			return drugsNotTaken;
+		}
+		
 		/**
 		 * set drug taken / not taken
 		 * 
@@ -86,7 +119,7 @@ public class UserDrugPlanController {
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			}
 
-			service.setDrugTaken(requestParam.getUserDrugPlanItemId(), requestParam.getDrugTaken());
+			service.setDrugTaken(requestParam.getUserDrugPlanItemId(), requestParam.getDrugTaken(), requestParam.getIntakeHour());
 
 			LOG.info("drug taken set");
 

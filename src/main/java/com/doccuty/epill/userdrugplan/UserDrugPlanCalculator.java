@@ -37,7 +37,7 @@ public class UserDrugPlanCalculator {
                         userDrugPlanForDay.addAll(createDefaultUserDrugPlanItems(drug, user, day));
                 }
 
-                userDrugPlanForDay = getSortedUserDrugPlanByDatetimeIntakePlanned(userDrugPlanForDay);
+                userDrugPlanForDay = getSortedUserDrugPlanByDatetimeIntake(userDrugPlanForDay);
 
                 //userDrugPlanForDay = adjustUserDrugPlanByInteractions(userDrugPlanForDay);
 
@@ -61,14 +61,14 @@ public class UserDrugPlanCalculator {
                         //check interactions with next drug
                         if (checkInteraction(userDrugPlanForDay.get(i), userDrugPlanForDay.get(i + 1))) {
                         	if (checkAdjustmentAllowed(userDrugPlanForDay.get(i + 1))) {
-                                adjustDateTimeIntakePlanned(userDrugPlanForDay.get(i + 1));
+                                adjustDateTimePlanned(userDrugPlanForDay.get(i + 1));
                         	} else if (checkAdjustmentAllowed(userDrugPlanForDay.get(i))) {
-                                adjustDateTimeIntakePlanned(userDrugPlanForDay.get(i + 1));
+                                adjustDateTimePlanned(userDrugPlanForDay.get(i + 1));
                         	}
                         }
                 }
 
-                return getSortedUserDrugPlanByDatetimeIntakePlanned(userDrugPlanForDay);
+                return getSortedUserDrugPlanByDatetimeIntake(userDrugPlanForDay);
         }
 
        private boolean checkAdjustmentAllowed( UserDrugPlanItem userDrugPlan) {
@@ -83,13 +83,15 @@ public class UserDrugPlanCalculator {
         *
         * @param userDrugPlanItemToAdjust
         */
-       private void adjustDateTimeIntakePlanned(UserDrugPlanItem userDrugPlanItemToAdjust) {
+       private void adjustDateTimePlanned(UserDrugPlanItem userDrugPlanItemToAdjust) {
                LOG.info("adjust intake time for {}, current intake time = {}, add hours",
-                               userDrugPlanItemToAdjust.getDrug().getName(), userDrugPlanItemToAdjust.getDatetimeIntakePlanned());
+                               userDrugPlanItemToAdjust.getDrug().getName(), userDrugPlanItemToAdjust.getDateTimePlanned());
                userDrugPlanItemToAdjust
-                               .setDateTimePlanned(DateUtils.setHoursOfDate(userDrugPlanItemToAdjust.getDatetimeIntakePlanned(), 2));
+                               .setDateTimePlanned(DateUtils.setHoursOfDate(userDrugPlanItemToAdjust.getDateTimePlanned(), 2));
+               userDrugPlanItemToAdjust
+               		.setDateTimeIntake(userDrugPlanItemToAdjust.getDateTimePlanned());
                LOG.info("intake time for {} adjusted: current intake time = {}", userDrugPlanItemToAdjust.getDrug().getName(),
-                               userDrugPlanItemToAdjust.getDatetimeIntakePlanned());
+                               userDrugPlanItemToAdjust.getDateTimePlanned());
        }
 
        /**
@@ -125,25 +127,26 @@ public class UserDrugPlanCalculator {
                 return calendar.getTime();
         }
 
-        private List<UserDrugPlanItem> createDefaultUserDrugPlanItemsOld(Drug drug, User user, Date day) {
-                final List<UserDrugPlanItem> userDrugPlanForDay = new ArrayList<>();
-                LOG.info("create default plan for day={} user={} drug={}", day, user.getUsername(), drug.getName());
-                if (drug.getCountPerDay() == 1) {
-                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getBreakfastTime()));
-                } else if (drug.getCountPerDay() == 2) {
-                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getBreakfastTime()));
-                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getDinnerTime()));
-                } else if (drug.getCountPerDay() == 3) {
-                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getBreakfastTime()));
-                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getLunchTime()));
-                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getDinnerTime()));
-                } else if (drug.getCountPerDay() > 3) {
-                        LOG.warn("not supported for more than 3 intake times per day");
-                }
-                LOG.info("created {} items day={} user={} drug={}", userDrugPlanForDay.size(), day, user.getUsername(),
-                                drug.getName());
-                return userDrugPlanForDay;
-        }
+//        private List<UserDrugPlanItem> createDefaultUserDrugPlanItemsOld(Drug drug, User user, Date day) {
+//                final List<UserDrugPlanItem> userDrugPlanForDay = new ArrayList<>();
+//                LOG.info("create default plan for day={} user={} drug={}", day, user.getUsername(), drug.getName());
+//                if (drug.getCountPerDay() == 1) {
+//                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getBreakfastTime()));
+//                } else if (drug.getCountPerDay() == 2) {
+//                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getBreakfastTime()));
+//                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getDinnerTime()));
+//                } else if (drug.getCountPerDay() == 3) {
+//                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getBreakfastTime()));
+//                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getLunchTime()));
+//                        userDrugPlanForDay.add(createDefaultUserDrugPlanItem(drug, user, day, this.user.getDinnerTime()));
+//                } else if (drug.getCountPerDay() > 3) {
+//                        LOG.warn("not supported for more than 3 intake times per day");
+//                }
+//                LOG.info("created {} items day={} user={} drug={}", userDrugPlanForDay.size(), day, user.getUsername(),
+//                                drug.getName());
+//                return userDrugPlanForDay;
+//        }
+//        
         
         private List<UserDrugPlanItem> createDefaultUserDrugPlanItems(Drug drug, User user, Date day) {
             final List<UserDrugPlanItem> userDrugPlanForDay = new ArrayList<>();
@@ -161,7 +164,8 @@ public class UserDrugPlanCalculator {
         private UserDrugPlanItem createDefaultUserDrugPlanItem(Drug drug, User user, Date day, int hourOfDay) {
                 final UserDrugPlanItem item = new UserDrugPlanItem();
                 item.setDateTimePlanned(getDate(day, hourOfDay));
-                LOG.info("planned time {} for drug {} ", item.getDatetimeIntakePlanned(), drug.getName());
+                item.setDateTimeIntake(item.getDateTimePlanned());
+                LOG.info("planned time {} for drug {} ", item.getDateTimePlanned(), drug.getName());
                 item.setUser(user);
                 item.setDrug(drug);
                 return item;
@@ -175,10 +179,9 @@ public class UserDrugPlanCalculator {
                 return cal.getTime();
         }
 
-        private List<UserDrugPlanItem> getSortedUserDrugPlanByDatetimeIntakePlanned(List<UserDrugPlanItem> userDrugPlanForDay) {
-                userDrugPlanForDay.sort(Comparator.comparing(o -> o.getDatetimeIntakePlanned()));
+        private List<UserDrugPlanItem> getSortedUserDrugPlanByDatetimeIntake(List<UserDrugPlanItem> userDrugPlanForDay) {
+                userDrugPlanForDay.sort(Comparator.comparing(o -> o.getDateTimeIntake()));
                 return userDrugPlanForDay;
         }
 
 }
-

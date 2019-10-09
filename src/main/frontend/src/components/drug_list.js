@@ -91,12 +91,12 @@ class DrugList extends React.Component {
 
     // This function is called before render() to initialize its state.
     componentWillMount() {
-                this.setCmd();
+        this.setCmd();
     }
 
     componentWillReceiveProps(props){
                 this.props = props;
-        this.setCmd();
+        //this.setCmd();
      }
 
 
@@ -356,18 +356,18 @@ class DrugList extends React.Component {
                         </button>
                 );
             } else {
-                    return (                             
-                            <Popup className="popup-druglist" 
-                                    trigger={<button type="button" className="btn btn-xs btn-like" >
-                                            <span className="glyphicon white glyphicon-heart"></span></button>}>
+                return (                             
+                        <Popup className="popup-druglist" 
+                                trigger={<button type="button" className="btn btn-xs btn-like" >
+                                        <span className="glyphicon white glyphicon-heart"></span></button>}>
                             {close =>
-                            <div>
-                               <a className="close" onClick={close}>&times;</a>
-                               <DrugIntakePopup drugId={drug.id} drugName={drug.name} updateNavigation={this.props.updateNavigation}/>
-                       </div>
-                    }
+	                            <div>
+	                               <a className="close" onClick={close}>&times;</a>
+	                               <DrugIntakePopup drugId={drug.id} drugName={drug.name} updateNavigation={this.props.updateNavigation}/>
+	                            </div>
+                            }
                             </Popup>
-                            );
+                        );
             }
     }
 
