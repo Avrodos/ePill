@@ -332,6 +332,11 @@ class DrugIntakePlan extends React.Component {
     	}
     }
     
+    callbackDrugIntakePopup(isDrugTaken, userDrugPlanItemId) {
+        console.log('callbackDrugIntakePopup --- ' + isDrugTaken + ", " + userDrugPlanItemId);
+        this.getData();
+    }
+    
 
     recalculatePlan() {
                 axios.post('/drugplan/calculate/date', { date: moment(this.state.date).format("DD.MM.YYYY")}, {
@@ -434,21 +439,22 @@ class DrugIntakePlan extends React.Component {
                             <EmptyList />
                         )}
                         {this.state.showDrugIntakePopup && (
-                            	<Popup 
-                            	    open={this.state.showDrugIntakePopup}
-                              	    position="right center" modal
-                                    trigger={<button type="button">Drugs Not Taken</button>}>
-    	                            {close =>
-    		                            <div>
-    		                               <a className="close" onClick={close}>&times;</a>
-    		                               <ChangingDrugIntakePopup drugsNotTaken={this.state.drugsNotTaken} 
-    		                               		intakeHour={this.state.showDrugsNotTakenBeforeHour}
-    		                                    updateNavigation={this.props.updateNavigation}/>
-    		                            </div>
-    	                            }
-    	                            </Popup>
-    	                        )
-                          }
+                                <Popup
+                                    open={this.state.showDrugIntakePopup}
+                                    position="right center" modal
+                                trigger={<button type="button">Drugs Not Taken</button>}>
+                                    {close =>
+                                            <div>
+                                               <a className="close" onClick={close}>&times;</a>
+                                               <ChangingDrugIntakePopup drugsNotTaken={this.state.drugsNotTaken}
+                                                        intakeHour={this.state.showDrugsNotTakenBeforeHour}
+                                                    callbackParent={this.callbackDrugIntakePopup}
+                                                    updateNavigation={this.props.updateNavigation}/>
+                                            </div>
+                                    }
+                                    </Popup>
+                                )
+                        }
                         {!this.state.loading && drugsplanned && drugsplanned.length > 0 && (
                                 <table id="drugsplanned" className="table-style">
                                         <thead>

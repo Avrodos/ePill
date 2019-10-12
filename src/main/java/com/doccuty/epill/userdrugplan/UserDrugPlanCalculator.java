@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.doccuty.epill.drug.Drug;
 import com.doccuty.epill.model.Interaction;
@@ -17,6 +18,9 @@ import com.doccuty.epill.userprescription.UserPrescriptionItem;
 
 public class UserDrugPlanCalculator {
         private static final Logger LOG = LoggerFactory.getLogger(UserDrugPlanCalculator.class);
+        
+        @Autowired
+		UserDrugPlanItemRepository userDrugPlanRepository;
 
         private final User user;
         private final List<Drug> userDrugsTaking;
@@ -43,36 +47,36 @@ public class UserDrugPlanCalculator {
 
                 return userDrugPlanForDay;
         }
-
-        private List<UserDrugPlanItem> adjustUserDrugPlanByInteractions(List<UserDrugPlanItem> userDrugPlanForDay) {
-                final StringBuilder interactionText = new StringBuilder();
-                for (int i = 0; i < userDrugPlanForDay.size() - 1; i++) {
-                        // check interactions between drugs
-                        // if interaction:
-                        final Drug drug = userDrugPlanForDay.get(i).getDrug();
-                        for (final Interaction interaction : drug.getInteraction()) {
-                                final Drug drugCompare = userDrugPlanForDay.get(i + 1).getDrug();
-                                if (interaction.getInteractionDrug().contains(drugCompare)) {
-                                        interactionText.append("<p>" + drug.getName() + "</p> - " + drugCompare.getName() + ": "
-                                                        + interaction.getInteraction() + "</p>");
-                                }
-                        }
-                        //TODO: only adjust if NOT onEmptyStomach AND NOT onFullStomach 
-                        //check interactions with next drug
-                        if (checkInteraction(userDrugPlanForDay.get(i), userDrugPlanForDay.get(i + 1))) {
-                        	if (checkAdjustmentAllowed(userDrugPlanForDay.get(i + 1))) {
-                                adjustDateTimePlanned(userDrugPlanForDay.get(i + 1));
-                        	} else if (checkAdjustmentAllowed(userDrugPlanForDay.get(i))) {
-                                adjustDateTimePlanned(userDrugPlanForDay.get(i + 1));
-                        	}
-                        }
-                }
-
-                return getSortedUserDrugPlanByDatetimeIntake(userDrugPlanForDay);
+        
+        public List<UserDrugPlanItem> adjustPlanForDay(List<UserDrugPlanItem> drugsPlannedForRestOfDay, UserDrugPlanItem item) {
+        	return adjustUserDrugPlanByInteractions(drugsPlannedForRestOfDay, item);
         }
 
+		private List<UserDrugPlanItem> adjustUserDrugPlanByInteractions(List<UserDrugPlanItem> userDrugPlanForDay, UserDrugPlanItem item) {
+			List<UserDrugPlanItem> PotentialMovingItems = getFirstItemsAfterIntakeChange(userDrugPlanForDay); 
+			for (int i = 0; i < PotentialMovingItems.size(); i++) {
+                        if (checkInteraction(PotentialMovingItems.get(i), item) || PotentialMovingItems.get(i).getDrug().equals(item.getDrug())) {
+                            	if (checkAdjustmentAllowed(PotentialMovingItems.get(i))) {
+                                    adjustDateTimePlanned(PotentialMovingItems.get(i), item.getDrug().getPeriod());
+                            	}
+                        }
+			}
+                return getSortedUserDrugPlanByDatetimeIntake(userDrugPlanForDay);
+        }
+		
+		private List<UserDrugPlanItem> getFirstItemsAfterIntakeChange(List<UserDrugPlanItem> userDrugPlanForDay) {
+			List<UserDrugPlanItem> firstIntakes = new ArrayList<>();
+			firstIntakes.add(userDrugPlanForDay.get(0));
+			for (int i = 1; i < userDrugPlanForDay.size(); i++) {
+            	if (userDrugPlanForDay.get(0).getDateTimePlanned().equals(userDrugPlanForDay.get(i).getDateTimePlanned())) {
+            		 firstIntakes.add(userDrugPlanForDay.get(i));
+            	}
+            }
+			return firstIntakes;
+		}
+
        private boolean checkAdjustmentAllowed( UserDrugPlanItem userDrugPlan) {
-    	   if (userDrugPlan.getDrug().getTakeOnEmptyStomach() || userDrugPlan.getDrug().getTakeOnFullStomach()) {
+    	   if (userDrugPlan.getDrug().getTakeOnEmptyStomach() || userDrugPlan.getDrug().getTakeOnFullStomach() || userDrugPlan.getDrug().getTakeToMeals()) {
     		   return false;
     	   } else {
     		   return true;
@@ -83,15 +87,15 @@ public class UserDrugPlanCalculator {
         *
         * @param userDrugPlanItemToAdjust
         */
-       private void adjustDateTimePlanned(UserDrugPlanItem userDrugPlanItemToAdjust) {
+       private void adjustDateTimePlanned(UserDrugPlanItem userDrugPlanItemToAdjust, int halfTimePeriod) {
                LOG.info("adjust intake time for {}, current intake time = {}, add hours",
                                userDrugPlanItemToAdjust.getDrug().getName(), userDrugPlanItemToAdjust.getDateTimePlanned());
-               userDrugPlanItemToAdjust
-                               .setDateTimePlanned(DateUtils.setHoursOfDate(userDrugPlanItemToAdjust.getDateTimePlanned(), 2));
-               userDrugPlanItemToAdjust
-               		.setDateTimeIntake(userDrugPlanItemToAdjust.getDateTimePlanned());
-               LOG.info("intake time for {} adjusted: current intake time = {}", userDrugPlanItemToAdjust.getDrug().getName(),
-                               userDrugPlanItemToAdjust.getDateTimePlanned());
+               if (DateUtils.addHoursToDate(userDrugPlanItemToAdjust.getDateTimePlanned(), halfTimePeriod).compareTo(DateUtils.setHoursOfDate(userDrugPlanItemToAdjust.getDateTimePlanned(), user.getSleepTime())) <= 0) {
+            	   userDrugPlanItemToAdjust.setDateTimePlanned(DateUtils.addHoursToDate(userDrugPlanItemToAdjust.getDateTimePlanned(), halfTimePeriod));
+            	   userDrugPlanItemToAdjust.setDateTimeIntake(userDrugPlanItemToAdjust.getDateTimePlanned());
+            	   LOG.info("intake time for {} adjusted: current intake time = {}", userDrugPlanItemToAdjust.getDrug().getName(),
+                   userDrugPlanItemToAdjust.getDateTimePlanned());
+               }
        }
 
        /**

@@ -330,6 +330,25 @@ public class UserDrugPlanService {
 			}
 
 		}
+		
+		/**
+		 * recalculate drug plan when planned drug intake gets changed
+		 * @param userDrugPlanItemId - id of UserDrugPlanItem
+		 * @param isTaken - true/false
+		 * @param intakeHour - hour of intake 
+		 */
+		public void recalculateDrugPlanAfterIntakeChange(long userDrugPlanItemId, boolean isTaken, Integer intakeHour) {
+			UserDrugPlanItem item = userDrugPlanRepository.getOne(userDrugPlanItemId);
+			Date hourBeforeRestOfDay = DateUtils.setHoursOfDate(item.getDateTimeIntake(), intakeHour + 1);
+			Date endOfDay = DateUtils.asDateEndOfDay(item.getDateTimeIntake());
+			
+			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
+			final UserDrugPlanCalculator calculator = new UserDrugPlanCalculator(currentUser,
+					drugService.findUserDrugsTaking(currentUser));
+			final List<UserDrugPlanItem> drugsPlannedforRestOfDay = getUserDrugPlansByUserIdAndDate(hourBeforeRestOfDay, endOfDay);
+			final List<UserDrugPlanItem> drugsPlannedAdjusted = calculator.adjustPlanForDay(drugsPlannedforRestOfDay, item);
+			userDrugPlanRepository.save(drugsPlannedAdjusted);
+		}
 
 		/**
 		 * set flag if drug is taken or not

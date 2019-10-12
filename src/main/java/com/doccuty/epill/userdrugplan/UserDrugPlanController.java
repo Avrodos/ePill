@@ -118,7 +118,10 @@ public class UserDrugPlanController {
 			if (userService.isAnonymous()) {
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			}
-
+			
+			if (requestParam.getIntakeHour() != null) {
+				service.recalculateDrugPlanAfterIntakeChange(requestParam.getUserDrugPlanItemId(), requestParam.getDrugTaken(), requestParam.getIntakeHour());
+			}
 			service.setDrugTaken(requestParam.getUserDrugPlanItemId(), requestParam.getDrugTaken(), requestParam.getIntakeHour());
 
 			LOG.info("drug taken set");

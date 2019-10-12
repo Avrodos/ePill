@@ -54,5 +54,13 @@ public class DateUtils {
 		calendar.setTime(date);
 		return calendar.get(Calendar.HOUR_OF_DAY);
 	}
+	
+	public static Date addHoursToDate(Date date, int hours) {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) + hours);
+		final Date newDate = calendar.getTime();
+		return newDate;
+	}
 
 }

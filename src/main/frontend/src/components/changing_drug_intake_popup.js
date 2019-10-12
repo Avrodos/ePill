@@ -10,7 +10,7 @@ class ChangingDrugIntakePopup extends React.Component {
 	
 	_isMounted = false;
 
-    constructor(props) {
+	constructor(props) {
         super(props);
         this.state = {
             drugsNotTaken: [],
@@ -19,15 +19,19 @@ class ChangingDrugIntakePopup extends React.Component {
             open : false,
             errorMessage: '',
             backendError: false,
-            selectedItems: []
+            selectedItems: [],
+            callbackParent: 0
         };
         this.handleTakenChange = this.handleTakenChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
         
-    componentWillReceiveProps(props) {
-        console.log("... componentWillReceiveProps - drugsNotTaken=" + this.props.drugsNotTaken + 
-        		", intakeHour" + this.props.intakeHour );
-        this.setState({ drugsNotTaken: this.props.drugsNotTaken, intakeHour: this.props.intakeHour });
+	componentWillReceiveProps(props) {
+        console.log("... componentWillReceiveProps - drugsNotTaken=" + this.props.drugsNotTaken +
+                        ", intakeHour" + this.props.intakeHour + ", callback=" + this.props.callbackParent );
+        this.setState({ drugsNotTaken: this.props.drugsNotTaken,
+                intakeHour: this.props.intakeHour,
+                callbackParent: this.props.callbackParent });
     }
     
     componentDidMount() {
@@ -73,6 +77,7 @@ class ChangingDrugIntakePopup extends React.Component {
                              if (isDrugTaken) {
                                  this.setDrugTaken(isDrugTaken, userDrugPlanItemId);
                                  toast.success(t('Well done!'), options);
+                                 this.state.callbackParent(isDrugTaken, userDrugPlanItemId);   
                              } else {
                                  toast.error(t('Remember to take it soon!'), options);
                              }
@@ -85,6 +90,8 @@ class ChangingDrugIntakePopup extends React.Component {
                      }
             });
     }
+
+
 
     renderDrugName(drugsNotTaken) {
         if (drugsNotTaken.drugsPlannedSameTime.length > 0) {     
