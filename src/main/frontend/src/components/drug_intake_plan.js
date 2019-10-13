@@ -33,6 +33,7 @@ class DrugIntakePlan extends React.Component {
         };
         this.output = this.handleTakenChange.bind(this);
         this.handleShowProgressBar = this.handleShowProgressBar.bind(this);
+        this.callbackDrugIntakePopup = this.callbackDrugIntakePopup.bind(this);
     }
     
     setBackendError(backendError, errorMessage) {

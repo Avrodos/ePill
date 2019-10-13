@@ -53,11 +53,11 @@ public class UserDrugPlanCalculator {
         }
 
 		private List<UserDrugPlanItem> adjustUserDrugPlanByInteractions(List<UserDrugPlanItem> userDrugPlanForDay, UserDrugPlanItem item) {
-			List<UserDrugPlanItem> PotentialMovingItems = getFirstItemsAfterIntakeChange(userDrugPlanForDay); 
-			for (int i = 0; i < PotentialMovingItems.size(); i++) {
-                        if (checkInteraction(PotentialMovingItems.get(i), item) || PotentialMovingItems.get(i).getDrug().equals(item.getDrug())) {
-                            	if (checkAdjustmentAllowed(PotentialMovingItems.get(i))) {
-                                    adjustDateTimePlanned(PotentialMovingItems.get(i), item.getDrug().getPeriod());
+			List<UserDrugPlanItem> potentialMovingItems = getFirstItemsAfterIntakeChange(userDrugPlanForDay); 
+			for (int i = 0; i < potentialMovingItems.size(); i++) {
+                        if (checkInteraction(potentialMovingItems.get(i), item) || potentialMovingItems.get(i).getDrug().equals(item.getDrug())) {
+                            	if (checkAdjustmentAllowed(potentialMovingItems.get(i))) {
+                                    adjustDateTimePlanned(potentialMovingItems.get(i), item.getDrug().getPeriod());
                             	}
                         }
 			}
