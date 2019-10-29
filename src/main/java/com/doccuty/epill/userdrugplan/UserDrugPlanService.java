@@ -74,13 +74,13 @@ public class UserDrugPlanService {
 
 			final List<UserDrugPlanItemViewModel> userDrugPlanView = new ArrayList<>();
 			 List<UserDrugPlanItem> userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
-			if (userDrugItemsPlanned.isEmpty() && dateFrom.after(new Date())) {
+			if (userDrugItemsPlanned.isEmpty() && dateTo.after(new Date())) {
 				//if plan is empty recalculate it - only for future, don't overwrite history
 				this.recalculateAndSaveUserDrugPlanForDay(dateFrom);
 				userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
 			}
 			Date lastDateTime = (Date) dateFrom.clone();
-			for (int hour = currentUser.getBreakfastTime(); hour <= currentUser.getSleepTime() + 1; hour++) {
+			for (int hour = currentUser.getBreakfastTime()-1; hour <= currentUser.getSleepTime() + 1; hour++) {
 				final int hourToCompare = hour;
 				final List<UserDrugPlanItem> plannedItemsForHour = userDrugItemsPlanned.stream().parallel()
 						.filter(p -> DateUtils.getHours(p.getDateTimeIntake()) == hourToCompare)
@@ -147,13 +147,15 @@ public class UserDrugPlanService {
 				model.setHalfTimePeriod(0);
 				model.setDrugsPlannedSameTime(new ArrayList<>());
 				model.setUserDrugPlanItemId(- calendar.get(Calendar.HOUR_OF_DAY));  //store negative hourOfDay
+				model.setMealTime(getMealtime(plannedItemsForHour.get(0)));
 			} else {
 				// intake 1 or more drugs
 				model.setIntermediateStep(false);
 				model.setPercentage(100);
 				model.setUserDrugPlanItemId(plannedItemsForHour.get(0).getId());
 				model.setHalfTimePeriod(halfTimePeriodMax);
-				model.setInteraction(this.getInteractions(plannedItemsForHour));
+				model.setMealTime(getMealtime(plannedItemsForHour.get(0)));
+				//model.setInteraction(this.getInteractions(plannedItemsForHour));
 				List<DrugViewModel> drugsSameTime = new ArrayList<>();
 				for (UserDrugPlanItem item : plannedItemsForHour)
 				{
@@ -165,7 +167,7 @@ public class UserDrugPlanService {
 					drugViewModel.setTakeOnFullStomach(item.getDrug().getTakeOnFullStomach());
 					drugViewModel.setDiseases(getDiseases(item));
 					drugViewModel.setFood(getFoods(item));
-					drugViewModel.setInteractions(getInteractions(item));
+					drugViewModel.setInteractions(getInteractions(plannedItemsForHour, item));
 					TailoredText tt = this.tailoringService.getTailoredMinimumSummaryByDrugAndUser(item.getDrug(), currentUser);
 					if (tt != null) {
 						drugViewModel.setPersonalizedInformation(tt.getText());
@@ -180,6 +182,22 @@ public class UserDrugPlanService {
 			return model;
 		}
 		
+		private boolean getMealtime(UserDrugPlanItem item) {
+			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
+			int breakfast = currentUser.getBreakfastTime();
+			int lunch = currentUser.getLunchTime();
+			int dinner = currentUser.getDinnerTime();
+			if(item.getDateTimePlanned().equals(DateUtils.setHoursOfDate(item.getDateTimePlanned(), breakfast))) {
+				return true;
+			} else if (item.getDateTimePlanned().equals(DateUtils.setHoursOfDate(item.getDateTimePlanned(), lunch))) {
+				return true;
+			} else if (item.getDateTimePlanned().equals(DateUtils.setHoursOfDate(item.getDateTimePlanned(), dinner))) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
 		private List<String> getInteractions(UserDrugPlanItem item) {
 			List<String> interactions = new ArrayList<>();
 			for (Interaction interaction : item.getDrug().getInteraction()) {
@@ -188,24 +206,41 @@ public class UserDrugPlanService {
 			return interactions;
 		}
 		
-		private String getInteractions(List<UserDrugPlanItem> item) {
-			List<Drug> drugsForHour = new ArrayList<>();
+		private String getInteractions(List<UserDrugPlanItem> items, UserDrugPlanItem item) {
+			List<Drug> drugsForHour = getDrugListForHour(items);
+			
+				Date from = DateUtils.addHoursToDate(item.getDateTimePlanned(), 1);
+				Date to = DateUtils.addHoursToDate(item.getDateTimePlanned(), item.getDrug().getPeriod());
+				List<UserDrugPlanItem> itemsWithinPeriod = getUserDrugPlansByUserIdAndDate(from, to);
+				for (final UserDrugPlanItem drugWithinPeriod : itemsWithinPeriod) {
+					if (!drugsForHour.contains(drugWithinPeriod.getDrug())) {
+						drugsForHour.add(drugWithinPeriod.getDrug());
+					}
+				}
+			
+			
 			final StringBuilder interactionText = new StringBuilder();
-			for (UserDrugPlanItem plannedItemForHour : item) {
-				drugsForHour.add(plannedItemForHour.getDrug());
-			}
-			for (final Drug drug : drugsForHour) {
-				for (final Interaction interaction : drug.getInteraction()) {
+			
+			
+				for (final Interaction interaction : item.getDrug().getInteraction()) {
 					for (final Drug drugCompare : drugsForHour) {
 						if (interaction.getInteractionDrug().contains(drugCompare)) {
-							interactionText.append("<p>" + drug.getName() + "</p> - " + drugCompare.getName() + ": "
+							interactionText.append("<p>" + item.getDrug().getName() + "</p> - " + drugCompare.getName() + ": "
 									+ interaction.getInteraction() + "</p>");
 						}
 					}
 				}
-			}
+			
 
 			return interactionText.toString();
+		}
+		
+		private List<Drug> getDrugListForHour(List<UserDrugPlanItem> item) {
+			List<Drug> drugsForHour = new ArrayList<>();
+			for (UserDrugPlanItem plannedItemForHour : item) {
+				drugsForHour.add(plannedItemForHour.getDrug());
+			}
+			return drugsForHour;
 		}
 
 		private List<String> getDiseases(UserDrugPlanItem item) {

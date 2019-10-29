@@ -14,6 +14,7 @@ public class UserDrugPlanItemViewModel {
 	private int halfTimePeriod;
 	private int percentage;
 	private String interaction;
+	private boolean mealTime;
 	private List<DrugViewModel> drugsPlannedSameTime;
 	
 	public String getInteraction() {
@@ -70,6 +71,14 @@ public class UserDrugPlanItemViewModel {
 
 	public void setHalfTimePeriod(int halfTimePeriod) {
 		this.halfTimePeriod = halfTimePeriod;
+	}
+
+	public boolean isMealTime() {
+		return mealTime;
+	}
+
+	public void setMealTime(boolean mealTime) {
+		this.mealTime = mealTime;
 	}
 
 	public List<DrugViewModel> getDrugsPlannedSameTime() {

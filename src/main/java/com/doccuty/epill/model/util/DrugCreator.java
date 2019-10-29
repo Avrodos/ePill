@@ -72,7 +72,7 @@ public class DrugCreator implements SendableEntityCreatorNoIndex
       Drug.PROPERTY_TAKE_ON_EMPTY_STOMACH,
       Drug.PROPERTY_TAKE_ON_FULL_STOMACH,
       Drug.PROPERTY_TAKE_TO_MEALS,
-      Drug.PROPERTY_FOOD_TO_AVOID
+      //Drug.PROPERTY_FOOD_TO_AVOID
    };
    
    @Override

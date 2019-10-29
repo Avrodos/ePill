@@ -16,8 +16,9 @@ public class DrugViewModel {
 	private boolean takeToMeals;
 	String personalizedInformation;
 	private List<String> diseases;
-	private List<String> interactions;
+	private String interactions;
 	private List<String> food;
+	private List<String> instructions;
 	
 	public long getId() {
 		return id;
@@ -36,6 +37,12 @@ public class DrugViewModel {
 	}
 	public void setFood(List<String> food) {
 		this.food = food;
+	}
+	public List<String> getInstructions() {
+		return instructions;
+	}
+	public void setInstructions(List<String> instructions) {
+		this.instructions = instructions;
 	}
 	public long getLink() {
 		return link;
@@ -91,10 +98,10 @@ public class DrugViewModel {
 	public void setPersonalizedInformation(String personalizedInformation) {
 		this.personalizedInformation = personalizedInformation;
 	}
-	public List<String> getInteractions() {
+	public String getInteractions() {
 		return interactions;
 	}
-	public void setInteractions(List<String> interactions) {
+	public void setInteractions(String interactions) {
 		this.interactions = interactions;
 	}
 }

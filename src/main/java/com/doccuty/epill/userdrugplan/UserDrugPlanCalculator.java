@@ -54,12 +54,16 @@ public class UserDrugPlanCalculator {
 
 		private List<UserDrugPlanItem> adjustUserDrugPlanByInteractions(List<UserDrugPlanItem> userDrugPlanForDay, UserDrugPlanItem item) {
 			List<UserDrugPlanItem> potentialMovingItems = getFirstItemsAfterIntakeChange(userDrugPlanForDay); 
+			
 			for (int i = 0; i < potentialMovingItems.size(); i++) {
+				int dateTimeDifference = DateUtils.getHours(potentialMovingItems.get(i).getDateTimePlanned()) - DateUtils.getHours(item.getDateTimeIntake());
                         if (checkInteraction(potentialMovingItems.get(i), item) || potentialMovingItems.get(i).getDrug().equals(item.getDrug())) {
+                        	if (dateTimeDifference < item.getDrug().getPeriod()) {
                             	if (checkAdjustmentAllowed(potentialMovingItems.get(i))) {
-                                    adjustDateTimePlanned(potentialMovingItems.get(i), item.getDrug().getPeriod());
+                                    adjustDateTimePlanned(potentialMovingItems.get(i), item.getDrug().getPeriod(), dateTimeDifference);
                             	}
                         }
+			}
 			}
                 return getSortedUserDrugPlanByDatetimeIntake(userDrugPlanForDay);
         }
@@ -87,11 +91,12 @@ public class UserDrugPlanCalculator {
         *
         * @param userDrugPlanItemToAdjust
         */
-       private void adjustDateTimePlanned(UserDrugPlanItem userDrugPlanItemToAdjust, int halfTimePeriod) {
+       private void adjustDateTimePlanned(UserDrugPlanItem userDrugPlanItemToAdjust, int halfTimePeriod, int dateTimeDifference) {
                LOG.info("adjust intake time for {}, current intake time = {}, add hours",
                                userDrugPlanItemToAdjust.getDrug().getName(), userDrugPlanItemToAdjust.getDateTimePlanned());
-               if (DateUtils.addHoursToDate(userDrugPlanItemToAdjust.getDateTimePlanned(), halfTimePeriod).compareTo(DateUtils.setHoursOfDate(userDrugPlanItemToAdjust.getDateTimePlanned(), user.getSleepTime())) <= 0) {
-            	   userDrugPlanItemToAdjust.setDateTimePlanned(DateUtils.addHoursToDate(userDrugPlanItemToAdjust.getDateTimePlanned(), halfTimePeriod));
+               int hourChange = halfTimePeriod - dateTimeDifference;
+               if (DateUtils.addHoursToDate(userDrugPlanItemToAdjust.getDateTimePlanned(), hourChange).compareTo(DateUtils.setHoursOfDate(userDrugPlanItemToAdjust.getDateTimePlanned(), user.getSleepTime())) <= 0) {
+            	   userDrugPlanItemToAdjust.setDateTimePlanned(DateUtils.addHoursToDate(userDrugPlanItemToAdjust.getDateTimePlanned(), hourChange));
             	   userDrugPlanItemToAdjust.setDateTimeIntake(userDrugPlanItemToAdjust.getDateTimePlanned());
             	   LOG.info("intake time for {} adjusted: current intake time = {}", userDrugPlanItemToAdjust.getDrug().getName(),
                    userDrugPlanItemToAdjust.getDateTimePlanned());

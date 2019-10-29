@@ -33,7 +33,8 @@ class DrugIntakePlan extends React.Component {
         };
         this.output = this.handleTakenChange.bind(this);
         this.handleShowProgressBar = this.handleShowProgressBar.bind(this);
-        this.callbackDrugIntakePopup = this.callbackDrugIntakePopup.bind(this);
+        this.callbackDrugIsTaken = this.callbackDrugIsTaken.bind(this);
+        this.closeChangingDrugIntakePopup = this.closeChangingDrugIntakePopup.bind(this);
     }
     
     setBackendError(backendError, errorMessage) {
@@ -191,6 +192,9 @@ class DrugIntakePlan extends React.Component {
                         <td className="td-style">
                                 <div className="tab"><b>{this.renderDrugName(drugplanned)}</b></div>
                         </td>
+                        <td className="td-style">
+                        	{this.renderMealTime(drugplanned)}
+                        </td>
                 </tr>                   
             ];
                 if (drugplanned.drugsPlannedSameTime.length > 0) {
@@ -208,7 +212,7 @@ class DrugIntakePlan extends React.Component {
                                        		{this.renderFoodtoAvoid(drugplanned.drugsPlannedSameTime[i])}
                                        	</div>
                                        <div>
-                                       {this.renderInteractions(drugplanned)}
+                                       {this.renderInteractions(drugplanned.drugsPlannedSameTime[i])}
                                        <Link to={`/drug/${drugplanned.drugsPlannedSameTime[i].link}`}>
                                                <h4>{t("forMoreInformation")}</h4>
                                        </Link>
@@ -224,18 +228,28 @@ class DrugIntakePlan extends React.Component {
         });
     }
     
+    renderMealTime(drugplanned) {
+    	if (drugplanned.mealTime){
+    		return (
+                    <span className="glyphicon glyphicon-cutlery"></span>
+    		)
+    	} else {
+    		return "";
+    	}
+    }
+    
     renderInteractions(drugplanned) {
     	const { t } = this.props;
-    	if (drugplanned.drugsPlannedSameTime.length > 1) {
+    	if (drugplanned.interactions === ""){
+    		return "";
+    	} else {
     		return (
     				<div className={"alert alert-dismissable" + (User.redGreenColorblind ? " danger-red-green-colorblind" : " alert-danger") }>
                     	<h5>{t("interaction")}</h5>
-                    	<span dangerouslySetInnerHTML={this.createMarkup(drugplanned.interaction)} />
+                    	<span dangerouslySetInnerHTML={this.createMarkup(drugplanned.interactions)} />
                     </div>	
     		);
-    	} else {
-    		return "";
-    	} 
+    	}
     }
 
     renderDiseases(drug) {
@@ -283,7 +297,7 @@ class DrugIntakePlan extends React.Component {
     	if (drugplanned.food.length != 0) {
         	return drugplanned.food.map(foodName => {
             	const drugFoodToAvoid = [
-            		<p className="information" key={foodName}><span className="glyphicon glyphicon-info-sign"></span> {t("tryToAvoid")+ " " +foodName}</p>
+            		<p className="information" key={foodName}><span className="glyphicon glyphicon-info-sign"></span> {foodName}</p>
             	];
             	return drugFoodToAvoid;
             	});
@@ -333,9 +347,15 @@ class DrugIntakePlan extends React.Component {
     	}
     }
     
-    callbackDrugIntakePopup(isDrugTaken, userDrugPlanItemId) {
-        console.log('callbackDrugIntakePopup --- ' + isDrugTaken + ", " + userDrugPlanItemId);
+    callbackDrugIsTaken(isDrugTaken, userDrugPlanItemId) {
+        console.log('callbackDrugIsTaken --- ' + isDrugTaken + ", " + userDrugPlanItemId);
         this.getData();
+    }
+    
+    closeChangingDrugIntakePopup() {
+        console.log('closeChangingDrugIntakePopup...');
+        this.state.showDrugIntakePopup = false;
+        this.setState(this.state);
     }
     
 
@@ -421,10 +441,17 @@ class DrugIntakePlan extends React.Component {
                             <button type="button" className="btn btn-sm btn-date-change" onClick={this.changeDate.bind(this, 1)}>
                             <span className="glyphicon glyphicon-triangle-right"></span>
                             </button>
-                            <button type="button" className="btn btn-sm btn-add btn-add-drug"><Link to="/drug/list">{t("addDrugsToMedicationPlan")}</Link></button>
-                            <button type="button" className="btn btn-sm btn-recalculate" onClick={() => this.recalculatePlan()}>{t("recalculatePlan")}
-                                <span className="glyphicon glyphicon-white glyphicon-refresh"></span>
-                                </button>
+                            <Popup trigger={<button type="button" className="btn btn-sm btn-like btn-add-drug">
+                            <Link className="link-white" to="/drug/list"><span className="glyphicon glyphicon-white glyphicon-plus"></span>
+                            </Link></button>} position="bottom center" on="hover">
+                        	{t("addDrugsToMedicationPlan")}
+                        	</Popup>
+                            <Popup trigger={<button type="button" className="btn btn-sm btn-recalculate" onClick={() => this.recalculatePlan()}>
+                            <span className="glyphicon glyphicon-white glyphicon-refresh"></span>
+                           </button>} position="bottom center" on="hover">
+                            {t("recalculatePlan")}
+                        	</Popup>
+                            
                         </div>
                 </div>
                 <div>
@@ -449,8 +476,9 @@ class DrugIntakePlan extends React.Component {
                                                <a className="close" onClick={close}>&times;</a>
                                                <ChangingDrugIntakePopup drugsNotTaken={this.state.drugsNotTaken}
                                                         intakeHour={this.state.showDrugsNotTakenBeforeHour}
-                                                    callbackParent={this.callbackDrugIntakePopup}
-                                                    updateNavigation={this.props.updateNavigation}/>
+                                               			drugIsTakenCallback={this.callbackDrugIsTaken}
+                                               			onSubmit={this.closeChangingDrugIntakePopup}
+                                                    	updateNavigation={this.props.updateNavigation}/>
                                             </div>
                                     }
                                     </Popup>
@@ -466,6 +494,7 @@ class DrugIntakePlan extends React.Component {
                                                 <th className="th-style"></th>
                                                 <th className="th-style th-time">{t("time")}</th>
                                                 <th className="th-style th-name">{t("name")}</th>
+                                                <th className="th-style"></th>
                                                 </tr>
                                         </thead>
                                 <tbody>

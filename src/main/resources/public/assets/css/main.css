@@ -746,13 +746,17 @@ a.wide { display : block }
 
 .btn-add-drug{
 	float: right;
-	color: white;
+	
+}
+
+.link-white {
+	color: white !important;
 }
 
 .btn-recalculate{
 	float: right;
 	color: white;
-	background-color: #555753;
+	background-color:  #11a59b;
 }
 
 .table-line-hover {

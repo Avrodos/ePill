@@ -54,6 +54,7 @@ import com.doccuty.epill.user.User;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import com.doccuty.epill.userprescription.UserPrescription;
 import com.doccuty.epill.userdrugplan.FoodToAvoid;
+import com.doccuty.epill.userdrugplan.DrugInstructions;
 
 @Entity
 @Table(name = "drug")
@@ -1109,6 +1110,67 @@ public class Drug extends SimpleDrug {
 	public FoodToAvoid createFoodToAvoid() {
 		final FoodToAvoid value = new FoodToAvoid();
 		withFoodToAvoid(value);
+		return value;
+	}
+
+	/********************************************************************
+	 * <pre>
+	 *              many                       many
+	 * Drug ----------------------------------- Instructions
+	 *              drugs                   	instructions
+	 * </pre>
+	 */
+
+	public static final String PROPERTY_INSTRUCTIONS = "instructions";
+
+	@ManyToMany(cascade = CascadeType.MERGE)
+	@JoinTable(name = "instructions", joinColumns = @JoinColumn(name = "iddrug"), inverseJoinColumns = @JoinColumn(name = "instructions"))
+	private List<DrugInstructions> instructions = null;
+
+	public List<DrugInstructions> getInstructions() {
+		if (this.instructions == null) {
+			return new ArrayList<DrugInstructions>();
+		}
+
+		return this.instructions;
+	}
+
+	public Drug withInstructions(DrugInstructions... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final DrugInstructions item : value) {
+			if (item != null) {
+				if (this.instructions == null) {
+					this.instructions = new ArrayList<DrugInstructions>();
+				}
+
+				final boolean changed = this.instructions.add(item);
+
+				if (changed) {
+					item.withDrug(this);
+					firePropertyChange(PROPERTY_ACTIVESUBSTANCE, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Drug withoutInstructions(DrugInstructions... value) {
+		for (final DrugInstructions item : value) {
+			if ((this.foodToAvoid != null) && (item != null)) {
+				if (this.foodToAvoid.remove(item)) {
+					item.withoutDrug(this);
+					firePropertyChange(PROPERTY_ACTIVESUBSTANCE, item, null);
+				}
+			}
+		}
+		return this;
+	}
+
+	public DrugInstructions createInstructions() {
+		final DrugInstructions value = new DrugInstructions();
+		withInstructions(value);
 		return value;
 	}
 

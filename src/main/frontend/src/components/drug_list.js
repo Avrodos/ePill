@@ -20,7 +20,8 @@ class DrugList extends React.Component {
                         interactions    : '',
                         cmd                     : '',
                         loading         : false,
-                        open: false
+                        open: false,
+                        showDrugIntakePopup: false
         }
 
         this.checkForInteractions       = this.checkForInteractions.bind(this);
@@ -30,6 +31,7 @@ class DrugList extends React.Component {
         this.removeFromTakingList       = this.removeFromTakingList.bind(this);
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
+        this.closeDrugIntakePopup = this.closeDrugIntakePopup.bind(this);
     }
 
     openModal() {
@@ -39,6 +41,12 @@ class DrugList extends React.Component {
     closeModal() {
         this.setState({ open: false });
       }
+    
+    closeDrugIntakePopup() {
+        console.log('closeDrugIntakePopup...');
+        this.state.showDrugIntakePopup = false;
+        this.setState(this.state);
+    }
 
     setCmd() {
 
@@ -363,7 +371,10 @@ class DrugList extends React.Component {
                             {close =>
 	                            <div>
 	                               <a className="close" onClick={close}>&times;</a>
-	                               <DrugIntakePopup drugId={drug.id} drugName={drug.name} updateNavigation={this.props.updateNavigation}/>
+	                               <DrugIntakePopup drugId={drug.id} 
+	                               drugName={drug.name} 
+	                               onSubmit={this.closeDrugIntakePopup} 
+	                               updateNavigation={this.props.updateNavigation}/>
 	                            </div>
                             }
                             </Popup>
@@ -380,7 +391,10 @@ class DrugList extends React.Component {
                                         {close =>
                                         <div>
                                            <a className="close" onClick={close}>&times;</a>
-                                                <DrugIntakePopup drugId={drug.id} drugName={drug.name} updateNavigation={this.props.updateNavigation}/>
+                                                <DrugIntakePopup drugId={drug.id} 
+                                                drugName={drug.name} 
+                                                onSubmit={this.closeDrugIntakePopup}
+                                                updateNavigation={this.props.updateNavigation}/>
                                                 </div>
                                         } 
                                         </Popup>

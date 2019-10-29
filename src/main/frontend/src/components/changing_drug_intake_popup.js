@@ -20,7 +20,8 @@ class ChangingDrugIntakePopup extends React.Component {
             errorMessage: '',
             backendError: false,
             selectedItems: [],
-            callbackParent: 0
+            drugIsTakenCallback: 0,
+            onSubmit: 0
         };
         this.handleTakenChange = this.handleTakenChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -28,10 +29,11 @@ class ChangingDrugIntakePopup extends React.Component {
         
 	componentWillReceiveProps(props) {
         console.log("... componentWillReceiveProps - drugsNotTaken=" + this.props.drugsNotTaken +
-                        ", intakeHour" + this.props.intakeHour + ", callback=" + this.props.callbackParent );
+                        ", intakeHour" + this.props.intakeHour + ", callback=" + this.props.drugIsTakenCallback );
         this.setState({ drugsNotTaken: this.props.drugsNotTaken,
                 intakeHour: this.props.intakeHour,
-                callbackParent: this.props.callbackParent });
+                drugIsTakenCallback: this.props.drugIsTakenCallback, 
+                onSubmit: this.props.onSubmit });
     }
     
     componentDidMount() {
@@ -54,6 +56,7 @@ class ChangingDrugIntakePopup extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         console.log("handleSubmit");
+        this.state.onSubmit();
     }
 
     postDrugTaken(isDrugTaken, userDrugPlanItemId, intakeHour) {
@@ -77,7 +80,7 @@ class ChangingDrugIntakePopup extends React.Component {
                              if (isDrugTaken) {
                                  this.setDrugTaken(isDrugTaken, userDrugPlanItemId);
                                  toast.success(t('Well done!'), options);
-                                 this.state.callbackParent(isDrugTaken, userDrugPlanItemId);   
+                                 this.state.drugIsTakenCallback(isDrugTaken, userDrugPlanItemId);   
                              } else {
                                  toast.error(t('Remember to take it soon!'), options);
                              }
@@ -166,8 +169,9 @@ class ChangingDrugIntakePopup extends React.Component {
     }
     
     renderIntakeHour() {
+    	const {t} = this.props;
     	console.log("renderIntakeHour...");
-    	var intakeHourString = "Intake time " + this.formatTime(this.props.intakeHour);
+    	var intakeHourString = t("intakeTime") + " " + this.formatTime(this.props.intakeHour);
     	console.log(intakeHourString);
     	return (
     			<h3 className="centered-title">{intakeHourString}</h3>
@@ -198,10 +202,10 @@ class ChangingDrugIntakePopup extends React.Component {
                 <table id="drugsnotplanned" className="table-style">
                 	<thead>
                         <tr>
-                        <th className="th-style">drug taken</th>
-                        <th className="th-style">planned time</th>
-                        <th className="th-style">taken time</th>
-                        <th className="th-style">drug</th>
+                        <th className="th-style"></th>
+                        <th className="th-style">{t("plannedTime")}</th>
+                        <th className="th-style">{t("takenTime")}</th>
+                        <th className="th-style">{t("drugName")}</th>
                         </tr>
                     </thead>
 	                <tbody>

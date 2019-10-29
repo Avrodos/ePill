@@ -28,7 +28,8 @@ class DrugIntakePopup extends React.Component {
             intakeBreakfastTime: false,
             intakeSleepTime: false,
             intakeLunchTime: false,
-            intakeDinnerTime: false
+            intakeDinnerTime: false,
+            onSubmit: 0
         };
 
         this.handlePeriodInDaysChange = this.handlePeriodInDaysChange.bind(this);
@@ -48,7 +49,7 @@ class DrugIntakePopup extends React.Component {
 
     componentWillReceiveProps(props) {
         console.log("...drugName=" + this.props.drugName + ", id=" + this.props.drugId);
-                this.setState({ drugId: this.props.drugId, drugName: this.props.drugName });
+                this.setState({ drugId: this.props.drugId, drugName: this.props.drugName, onSubmit: this.props.onSubmit});
                 this.getUserPrescriptionData();
         }
 
@@ -235,6 +236,7 @@ class DrugIntakePopup extends React.Component {
             this.postUserPrescription().then(() => {
                 console.log("postUserPrescription succeeded...");
                 this.closeModal();
+                this.state.onSubmit();
             })
             .catch(err => {
                 console.log("error postUserPrescription...${err}");
@@ -277,14 +279,14 @@ class DrugIntakePopup extends React.Component {
                                 <fieldset>
                                     <div className="col-md-8">
                                 <label htmlFor="intake-breakfast" className="intake-times">
-                                    {t("breakfastTime")}
+                                    {t("morning")}
                                     <input type="checkbox" id="intake-breakfast"
                                            className="intakeTimes" checked={this.state.intakeBreakfastTime}
                                            onChange={this.handleIntakeBreakfastChange}/>
                                            <span className="checkmark"></span>
                                 </label>
                                 <label htmlFor="intake-lunch" className="intake-times">
-                                    {t("lunchTime")}
+                                    {t("noon")}
                                     <input type="checkbox" id="intake-lunch"
                                         className="intakeTimes" checked={this.state.intakeLunchTime}
                                            onChange={this.handleIntakeLunchChange}/>
@@ -293,7 +295,7 @@ class DrugIntakePopup extends React.Component {
                                     </div>
                                     <div className="col-md-8">
                                             <label htmlFor="intake-dinner" className="intake-times">
-                                                {t("dinnerTime")}
+                                                {t("evening")}
                                                 <input type="checkbox" value="3" id="intake-dinner"
                                                         className="intakeTimes" checked={this.state.intakeDinnerTime}
                                                        onChange={this.handleIntakeDinnerChange}/>
