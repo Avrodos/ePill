@@ -148,6 +148,7 @@ public class UserDrugPlanService {
 				model.setDrugsPlannedSameTime(new ArrayList<>());
 				model.setUserDrugPlanItemId(- calendar.get(Calendar.HOUR_OF_DAY));  //store negative hourOfDay
 				model.setMealTime(getMealtime(plannedItemsForHour.get(0)));
+				model.setSleep(getSleep(plannedItemsForHour.get(0)));
 			} else {
 				// intake 1 or more drugs
 				model.setIntermediateStep(false);
@@ -155,6 +156,7 @@ public class UserDrugPlanService {
 				model.setUserDrugPlanItemId(plannedItemsForHour.get(0).getId());
 				model.setHalfTimePeriod(halfTimePeriodMax);
 				model.setMealTime(getMealtime(plannedItemsForHour.get(0)));
+				model.setSleep(getSleep(plannedItemsForHour.get(0)));
 				//model.setInteraction(this.getInteractions(plannedItemsForHour));
 				List<DrugViewModel> drugsSameTime = new ArrayList<>();
 				for (UserDrugPlanItem item : plannedItemsForHour)
@@ -180,6 +182,16 @@ public class UserDrugPlanService {
 			}
 
 			return model;
+		}
+		
+		private boolean getSleep(UserDrugPlanItem item) {
+			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
+			int sleep = currentUser.getSleepTime();
+			if (item.getDateTimePlanned().equals(DateUtils.setHoursOfDate(item.getDateTimePlanned(), sleep))) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 		
 		private boolean getMealtime(UserDrugPlanItem item) {

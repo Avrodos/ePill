@@ -193,7 +193,7 @@ class DrugIntakePlan extends React.Component {
                                 <div className="tab"><b>{this.renderDrugName(drugplanned)}</b></div>
                         </td>
                         <td className="td-style">
-                        	{this.renderMealTime(drugplanned)}
+                        	{this.renderMealSleepTime(drugplanned)}
                         </td>
                 </tr>                   
             ];
@@ -228,10 +228,14 @@ class DrugIntakePlan extends React.Component {
         });
     }
     
-    renderMealTime(drugplanned) {
+    renderMealSleepTime(drugplanned) {
     	if (drugplanned.mealTime){
     		return (
                     <span className="glyphicon glyphicon-cutlery"></span>
+    		)
+    	} else if (drugplanned.sleep){
+    		return (
+                    <span className="glyphicon glyphicon-eye-close"></span>
     		)
     	} else {
     		return "";

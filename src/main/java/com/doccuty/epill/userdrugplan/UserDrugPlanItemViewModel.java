@@ -15,6 +15,7 @@ public class UserDrugPlanItemViewModel {
 	private int percentage;
 	private String interaction;
 	private boolean mealTime;
+	private boolean sleep;
 	private List<DrugViewModel> drugsPlannedSameTime;
 	
 	public String getInteraction() {
@@ -79,6 +80,14 @@ public class UserDrugPlanItemViewModel {
 
 	public void setMealTime(boolean mealTime) {
 		this.mealTime = mealTime;
+	}
+
+	public boolean isSleep() {
+		return sleep;
+	}
+
+	public void setSleep(boolean sleep) {
+		this.sleep = sleep;
 	}
 
 	public List<DrugViewModel> getDrugsPlannedSameTime() {

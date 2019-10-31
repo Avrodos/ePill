@@ -44,7 +44,7 @@
 	"drugTakingListDescriptionText": "%User.firstname%, hier findest du eine Übersicht über alle Medikamente, die du nach deinen Angaben aktuell einnimmst. Du kannst neue Medikamente hinzufügen und gelistete aus der Liste entfernen.",
 	"drugsRemember": "Gemerkte Medikamentierung",
 	"drugRememberListDescriptionText": "%User.firstname%, hier findest du eine Übersicht über alle Medikamente, die du dir merken möchtest. Du kannst neue Medikamente hinzufügen und gelistete aus der Liste entfernen.",
-	"drugIntakePlanDescriptionText": "%User.firstname%, hier findest du eine Übersicht über alle Medikamenteeinnahmen, die du geplant hast. Du kannst neue Medikamente hinzufügen. Du kannst ankreuzen ob du deine Medikamente wie geplant eingenommen hast. Du kannst sehen was du bei der Einnahme deiner Medikamente beachten solltest. Wenn du vergessen hast ein Medikament zur geplanten Zeit einzunehmen, kannst du sehen wie es sich auf deinen Einnahmeplan auswirkt. Wenn sich Einnahmen verschieben, dann ist das eine Art wie du unerwünschte Medikamenteninteraktionen vermeiden kannst.",
+	"drugIntakePlanDescriptionText": "%User.firstname%, hier findest du eine Übersicht über alle Medikamenteeinnahmen, die du geplant hast. Du kannst neue Medikamente hinzufügen. Du kannst ankreuzen ob du deine Medikamente wie geplant eingenommen hast. Du kannst sehen was du bei der Einnahme deiner Medikamente beachten solltest. Wenn du vergessen hast ein Medikament zur geplanten Zeit einzunehmen, kannst du sehen wie es sich auf deinen Einnahmeplan auswirkt. Wenn Wechselwirkungen zwischen Medikamenten bestehen, dann versuche auf die Medikamentenabnahme im Blut zu achten.",
 	"emptyList"	: "Leere Liste",
 	"articles"	: "Artikel",
 	"team"		: "Team",

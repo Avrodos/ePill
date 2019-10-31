@@ -760,7 +760,8 @@ a.wide { display : block }
 }
 
 .table-line-hover {
-	height : 65px;
+	height : 50px;
+	overflow: hidden;
 }
 
 .table-line-hover:hover {
@@ -781,6 +782,8 @@ a.wide { display : block }
   text-align: left;
   /*line-height: 53px;*/
   table-layout: fixed;
+  height : 50px;
+	overflow: hidden;
 }
 
 .th-style {
@@ -807,12 +810,14 @@ a.wide { display : block }
 .progress {
   box-shadow: none;
   background-color: white;
-  margin-top: 25px;
+  margin-top: 3px;
+  margin-bottom: 0px;
 }
 
 .progress-bar {
   display: block;
   float: right; 
+
 }
 
 .progress-bar-dark{
@@ -994,6 +999,7 @@ a.wide { display : block }
   overflow: hidden;
   border: 1px solid #ffffff;
   background-color: #ffffff;
+  height: 50px;
 }
 
 /* Style the buttons inside the tab */

@@ -134,7 +134,7 @@ INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (10,'Touje
 INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (11,'Aspirin','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/aspirin.jpg'));
 INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (12,'Prednisolon','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/aspirin.jpg'));
 INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (13,'Pantoprazol','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/aspirin.jpg'));
-INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (14,'Budenofalk','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/aspirin.jpg'));
+INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (14,'Budenofalk','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/budenofalk.png'));
 
 --
 -- Dumping data for table `drug_simple`
@@ -318,6 +318,7 @@ INSERT INTO drug_disease (iddrug, iddisease) VALUES (8, 4);
 INSERT INTO drug_disease (iddrug, iddisease) VALUES (9, 5);
 INSERT INTO drug_disease (iddrug, iddisease) VALUES (10, 1);
 INSERT INTO drug_disease (iddrug, iddisease) VALUES (10, 3);
+INSERT INTO drug_disease (iddrug, iddisease) VALUES (11, 6);
 INSERT INTO drug_disease (iddrug, iddisease) VALUES (12, 13);
 INSERT INTO drug_disease (iddrug, iddisease) VALUES (12, 14);
 INSERT INTO drug_disease (iddrug, iddisease) VALUES (13, 7);
@@ -723,6 +724,7 @@ INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(1, 12,
 INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(2, 13, 2, 1);
 INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(3, 14, 2, 1);
 
+
 -- user prescription item
 INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 18, 1);
 INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 6, 3); 
@@ -748,7 +750,7 @@ INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (3, 'salziges Essen vermeid
 INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (4, 'eine vegane Ernährung vermeiden');
 INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (5, 'für ausreichend Magnesiumzufuhr sorgen');
 INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (6, 'für ausreichen Kaliumzufuhr sorgen (esse z.B. eine Banane)');
-INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (7, 'Stress verstärkt den Effekt der dieses Medikamentes (gönne dir ausreichend Ruhepausen)');
+INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (7, 'Stress verstärkt den Effekt dieses Medikamentes (gönne dir ausreichend Ruhepausen)');
 
 --
 -- Dumping data for table `drug_food_to_avoid`
