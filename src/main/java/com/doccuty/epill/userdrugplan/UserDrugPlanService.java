@@ -27,7 +27,7 @@ import com.doccuty.epill.user.UserService;
 import com.doccuty.epill.userprescription.UserPrescription;
 import com.doccuty.epill.userprescription.UserPrescriptionItem;
 import com.doccuty.epill.userprescription.UserPrescriptionRepository;
-import com.doccuty.epill.userdrugplan.FoodToAvoid;
+import com.doccuty.epill.userdrugplan.Instruction;
 
 /**
  * service methods used for user drug plan
@@ -102,6 +102,7 @@ public class UserDrugPlanService {
 				}
 			}
 			LOG.info("items={} in UserDrugPlan with intermediate steps", userDrugPlanView.size());
+			//return resetHalftimeAndPercentagePerDrugPlanItem(userDrugPlanView);
 			return setHalftimeAndPercentagePerDrugPlanItem(userDrugPlanView);
 		}
 		
@@ -168,8 +169,9 @@ public class UserDrugPlanService {
 					drugViewModel.setTakeOnEmptyStomach(item.getDrug().getTakeOnEmptyStomach());
 					drugViewModel.setTakeOnFullStomach(item.getDrug().getTakeOnFullStomach());
 					drugViewModel.setDiseases(getDiseases(item));
-					drugViewModel.setFood(getFoods(item));
+					drugViewModel.setInstructions(getInstructions(item));
 					drugViewModel.setInteractions(getInteractions(plannedItemsForHour, item));
+					drugViewModel.setHalfTimePeriod(item.getDrug().getPeriod());
 					TailoredText tt = this.tailoringService.getTailoredMinimumSummaryByDrugAndUser(item.getDrug(), currentUser);
 					if (tt != null) {
 						drugViewModel.setPersonalizedInformation(tt.getText());
@@ -263,12 +265,12 @@ public class UserDrugPlanService {
 			return diseases;
 		}
 		
-		private List<String> getFoods(UserDrugPlanItem item) {
-			List<String> foods = new ArrayList<>();
-			for (FoodToAvoid food : item.getDrug().getFoodToAvoid()) {
-				foods.add(food.getFoodToAvoid());
+		private List<String> getInstructions(UserDrugPlanItem item) {
+			List<String> instructions = new ArrayList<>();
+			for (Instruction instruction : item.getDrug().getInstructions()) {
+				instructions.add(instruction.getDescription());
 			}
-			return foods;
+			return instructions;
 		}
 		
 		/**
@@ -300,6 +302,22 @@ public class UserDrugPlanService {
 			}
 //				private final String hints;
 //				private final boolean hasInteractions;
+			return viewModel;
+		}
+		
+		/**
+		 * set percentage to ZERO (0) for all items
+		 * 
+		 * @param completePlanWithIntermediateSteps
+		 * @return
+		 */
+		private List<UserDrugPlanItemViewModel> resetHalftimeAndPercentagePerDrugPlanItem(
+				List<UserDrugPlanItemViewModel> completePlanWithIntermediateSteps) {
+			final List<UserDrugPlanItemViewModel> viewModel = new ArrayList<>();
+			for (final UserDrugPlanItemViewModel model : completePlanWithIntermediateSteps) {
+				model.setPercentage(0);
+				viewModel.add(model);
+			}
 			return viewModel;
 		}
 

@@ -14,13 +14,14 @@ import ChangingDrugIntakePopup from "./changing_drug_intake_popup";
 import CheckBox from "./checkbox";
 import {toast} from 'react-toastify';
 import Clock from "./clock";
+import PercentageCalculator from "./../util/PercentageCalculator";
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about forms.
 class DrugIntakePlan extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            drugsplanned: [],
+            drugplanitems: [],
             interactions        : [],
             date : new Date(),
             percentage : 100,
@@ -58,7 +59,7 @@ class DrugIntakePlan extends React.Component {
                           date: this.state.date
                         }
                       }).then(({ data }) => {
-         this.state.drugsplanned = data;
+         this.state.drugplanitems = data;
          this.state.loading = false;
          this.setState(this.state);
         });
@@ -120,25 +121,40 @@ class DrugIntakePlan extends React.Component {
         this.getData();
     }
 
-    handleRowClick(rowId, drugsplanned) {
+    handleDrugTabClick(rowId, drugplanitem) {
     	
         const currentExpandedRows = this.state.expandedRows;
         const isRowCurrentlyExpanded = currentExpandedRows.includes(rowId);
+        var drugSelected;
         
         var newExpandedRows = isRowCurrentlyExpanded
           ? currentExpandedRows.filter(id => id !== rowId)
           : currentExpandedRows.concat(rowId);
-        for (var i = 0; i < drugsplanned.drugsPlannedSameTime.length; i++) {
-        	if (newExpandedRows.includes(drugsplanned.drugsPlannedSameTime[i]) && newExpandedRows.includes(rowId)) {
-        		if (drugsplanned.drugsPlannedSameTime[i] != rowId){
-        			newExpandedRows = newExpandedRows.filter(id => id !== drugsplanned.drugsPlannedSameTime[i])
+        for (var i = 0; i < drugplanitem.drugsPlannedSameTime.length; i++) {
+        	if (newExpandedRows.includes(drugplanitem.drugsPlannedSameTime[i]) && newExpandedRows.includes(rowId)) {
+        		if (drugplanitem.drugsPlannedSameTime[i] != rowId){
+        			newExpandedRows = newExpandedRows.filter(id => id !== drugplanitem.drugsPlannedSameTime[i]);
+        		} else {
+        			drugSelected = drugplanitem.drugsPlannedSameTime[i];
+        			console.log("handleDrugTabClick, drug = " + drugSelected.name);
+        	        this.setPercentageFollowingRows(drugplanitem, drugSelected);
         		}
             }
         }
 
+        console.log('newExpandedRows,size = ' + newExpandedRows.length);
+        
         this.setState({ expandedRows: newExpandedRows });
       }
 
+    setPercentageFollowingRows(drugplanitem, drugSelected) {
+    	if(drugplanitem && drugSelected ) {
+    		console.log("halftimePeriod=" + drugSelected.halfTimePeriod);
+        	const percentageCalculator = new PercentageCalculator();
+        	percentageCalculator.setPercentagesForDrugFromDrugPlanItem(this.state.drugplanitems, drugplanitem, drugSelected);
+    	}
+    }
+    
     handleTakenChange(isChecked, userDrugPlanItemId) {
         console.log("isChecked=" + isChecked + ", userDrugPlanItemId="+ userDrugPlanItemId);
         if (userDrugPlanItemId < 0) {
@@ -174,46 +190,46 @@ class DrugIntakePlan extends React.Component {
     	}
     }
 
-    renderDrugsPlanned(drugsplanned) {
+    renderDrugPlanItems(drugplanitems) {
         const { t } = this.props;
-        return drugsplanned.map(drugplanned => {
+        return drugplanitems.map(drugplanitem => {
 
                 const plannedRow = [
-                <tr key={drugplanned} className="table-line-hover">
+                <tr key={drugplanitem} className="table-line-hover">
                         <td className="td-style">
-                                {this.renderProgressBar(drugplanned)}
+                                {this.renderProgressBar(drugplanitem)}
                         </td>
                         <td className="td-style">
-                            <div>{this.renderCheckBox(drugplanned)}</div>
+                            <div>{this.renderCheckBox(drugplanitem)}</div>
                         </td>
                         <td className="td-style">
-                        	{this.renderTimeString(drugplanned.timeString)}
+                        	{this.renderTimeString(drugplanitem.timeString)}
                         </td>
                         <td className="td-style">
-                                <div className="tab"><b>{this.renderDrugName(drugplanned)}</b></div>
+                                <div className="tab"><b>{this.renderDrugName(drugplanitem)}</b></div>
                         </td>
                         <td className="td-style">
-                        	{this.renderMealSleepTime(drugplanned)}
+                        	{this.renderMealSleepTime(drugplanitem)}
                         </td>
                 </tr>                   
             ];
-                if (drugplanned.drugsPlannedSameTime.length > 0) {
-                   for (var i = 0; i < drugplanned.drugsPlannedSameTime.length; i++) {
-                	   if(this.state.expandedRows.includes(drugplanned.drugsPlannedSameTime[i])) {
+                if (drugplanitem.drugsPlannedSameTime.length > 0) {
+                   for (var i = 0; i < drugplanitem.drugsPlannedSameTime.length; i++) {
+                	   if(this.state.expandedRows.includes(drugplanitem.drugsPlannedSameTime[i])) {
                            plannedRow.push(
-                               <tr key={"row-expanded-" + drugplanned}>
+                               <tr key={"row-expanded-" + drugplanitem}>
                                    <td></td>
                                    <td></td>
                                    <td></td>
                                    <td>
-                                   <p><b>{(t("usedWhen")) +": "}</b>{this.renderDiseases(drugplanned.drugsPlannedSameTime[i])}</p>
+                                   <p><b>{(t("usedWhen")) +": "}</b>{this.renderDiseases(drugplanitem.drugsPlannedSameTime[i])}</p>
                                        	<div>
-                                       		{this.renderDrugIntakeIndications(drugplanned.drugsPlannedSameTime[i])}
-                                       		{this.renderFoodtoAvoid(drugplanned.drugsPlannedSameTime[i])}
+                                       		{this.renderDrugIntakeIndications(drugplanitem.drugsPlannedSameTime[i])}
+                                       		{this.renderInstructions(drugplanitem.drugsPlannedSameTime[i])}
                                        	</div>
                                        <div>
-                                       {this.renderInteractions(drugplanned.drugsPlannedSameTime[i])}
-                                       <Link to={`/drug/${drugplanned.drugsPlannedSameTime[i].link}`}>
+                                       {this.renderInteractions(drugplanitem.drugsPlannedSameTime[i])}
+                                       <Link to={`/drug/${drugplanitem.drugsPlannedSameTime[i].link}`}>
                                                <h4>{t("forMoreInformation")}</h4>
                                        </Link>
                                        </div>
@@ -296,14 +312,14 @@ class DrugIntakePlan extends React.Component {
         
     }
     
-    renderFoodtoAvoid(drugplanned) {
+    renderInstructions(drugplanned) {
     	const { t } = this.props;
-    	if (drugplanned.food.length != 0) {
-        	return drugplanned.food.map(foodName => {
-            	const drugFoodToAvoid = [
-            		<p className="information" key={foodName}><span className="glyphicon glyphicon-info-sign"></span> {foodName}</p>
+    	if (drugplanned.instructions.length != 0) {
+        	return drugplanned.instructions.map(instructionName => {
+            	const instruction = [
+            		<p className="information" key={instructionName}><span className="glyphicon glyphicon-info-sign"></span> {instructionName}</p>
             	];
-            	return drugFoodToAvoid;
+            	return instruction;
             	});
         } else {
         	return "";
@@ -320,7 +336,7 @@ class DrugIntakePlan extends React.Component {
     renderDrugName(drugplanned) {
         if (drugplanned.drugsPlannedSameTime.length > 0) {     
         	return drugplanned.drugsPlannedSameTime.map(drug => {
-        	const clickCallback = () => this.handleRowClick(drug, drugplanned);
+        	const clickCallback = () => this.handleDrugTabClick(drug, drugplanned);
         	const drugNameButtons = [
         		<button key={drug.userDrugPlanItemId} className={"tablinks drug-names " + (this.state.expandedRows.includes(drug) ? 'btn-drug-names-active' : 'btn-drug-names-inactive')} onClick={clickCallback}>{drug.name}</button>
         	];
@@ -407,7 +423,7 @@ class DrugIntakePlan extends React.Component {
                          case 200:
                              console.log("case status 200");
                              if (isDrugTaken) {
-                                 toast.success(t('Well done!'), options);
+                                 toast.success('🦄'+(t('Well done!')), options);
                              } else {
                                  toast.error(t('Remember to take it soon!'), options);
                              }
@@ -425,7 +441,7 @@ class DrugIntakePlan extends React.Component {
 
     render() {
         const { t } = this.props;
-        const drugsplanned = this.state.drugsplanned;
+        const drugplanitems = this.state.drugplanitems;
         var formatted_date = moment(this.state.date).format("DD.MM.YYYY");
         const firstname = User.firstname;
         const lastname = User.lastname;
@@ -467,7 +483,7 @@ class DrugIntakePlan extends React.Component {
                         </div>
                      }
                         {this.state.loading && <Loading />}
-                        {!this.state.loading && drugsplanned && drugsplanned.length == 0 && (
+                        {!this.state.loading && drugplanitems && drugplanitems.length == 0 && (
                             <EmptyList />
                         )}
                         {this.state.showDrugIntakePopup && (
@@ -488,8 +504,8 @@ class DrugIntakePlan extends React.Component {
                                     </Popup>
                                 )
                         }
-                        {!this.state.loading && drugsplanned && drugsplanned.length > 0 && (
-                                <table id="drugsplanned" className="table-style">
+                        {!this.state.loading && drugplanitems && drugplanitems.length > 0 && (
+                                <table id="drugplanitems" className="table-style">
                                         <thead>
                                                 <tr>
                                                 <th className="th-style"><Popup trigger={<button type="button" className="btn-half-time-period" onClick={() => this.handleShowProgressBar()}>{t("halfTimePeriod")}</button>} position="bottom center" on="hover">
@@ -502,7 +518,7 @@ class DrugIntakePlan extends React.Component {
                                                 </tr>
                                         </thead>
                                 <tbody>
-                                        {this.renderDrugsPlanned(drugsplanned)}
+                                        {this.renderDrugPlanItems(drugplanitems)}
                                 </tbody>
                             </table>
                         )}

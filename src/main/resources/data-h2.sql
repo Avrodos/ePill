@@ -49,8 +49,8 @@ DELETE FROM product_group;
 DELETE FROM user_prescription;
 DELETE FROM user_prescription_item;
 DELETE FROM user_drug_plan_item; 
-DELETE FROM food_to_avoid;
-DELETE FROM drug_food_to_avoid;
+DELETE FROM instruction;
+DELETE FROM drug_instruction;
 
 --
 -- Dumping data for table `gender`
@@ -151,9 +151,9 @@ INSERT INTO drug_simple (id, name, number, status, version, year, idimage, perio
 INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (9,'Topiramat-Janssen',0,'3915-06-01','1.0','2011-1-1', 1, 3, false, false, false, 1);
 INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (10,'Toujeo',0,'3915-06-01','1.59','2011-1-1', 10, 4, false, false, false, 1);
 INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (11,'Aspirin',0,'3915-06-01','1.59','2019-1-1', 11, 3, false, false, false, 1);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (12,'Prednisolon AL 50mg',0,'3915-06-01','1.59','2019-1-1', 11, 3, false, false, true, 1);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (13,'Pantoprazol-ratiopharm® 40 mg',0,'3915-06-01','1.59','2019-1-1', 11, 3, true, false, false, 1);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (14,'Budenofalk 3mg',0,'3915-06-01','1.59','2019-1-1', 11, 4, true, false, false, 3);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (12,'Prednisolon AL 50mg',0,'3915-06-01','1.59','2019-1-1', 12, 3, false, false, true, 1);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (13,'Pantoprazol-ratiopharm® 40 mg',0,'3915-06-01','1.59','2019-1-1', 13, 3, true, false, false, 1);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (14,'Budenofalk 3mg',0,'3915-06-01','1.59','2019-1-1', 14, 4, true, false, false, 3);
 
 
 --
@@ -720,6 +720,7 @@ INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, date_tim
 
 
 -- user prescription
+INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(4, 1, 2, 1);
 INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(1, 12, 2, 1);
 INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(2, 13, 2, 1);
 INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(3, 14, 2, 1);
@@ -742,27 +743,27 @@ INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 13);
 INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 14);
 
 --
--- Dumping data for table `food_to_avoid`
+-- Dumping data for table `instruction`
 --
-INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (1, 'grapefruit');
-INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (2, 'alcohol');
-INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (3, 'salziges Essen vermeiden');
-INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (4, 'eine vegane Ernährung vermeiden');
-INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (5, 'für ausreichend Magnesiumzufuhr sorgen');
-INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (6, 'für ausreichen Kaliumzufuhr sorgen (esse z.B. eine Banane)');
-INSERT INTO food_to_avoid (id, food_to_avoid) VALUES (7, 'Stress verstärkt den Effekt dieses Medikamentes (gönne dir ausreichend Ruhepausen)');
+INSERT INTO instruction (id, description) VALUES (1, 'Grapefruit vermeiden');
+INSERT INTO instruction (id, description) VALUES (2, 'Alkoholkonsum vermeiden');
+INSERT INTO instruction (id, description) VALUES (3, 'salziges Essen vermeiden');
+INSERT INTO instruction (id, description) VALUES (4, 'eine vegane Ernährung vermeiden');
+INSERT INTO instruction (id, description) VALUES (5, 'für ausreichend Magnesiumzufuhr sorgen');
+INSERT INTO instruction (id, description) VALUES (6, 'für ausreichen Kaliumzufuhr sorgen (esse z.B. eine Banane)');
+INSERT INTO instruction (id, description) VALUES (7, 'Stress verstärkt den Effekt dieses Medikamentes (gönne dir ausreichend Ruhepausen)');
 
 --
--- Dumping data for table `drug_food_to_avoid`
+-- Dumping data for table `drug_instruction`
 --
-INSERT INTO drug_food_to_avoid (iddrug, idfood_to_avoid) VALUES (1, 1);
-INSERT INTO drug_food_to_avoid (iddrug, idfood_to_avoid) VALUES (2, 2);
-INSERT INTO drug_food_to_avoid (iddrug, idfood_to_avoid) VALUES (3, 2);
-INSERT INTO drug_food_to_avoid (iddrug, idfood_to_avoid) VALUES (4, 2);
-INSERT INTO drug_food_to_avoid (iddrug, idfood_to_avoid) VALUES (2, 3);
-INSERT INTO drug_food_to_avoid (iddrug, idfood_to_avoid) VALUES (12, 3);
-INSERT INTO drug_food_to_avoid (iddrug, idfood_to_avoid) VALUES (13, 4);
-INSERT INTO drug_food_to_avoid (iddrug, idfood_to_avoid) VALUES (13, 5);
-INSERT INTO drug_food_to_avoid (iddrug, idfood_to_avoid) VALUES (12, 6);
-INSERT INTO drug_food_to_avoid (iddrug, idfood_to_avoid) VALUES (14, 7);
+INSERT INTO drug_instruction (iddrug, idinstruction) VALUES (1, 1);
+INSERT INTO drug_instruction (iddrug, idinstruction) VALUES (2, 2);
+INSERT INTO drug_instruction (iddrug, idinstruction) VALUES (3, 2);
+INSERT INTO drug_instruction (iddrug, idinstruction) VALUES (4, 2);
+INSERT INTO drug_instruction (iddrug, idinstruction) VALUES (2, 3);
+INSERT INTO drug_instruction (iddrug, idinstruction) VALUES (12, 3);
+INSERT INTO drug_instruction (iddrug, idinstruction) VALUES (13, 4);
+INSERT INTO drug_instruction (iddrug, idinstruction) VALUES (13, 5);
+INSERT INTO drug_instruction (iddrug, idinstruction) VALUES (12, 6);
+INSERT INTO drug_instruction (iddrug, idinstruction) VALUES (14, 7);
 

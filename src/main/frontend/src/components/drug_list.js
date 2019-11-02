@@ -20,8 +20,7 @@ class DrugList extends React.Component {
                         interactions    : '',
                         cmd                     : '',
                         loading         : false,
-                        open: false,
-                        showDrugIntakePopup: false
+                        open: false
         }
 
         this.checkForInteractions       = this.checkForInteractions.bind(this);
@@ -43,9 +42,8 @@ class DrugList extends React.Component {
       }
     
     closeDrugIntakePopup() {
-        console.log('closeDrugIntakePopup...');
-        this.state.showDrugIntakePopup = false;
-        this.setState(this.state);
+        console.log("closeDrugIntakePopup by refreshing list...");
+        this.setCmd();
     }
 
     setCmd() {

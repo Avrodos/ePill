@@ -21,7 +21,6 @@ import com.doccuty.epill.model.DrugFeature;
 import com.doccuty.epill.model.util.DrugCreator;
 import com.doccuty.epill.model.util.ItemInvocationCreator;
 import com.doccuty.epill.user.UserService;
-import com.doccuty.epill.userdrugplan.FoodToAvoid;
 
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
@@ -391,34 +390,6 @@ public class DrugController {
 		for (final ItemInvocation invocation : list) {
 			json.add(map.toJsonObject(invocation));
 		}
-
-		return new ResponseEntity<>(json, HttpStatus.OK);
-	}
-	
-	/**
-	 * get all foods to avoid
-	 * 
-	 * @return
-	 */
-
-	@RequestMapping(value = "/food/all", method = RequestMethod.GET)
-	public ResponseEntity<JsonObject> findAllFoodToAvoid() {
-
-		final List<FoodToAvoid> list = service.findAllFoodToAvoid();
-
-		// generate JSON formatted string
-
-		final IdMap map = DrugCreator.createIdMap("");
-		map.withFilter(Filter.regard(Deep.create(1)));
-
-		final JsonObject json = new JsonObject();
-		final JsonArray drugArray = new JsonArray();
-
-		for (final FoodToAvoid food : list) {
-			drugArray.add(map.toJsonObject(food));
-		}
-
-		json.add("value", drugArray);
 
 		return new ResponseEntity<>(json, HttpStatus.OK);
 	}

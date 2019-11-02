@@ -42,7 +42,7 @@ import com.doccuty.epill.model.PharmaceuticalForm;
 import com.doccuty.epill.model.AdverseEffect;
 import com.doccuty.epill.model.Interaction;
 import com.doccuty.epill.model.Packaging;
-import com.doccuty.epill.userdrugplan.FoodToAvoid;
+import com.doccuty.epill.userdrugplan.Instruction;
 
 public class DrugCreator implements SendableEntityCreatorNoIndex
 {
@@ -223,9 +223,9 @@ public class DrugCreator implements SendableEntityCreatorNoIndex
          return ((Drug) target).getCountPerDay();
       }
       
-      if (Drug.PROPERTY_FOOD_TO_AVOID.equalsIgnoreCase(attribute))
+      if (Drug.PROPERTY_INSTRUCTIONS.equalsIgnoreCase(attribute))
       {
-         return ((Drug) target).getFoodToAvoid();
+         return ((Drug) target).getInstructions();
       }
       
       return null;
@@ -438,9 +438,9 @@ public class DrugCreator implements SendableEntityCreatorNoIndex
          return true;
       }
       
-      if (Drug.PROPERTY_FOOD_TO_AVOID.equalsIgnoreCase(attrName))
+      if (Drug.PROPERTY_INSTRUCTIONS.equalsIgnoreCase(attrName))
       {
-         ((Drug) target).withFoodToAvoid((FoodToAvoid) value);
+         ((Drug) target).withInstructions((Instruction) value);
          return true;
       }
       

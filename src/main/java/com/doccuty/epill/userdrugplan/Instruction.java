@@ -19,15 +19,15 @@ import java.beans.PropertyChangeListener;
 import de.uniks.networkparser.EntityUtil;
 
 @Entity
-@Table(name = "food_to_avoid")
-public class FoodToAvoid implements SendableEntity{
-public FoodToAvoid() {
+@Table(name = "instruction")
+public class Instruction implements SendableEntity{
+public Instruction() {
 		
 	}
 	
-	public FoodToAvoid(long id, String foodToAvoid){
+	public Instruction(long id, String foodToAvoid){
 		this.id = id;
-		this.foodToAvoid = foodToAvoid;
+		this.description = foodToAvoid;
 	}
 	
 	
@@ -101,7 +101,7 @@ public FoodToAvoid() {
 		}
 	}
 
-	public FoodToAvoid withId(long value) {
+	public Instruction withId(long value) {
 		setId(value);
 		return this;
 	}
@@ -111,31 +111,31 @@ public FoodToAvoid() {
 		StringBuilder result = new StringBuilder();
 
 		result.append(" ").append(this.getId());
-		result.append(" ").append(this.getFoodToAvoid());
+		result.append(" ").append(this.getDescription());
 		return result.substring(1);
 	}
 
 	// ==========================================================================
 
-	public static final String PROPERTY_FOOD_TO_AVOID = "foodToAvoid";
+	public static final String PROPERTY_DRUG_INSTRUCTION = "description";
 
-	private String foodToAvoid;
+	private String description;
 
-	public String getFoodToAvoid() {
-		return this.foodToAvoid;
+	public String getDescription() {
+		return this.description;
 	}
 
-	public void setFoodToAvoid(String value) {
-		if (!EntityUtil.stringEquals(this.foodToAvoid, value)) {
+	public void setDescription(String value) {
+		if (!EntityUtil.stringEquals(this.description, value)) {
 
-			String oldValue = this.foodToAvoid;
-			this.foodToAvoid = value;
-			this.firePropertyChange(PROPERTY_FOOD_TO_AVOID, oldValue, value);
+			String oldValue = this.description;
+			this.description = value;
+			this.firePropertyChange(PROPERTY_DRUG_INSTRUCTION, oldValue, value);
 		}
 	}
 
-	public FoodToAvoid withFoodToAvoid(String value) {
-		setFoodToAvoid(value);
+	public Instruction withFoodToAvoid(String value) {
+		setDescription(value);
 		return this;
 	}
 	
@@ -147,9 +147,9 @@ public FoodToAvoid() {
 	    * </pre>
 	    */
 	   
-	   public static final String PROPERTY_DRUG = "food_to_avoid";
+	   public static final String PROPERTY_DRUG = "drug";
 
-	   @ManyToMany(cascade=CascadeType.ALL, mappedBy="foodToAvoid")
+	   @ManyToMany(cascade=CascadeType.ALL, mappedBy="instructions")
 	   private Set<Drug> drug = null;
 	   
 	   public Set<Drug> getDrug()
@@ -162,7 +162,7 @@ public FoodToAvoid() {
 	      return this.drug;
 	   }
 
-	   public FoodToAvoid withDrug(Drug... value)
+	   public Instruction withDrug(Drug... value)
 	   {
 	      if(value==null){
 	         return this;
@@ -180,15 +180,15 @@ public FoodToAvoid() {
 
 	            if (changed)
 	            {
-	               item.withFoodToAvoid(this);
-	               firePropertyChange(PROPERTY_FOOD_TO_AVOID, null, item);
+	               item.withInstructions(this);
+	               firePropertyChange(PROPERTY_DRUG_INSTRUCTION, null, item);
 	            }
 	         }
 	      }
 	      return this;
 	   } 
 
-	   public FoodToAvoid withoutDrug(Drug... value)
+	   public Instruction withoutDrug(Drug... value)
 	   {
 	      for (Drug item : value)
 	      {
@@ -196,8 +196,8 @@ public FoodToAvoid() {
 	         {
 	            if (this.drug.remove(item))
 	            {
-	               item.withoutFoodToAvoid(this);
-	               firePropertyChange(PROPERTY_FOOD_TO_AVOID, item, null);
+	               item.withoutInstructions(this);
+	               firePropertyChange(PROPERTY_DRUG_INSTRUCTION, item, null);
 	            }
 	         }
 	      }
@@ -210,5 +210,4 @@ public FoodToAvoid() {
 	      withDrug(value);
 	      return value;
 	   }
-	
 }

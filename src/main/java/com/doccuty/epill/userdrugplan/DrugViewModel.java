@@ -9,6 +9,7 @@ public class DrugViewModel {
 	private long userDrugPlanItemId;
 	private String name;
 	private long link;
+	private long halfTimePeriod;
 	private boolean drugTaken;	
 	private boolean hasInteractions;
 	private boolean takeOnEmptyStomach;
@@ -17,7 +18,6 @@ public class DrugViewModel {
 	String personalizedInformation;
 	private List<String> diseases;
 	private String interactions;
-	private List<String> food;
 	private List<String> instructions;
 	
 	public long getId() {
@@ -32,12 +32,6 @@ public class DrugViewModel {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public List<String> getFood() {
-		return food;
-	}
-	public void setFood(List<String> food) {
-		this.food = food;
-	}
 	public List<String> getInstructions() {
 		return instructions;
 	}
@@ -49,6 +43,12 @@ public class DrugViewModel {
 	}
 	public void setLink(long link) {
 		this.link = link;
+	}
+	public long getHalfTimePeriod() {
+		return halfTimePeriod;
+	}
+	public void setHalfTimePeriod(long halfTimePeriod) {
+		this.halfTimePeriod = halfTimePeriod;
 	}
 	public long getUserDrugPlanItemId() {
 		return userDrugPlanItemId;
@@ -76,6 +76,9 @@ public class DrugViewModel {
 	}
 	public boolean isTakeOnEmptyStomach() {
 		return takeOnEmptyStomach;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	public void setTakeOnEmptyStomach(boolean takeOnEmptyStomach) {
 		this.takeOnEmptyStomach = takeOnEmptyStomach;

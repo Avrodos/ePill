@@ -53,8 +53,7 @@ import com.doccuty.epill.packagingsection.PackagingSection;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItem;
 import com.doccuty.epill.userprescription.UserPrescription;
-import com.doccuty.epill.userdrugplan.FoodToAvoid;
-import com.doccuty.epill.userdrugplan.DrugInstructions;
+import com.doccuty.epill.userdrugplan.Instruction;
 
 @Entity
 @Table(name = "drug")
@@ -237,7 +236,7 @@ public class Drug extends SimpleDrug {
 
 				if (changed) {
 					item.withDrug(this);
-					firePropertyChange(PROPERTY_ACTIVESUBSTANCE, null, item);
+					firePropertyChange(PROPERTY_DRUGFEATURE, null, item);
 				}
 			}
 		}
@@ -249,7 +248,7 @@ public class Drug extends SimpleDrug {
 			if ((this.drugFeature != null) && (item != null)) {
 				if (this.drugFeature.remove(item)) {
 					item.withoutDrug(this);
-					firePropertyChange(PROPERTY_ACTIVESUBSTANCE, item, null);
+					firePropertyChange(PROPERTY_DRUGFEATURE, item, null);
 				}
 			}
 		}
@@ -1055,68 +1054,7 @@ public class Drug extends SimpleDrug {
 	/********************************************************************
 	 * <pre>
 	 *              many                       many
-	 * Drug ----------------------------------- FoodToAvoid
-	 *              drugs                   	foodsToAvoid
-	 * </pre>
-	 */
-
-	public static final String PROPERTY_FOOD_TO_AVOID = "foodToAvoid";
-
-	@ManyToMany(cascade = CascadeType.MERGE)
-	@JoinTable(name = "drug_food_to_avoid", joinColumns = @JoinColumn(name = "iddrug"), inverseJoinColumns = @JoinColumn(name = "idfood_to_avoid"))
-	private List<FoodToAvoid> foodToAvoid = null;
-
-	public List<FoodToAvoid> getFoodToAvoid() {
-		if (this.foodToAvoid == null) {
-			return new ArrayList<FoodToAvoid>();
-		}
-
-		return this.foodToAvoid;
-	}
-
-	public Drug withFoodToAvoid(FoodToAvoid... value) {
-		if (value == null) {
-			return this;
-		}
-		for (final FoodToAvoid item : value) {
-			if (item != null) {
-				if (this.foodToAvoid == null) {
-					this.foodToAvoid = new ArrayList<FoodToAvoid>();
-				}
-
-				final boolean changed = this.foodToAvoid.add(item);
-
-				if (changed) {
-					item.withDrug(this);
-					firePropertyChange(PROPERTY_ACTIVESUBSTANCE, null, item);
-				}
-			}
-		}
-		return this;
-	}
-
-	public Drug withoutFoodToAvoid(FoodToAvoid... value) {
-		for (final FoodToAvoid item : value) {
-			if ((this.foodToAvoid != null) && (item != null)) {
-				if (this.foodToAvoid.remove(item)) {
-					item.withoutDrug(this);
-					firePropertyChange(PROPERTY_ACTIVESUBSTANCE, item, null);
-				}
-			}
-		}
-		return this;
-	}
-
-	public FoodToAvoid createFoodToAvoid() {
-		final FoodToAvoid value = new FoodToAvoid();
-		withFoodToAvoid(value);
-		return value;
-	}
-
-	/********************************************************************
-	 * <pre>
-	 *              many                       many
-	 * Drug ----------------------------------- Instructions
+	 * Drug ----------------------------------- Instruction
 	 *              drugs                   	instructions
 	 * </pre>
 	 */
@@ -1124,25 +1062,25 @@ public class Drug extends SimpleDrug {
 	public static final String PROPERTY_INSTRUCTIONS = "instructions";
 
 	@ManyToMany(cascade = CascadeType.MERGE)
-	@JoinTable(name = "instructions", joinColumns = @JoinColumn(name = "iddrug"), inverseJoinColumns = @JoinColumn(name = "instructions"))
-	private List<DrugInstructions> instructions = null;
+	@JoinTable(name = "drug_instruction", joinColumns = @JoinColumn(name = "iddrug"), inverseJoinColumns = @JoinColumn(name = "idinstruction"))
+	private List<Instruction> instructions = null;
 
-	public List<DrugInstructions> getInstructions() {
+	public List<Instruction> getInstructions() {
 		if (this.instructions == null) {
-			return new ArrayList<DrugInstructions>();
+			return new ArrayList<Instruction>();
 		}
 
 		return this.instructions;
 	}
 
-	public Drug withInstructions(DrugInstructions... value) {
+	public Drug withInstructions(Instruction... value) {
 		if (value == null) {
 			return this;
 		}
-		for (final DrugInstructions item : value) {
+		for (final Instruction item : value) {
 			if (item != null) {
 				if (this.instructions == null) {
-					this.instructions = new ArrayList<DrugInstructions>();
+					this.instructions = new ArrayList<Instruction>();
 				}
 
 				final boolean changed = this.instructions.add(item);
@@ -1156,10 +1094,10 @@ public class Drug extends SimpleDrug {
 		return this;
 	}
 
-	public Drug withoutInstructions(DrugInstructions... value) {
-		for (final DrugInstructions item : value) {
-			if ((this.foodToAvoid != null) && (item != null)) {
-				if (this.foodToAvoid.remove(item)) {
+	public Drug withoutInstructions(Instruction... value) {
+		for (final Instruction item : value) {
+			if ((this.instructions != null) && (item != null)) {
+				if (this.instructions.remove(item)) {
 					item.withoutDrug(this);
 					firePropertyChange(PROPERTY_ACTIVESUBSTANCE, item, null);
 				}
@@ -1168,11 +1106,10 @@ public class Drug extends SimpleDrug {
 		return this;
 	}
 
-	public DrugInstructions createInstructions() {
-		final DrugInstructions value = new DrugInstructions();
+	public Instruction createInstruction() {
+		final Instruction value = new Instruction();
 		withInstructions(value);
 		return value;
 	}
-
 
 }

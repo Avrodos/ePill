@@ -18,8 +18,7 @@ import com.doccuty.epill.tailoredtext.TailoredText;
 import com.doccuty.epill.tailoredtext.TailoredTextService;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
-import com.doccuty.epill.userdrugplan.FoodToAvoid;
-import com.doccuty.epill.userdrugplan.FoodToAvoidRepository;
+import com.doccuty.epill.userdrugplan.Instruction;
 import com.doccuty.epill.userdrugplan.UserDrugPlanItemRepository;
 
 @Service
@@ -49,9 +48,6 @@ public class DrugService {
 	@Autowired
 	TailoredTextService tailoringService;
 	
-	@Autowired
-	FoodToAvoidRepository foodRepository;
-
 	public List<Drug> findAllDrugs() {
 		final List<Drug> drugs = repository.findAllOrderByName();
 
@@ -144,10 +140,6 @@ public class DrugService {
 		return featureRepository.findAllSimple();
 	}
 	
-	public List<FoodToAvoid> findAllFoodToAvoid() {
-		return foodRepository.findAllSimple();
-	}
-
 	/**
 	 * check
 	 * 
