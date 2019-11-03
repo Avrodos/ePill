@@ -717,11 +717,10 @@ INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(3, 14,
 
 
 -- user prescription item
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 18, 1);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 11, 3);
 INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 6, 3); 
 INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 17, 2);
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(4, 11, 3);
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(5, 17, 3);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(4, 17, 3);
 
 
 --

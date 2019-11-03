@@ -405,7 +405,8 @@ class DrugIntakePlan extends React.Component {
     }
 
     setDrugTaken(isDrugTaken, userDrugPlanItemId) {
-        const options = {
+    	
+    	const options = {
                 position: toast.POSITION.BOTTOM_CENTER
             };
         console.log("setDrugTaken(userDrugPlanItemId=" + userDrugPlanItemId + ")");
@@ -423,7 +424,7 @@ class DrugIntakePlan extends React.Component {
                          case 200:
                              console.log("case status 200");
                              if (isDrugTaken) {
-                                 toast.success('🦄'+(t('Well done!')), options);
+                                 toast.success(t('Well done!'), options);
                              } else {
                                  toast.error(t('Remember to take it soon!'), options);
                              }

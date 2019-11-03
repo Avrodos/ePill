@@ -132,8 +132,8 @@ INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (8,'Novalg
 INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (9,'Reminyl','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/reminyl.jpg'));
 INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (10,'Toujeo','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/toujeo.jpg'));
 INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (11,'Aspirin','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/aspirin.jpg'));
-INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (12,'Prednisolon','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/aspirin.jpg'));
-INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (13,'Pantoprazol','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/aspirin.jpg'));
+INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (12,'Prednisolon','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/prednisolon.jpeg'));
+INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (13,'Pantoprazol','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/pantoprazol.jpeg'));
 INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (14,'Budenofalk','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/budenofalk.png'));
 
 --
@@ -151,7 +151,7 @@ INSERT INTO drug_simple (id, name, number, status, version, year, idimage, perio
 INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (9,'Topiramat-Janssen',0,'3915-06-01','1.0','2011-1-1', 1, 3, false, false, false, 1);
 INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (10,'Toujeo',0,'3915-06-01','1.59','2011-1-1', 10, 4, false, false, false, 1);
 INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (11,'Aspirin',0,'3915-06-01','1.59','2019-1-1', 11, 3, false, false, false, 1);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (12,'Prednisolon AL 50mg',0,'3915-06-01','1.59','2019-1-1', 12, 3, false, false, true, 1);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (12,'Prednisolon AL 5mg',0,'3915-06-01','1.59','2019-1-1', 12, 3, false, false, true, 1);
 INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (13,'Pantoprazol-ratiopharm® 40 mg',0,'3915-06-01','1.59','2019-1-1', 13, 3, true, false, false, 1);
 INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (14,'Budenofalk 3mg',0,'3915-06-01','1.59','2019-1-1', 14, 4, true, false, false, 3);
 
@@ -727,11 +727,10 @@ INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(3, 14,
 
 
 -- user prescription item
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 18, 1);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 11, 3);
 INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 6, 3); 
 INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 17, 2);
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(4, 11, 3);
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(5, 17, 3);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(4, 17, 3);
 
 
 --
