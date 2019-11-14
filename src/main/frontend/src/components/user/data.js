@@ -8,6 +8,7 @@ import {translate} from "react-i18next";
 import Cookies from "universal-cookie";
 
 import User from "./../../util/User";
+import {sha256} from "js-sha256";
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about
 // forms.
@@ -46,6 +47,8 @@ class UserData extends React.Component {
         this.handleSubmit				= this.handleSubmit.bind(this);
 
         this.cookies = this.props.cookies;
+
+        this.testSendData = this.testSendData.bind(this);
     }
 
 
@@ -212,6 +215,50 @@ class UserData extends React.Component {
                 });
     }
 
+    testSendData(event) {
+        console.log("I still got it");
+        event.preventDefault();
+        this.state.sending = true;
+        this.setState(this.state);
+
+        const deviceId = "21002c41-c430-4043-9511-a5c527869b2c";
+
+        const connectorMail = "testmailforepill@gmail.com";
+        const url = 'https://test-server.andaman7.com/public/v1/services/register';
+        const apiKey = '0a24fa4b-9f38-47a4-ad99-5ba3a2c211c1';
+        const hashedPw = sha256("thirdPartyAccountService");
+        let credentials = connectorMail + ":" + hashedPw;
+        let credString = 'Basic ' + window.btoa(credentials);
+
+        axios({
+            url: url,
+            method: 'POST',
+            headers: {
+                'api-key': apiKey,
+                'Authorization': credString,
+                'Content-Type': 'application/json',
+                'device-id': deviceId
+            },
+            data: {	//the body of the request
+                'firstName': this.state.firstname,
+                'lastName': this.state.lastname,
+                'email': this.state.email,
+                'language': 'EN',
+                'externalUserId': this.state.email,
+                'serviceId': 'partner.com.epill',
+                'scenarioId': 'partnerscenario.com.epill.poc'
+            }
+        }).then(({data}) => {
+                console.log(data);
+            },
+            (error) => {
+                console.log("something went wrong");
+                console.log(error);
+            }
+        );
+        console.log("done");
+    }
+
     render() {
         const {t} 		= this.props;
         const firstname 	= this.state.firstname;
@@ -336,9 +383,13 @@ class UserData extends React.Component {
 			            {!this.state.sending ?
 	            				<button type="submit" className="btn btn-primary">{t('save')}</button>
 	            				: <button className="btn btn-default"><img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="></img></button> }
-				        </div>
+
+
+                        </div>
 	        	    </form>
-	        	</div>
+               <button onClick={this.testSendData}>TEST</button>
+
+           </div>
         );
     }
 }
