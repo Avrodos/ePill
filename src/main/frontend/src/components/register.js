@@ -22,12 +22,14 @@ class Register extends React.Component {
             redGreenColorblind    : false,
             password		: '',
             passwordRepeat: '',
-            sending		: false
+            sending		: false,
+            weight      : 0
         };
 
         this.handleFirstnameChange	= this.handleFirstnameChange.bind(this);
         this.handleLastnameChange	= this.handleLastnameChange.bind(this);
         this.handleGenderChange		= this.handleGenderChange.bind(this);
+		this.handleWeightChange     = this.handleWeightChange.bind(this);
         this.handleRedGreenColorblind = this.handleRedGreenColorblind.bind(this);
 
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
@@ -53,7 +55,12 @@ class Register extends React.Component {
         this.setState(this.state);
     }
 
-    handleRedGreenColorblind(event) {
+	handleWeightChange(event) {
+		this.state.weight = event.target.value;
+		this.setState(this.state);
+	}
+
+	handleRedGreenColorblind(event) {
         this.state.redGreenColorblind = (event.target.value == 1) ? true : false;
         this.setState(this.state);
     }
@@ -100,7 +107,8 @@ class Register extends React.Component {
                 gender          : this.state.gender,
                 redGreenColorblind    : this.state.redGreenColorblind,
                 username        : this.state.username,
-                password        : this.state.password
+                password        : this.state.password,
+				weight          : this.state.weight
             })
             .then(({data, status}) => {
 
@@ -153,68 +161,72 @@ class Register extends React.Component {
                             <input type="text" name="lastname" id="lastname" className="form-control" value={this.state.lastname} onChange={this.handleLastnameChange} />
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="gender">{t('gender')}</label>
-                            <select id="gender" value="0" name="gender" className="form-control" title={t('gender')} value={this.state.gender.id} onChange={this.handleGenderChange}>
-                                <option value="0" disabled>{t('noInfo')}</option>
-                                <option value="2">{t('female')}</option>
-                                <option value="1">{t('male')}</option>
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="red-green-colorblind">{t('redGreenColorblind')}</label>
-                            <ul id="red-green-colorblind" className="inline">
-                                <li className="col-lg-6 col-md-6 col-xs-6">
-                                    <label htmlFor="red-green-colorblind-yes" className="radio-inline">
-                                        <input type="radio" value="1" id="red-green-colorblind-yes" name="redGreenColorblind" checked={this.state.redGreenColorblind == true} onChange={this.handleRedGreenColorblind} />
-                                        {t('yes')}
-                                    </label>
-                                </li>
-                                <li className="col-lg-6 col-md-6 col-xs-6">
-                                    <label htmlFor="red-green-colorblind-no" className="radio-inline">
-                                        <input type="radio" value="0" id="red-green-colorblind-no" name="redGreenColorblind" checked={this.state.redGreenColorblind == false} onChange={this.handleRedGreenColorblind} />
-                                        {t('no')}
-                                    </label>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="username">{t('username')}</label>
-                            <input type="text" name="username" id="username" className="form-control" value={this.state.username} onChange={this.handleUsernameChange} />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="password">{t('password')}</label>
-                            <input type="password" name="password" id="password" className="form-control" value={this.state.password} onChange={this.handlePasswordChange} />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="password_rep">{t('passwordRepeat')}</label>
-                            <input type="password" name="password_rep" id="password_rep" className="form-control" value={this.state.password_repeat} onChange={this.handlePasswordRepeatChange} />
-                        </div>
-
-                        <div className="form-actions">
-                            {!this.state.sending ?
-                                <button type="submit" className="btn btn-primary">{t('register')}</button>
-                                :
-                                <button className="btn btn-default">
-                                    <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="></img>
-                                </button>
-                            }
-                            <Link to="/user/login"><button type="button" className="btn btn-default">{t('login')}</button></Link>
-                        </div>
-                    </form>
-                    <div className="hidden-xs hidden-sm col-md-6 col-lg-4 container">
-                        <h4>Warum du dich registrieren kannst?</h4>
-                        <p>Es gibt viele tolle Features, die dir dabei helfen können,<br />
-                            dein Verständnis für Medikamente zu verbessern.</p>
-                        <p>Beispielsweise können wir dir genau die Informationen...</p>
-                    </div>
-                    <GooglePopup {...this.props} updateNavigation={this.props.updateNavigation}/>
-                    {a7RegisterPopup}
-                </div>
-            </div>
-
+			                <div className="form-group">
+			                   <label htmlFor="gender">{t('gender')}</label>
+			                   <select id="gender" value="0" name="gender" className="form-control" title={t('gender')} value={this.state.gender.id} onChange={this.handleGenderChange}>
+	                           		<option value="0" disabled>{t('noInfo')}</option>
+			                         <option value="2">{t('female')}</option>
+			                         <option value="1">{t('male')}</option>
+			                    </select>
+			               </div>
+                            <div className="form-group">
+                                <label htmlFor="weight">{t('weight')}</label>
+                                <input type="text" name="weight" id="weight" className="form-control" value={this.state.weight} onChange={this.handleWeightChange} />
+                            </div>
+			               <div className="form-group">  
+                                <label htmlFor="red-green-colorblind">{t('redGreenColorblind')}</label>
+                                <ul id="red-green-colorblind" className="inline">
+                                    <li className="col-lg-6 col-md-6 col-xs-6">
+                                        <label htmlFor="red-green-colorblind-yes" className="radio-inline">
+                                            <input type="radio" value="1" id="red-green-colorblind-yes" name="redGreenColorblind" checked={this.state.redGreenColorblind == true} onChange={this.handleRedGreenColorblind} /> 
+                                              {t('yes')}
+                                         </label>
+                                    </li>
+                                    <li className="col-lg-6 col-md-6 col-xs-6">
+                                        <label htmlFor="red-green-colorblind-no" className="radio-inline">
+                                            <input type="radio" value="0" id="red-green-colorblind-no" name="redGreenColorblind" checked={this.state.redGreenColorblind == false} onChange={this.handleRedGreenColorblind} /> 
+                                             {t('no')}
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div>
+				            <div className="form-group">
+				                <label htmlFor="username">{t('username')}</label>
+				                <input type="text" name="username" id="username" className="form-control" value={this.state.username} onChange={this.handleUsernameChange} />
+				            </div>
+				            	
+				            <div className="form-group">
+				                <label htmlFor="password">{t('password')}</label>
+				                <input type="password" name="password" id="password" className="form-control" value={this.state.password} onChange={this.handlePasswordChange} />
+				            </div>
+				            	
+						    <div className="form-group">
+				                <label htmlFor="password_rep">{t('passwordRepeat')}</label>
+				                <input type="password" name="password_rep" id="password_rep" className="form-control" value={this.state.password_repeat} onChange={this.handlePasswordRepeatChange} />
+				            </div>
+	
+				            <div className="form-actions">
+        				            {!this.state.sending ?
+        		            				<button type="submit" className="btn btn-primary">{t('register')}</button>
+        		            				:
+        		            				<button className="btn btn-default">
+        		            				    <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="></img>
+        		            				</button>
+        		            			}
+				            		<Link to="/user/login"><button type="button" className="btn btn-default">{t('login')}</button></Link>
+					        </div>
+		                </form>
+		                <div className="hidden-xs hidden-sm col-md-6 col-lg-4 container">
+		                			<h4>Warum du dich registrieren kannst?</h4>
+		                			<p>Es gibt viele tolle Features, die dir dabei helfen können,<br />
+		                			dein Verständnis für Medikamente zu verbessern.</p>
+		                			<p>Beispielsweise können wir dir genau die Informationen...</p>
+		                </div>
+                        <GooglePopup {...this.props} updateNavigation={this.props.updateNavigation}/>
+                        {a7RegisterPopup}
+		           </div>
+		       </div>
+		              
         );
     }
 }

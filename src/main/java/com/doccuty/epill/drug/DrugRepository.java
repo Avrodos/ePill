@@ -27,4 +27,5 @@ public interface DrugRepository extends JpaRepository<Drug, Long> {
 
 	@Query("SELECT user.rememberedDrug FROM User user WHERE user.id = :id)")
 	List<Drug> findUserDrugsRemembered(@Param(value = "id") long id);
+
 }

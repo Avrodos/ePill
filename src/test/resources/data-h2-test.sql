@@ -75,16 +75,20 @@ INSERT INTO country (id, name) VALUES (2,'Frankreich');
 -- Dumping data for table `user_simple`
 --
 
-INSERT INTO user_simple (id, date_of_birth, date_of_registration, email, firstname, lastname, level_of_detail, password, preferred_font_size, salt, username, red_green_colorblind)
+INSERT INTO user_simple (id, date_of_birth, date_of_registration, email, firstname, lastname, level_of_detail, password, preferred_font_size, salt, username, red_green_colorblind, breakfast_time, lunch_time, dinner_time)
 	VALUES
-	(1,'1990-09-21','2015-06-27 13:16:01','n.kannengiesser@web.de','Niclas','Kannengiesser',3,'89794011ed99bae7b5062920bffbef2a334dca75628975cd9cce51ba9691b12843beaed302416bdee221796816346fdeb618903cfa887945174237c92dc2dd2a','defaultFontSize','[B@63ba2cf8','nic', true);
+	(1,'1990-09-21','2015-06-27 13:16:01','n.kannengiesser@web.de','Niclas','Kannengiesser',3,'89794011ed99bae7b5062920bffbef2a334dca75628975cd9cce51ba9691b12843beaed302416bdee221796816346fdeb618903cfa887945174237c92dc2dd2a','defaultFontSize','[B@63ba2cf8','nic', true, 8, 13, 19);
+INSERT INTO user_simple (id, date_of_birth, date_of_registration, email, firstname, lastname, level_of_detail, password, preferred_font_size, salt, username, red_green_colorblind, breakfast_time, lunch_time, dinner_time)
+    VALUES
+    (2,'1995-09-18','2019-09-01 12:00:00','cs@test.de','Christina','Speck',3,'cca69a44146a648c096757dfa37984d0357dfcf2e40227905b730ccc5653f23e919e226c39380a091975c87fd369e87dbd7856018c4d7f99b2a4db8ddec22416','defaultFontSize','[B@63ba2cf8','cs', false, 7, 12, 18);
+
 
 --
 -- Dumping data for table `user_`
 --
 
 INSERT INTO user_ (id, idcountry, idgender, idlanguage) VALUES (1,1,1,1);
-
+INSERT INTO user_ (id, idcountry, idgender, idlanguage) VALUES (2,1,2,1);
 
 
 --
@@ -123,22 +127,24 @@ INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (7,'Clexan
 INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (8,'Novalgin','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/novalgin.jpg'));
 INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (9,'Reminyl','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/reminyl.jpg'));
 INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (10,'Toujeo','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/toujeo.jpg'));
+INSERT INTO image (id, filename, filetype, uploaded_at, image) VALUES (11,'Aspirin','image/jpg', NOW(), FILE_READ('src/main/frontend/assets/images/toujeo.jpg'));
 
 
 --
 -- Dumping data for table `drug_simple`
 --
 
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage) VALUES (1,'Accupro® 10 Filmtabletten',0,'3915-06-01','1.59', '2011-1-1', 2);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage) VALUES (2,'Baymycard',0,'3915-06-01','1.59','2011-1-1', 3);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage) VALUES (3,'Beloc-Zok® comp',6030,'3915-06-01','1.37','2011-1-1', 4);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage) VALUES (4,'Cardura',0,'3915-06-01','1.59','2011-1-1', 5);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage) VALUES (5,'Ciprobay',0,'3915-06-01','1.59','2011-1-1', 6);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage) VALUES (6,'Clexane',0,'3915-06-01','1.59','2011-1-1', 7);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage) VALUES (7,'Novalgin',0,'3915-06-01','1.59','2011-1-1', 8);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage) VALUES (8,'REMINYL® 4 mg/ml Lösung zum Einnehmen',0,'3915-06-01','1.36','2011-1-1', 9);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage) VALUES (9,'Topiramat-Janssen',0,'3915-06-01','1.0','2011-1-1', 1);
-INSERT INTO drug_simple (id, name, number, status, version, year, idimage) VALUES (10,'Toujeo',0,'3915-06-01','1.59','2011-1-1', 10);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (1,'Accupro® 10 Filmtabletten',0,'3915-06-01','1.59', '2011-1-1', 2, 3, false, false, false, 1);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (2,'Baymycard',0,'3915-06-01','1.59','2011-1-1', 3, 2, true, false, false, 2);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (3,'Beloc-Zok® comp',6030,'3915-06-01','1.37','2011-1-1', 4, 4, false, false, false, 3);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (4,'Cardura',0,'3915-06-01','1.59','2011-1-1', 5, 2, false, false, false, 1);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (5,'Ciprobay',0,'3915-06-01','1.59','2011-1-1', 6, 4, false, false, false, 1);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (6,'Clexane',0,'3915-06-01','1.59','2011-1-1', 7, 4, false, false, false, 1);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (7,'Novalgin',0,'3915-06-01','1.59','2011-1-1', 8, 4, false, false, false, 1);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (8,'REMINYL® 4 mg/ml Lösung zum Einnehmen',0,'3915-06-01','1.36','2011-1-1', 9, 5, false, false, false, 1);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (9,'Topiramat-Janssen',0,'3915-06-01','1.0','2011-1-1', 1, 3, false, false, false, 1);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (10,'Toujeo',0,'3915-06-01','1.59','2011-1-1', 10, 4, false, false, false, 1);
+INSERT INTO drug_simple (id, name, number, status, version, year, idimage, period, take_on_empty_stomach, take_on_full_stomach, take_to_meals, count_per_day) VALUES (11,'Aspirin',0,'3915-06-01','1.59','2019-1-1', 11, 3, false, false, false, 1);
 
 
 --
@@ -155,6 +161,9 @@ INSERT INTO drug (id, idindication_group, idproduct_group) VALUES (7,6,2);
 INSERT INTO drug (id, idindication_group, idproduct_group) VALUES (8,2,2);
 INSERT INTO drug (id, idindication_group, idproduct_group) VALUES (9,3,1);
 INSERT INTO drug (id, idindication_group, idproduct_group) VALUES (10,5,1);
+INSERT INTO drug (id, idindication_group, idproduct_group) VALUES (11,5,1);
+
+
 
 
 --
@@ -171,6 +180,7 @@ INSERT INTO active_substance (id, name, idsubstance_group) VALUES (7,'Enoxaparin
 INSERT INTO active_substance (id, name, idsubstance_group) VALUES (8,'Metamizol-Natrium 1 H2O',NULL);
 INSERT INTO active_substance (id, name, idsubstance_group) VALUES (9,'Galantamin',NULL);
 INSERT INTO active_substance (id, name, idsubstance_group) VALUES (10,'Quinaprilhydrochlorid',NULL);
+INSERT INTO active_substance (id, name, idsubstance_group) VALUES (11,'Acetylsalicylic acid',NULL);
 
 
 --
@@ -250,6 +260,7 @@ INSERT INTO disease (id, name) VALUES(2, 'Grippe');
 INSERT INTO disease (id, name) VALUES(3, 'Gelenkschmerzen');
 INSERT INTO disease (id, name) VALUES(4, 'Lungenentzündung');
 INSERT INTO disease (id, name) VALUES(5, 'Blasenentzündung');
+INSERT INTO disease (id, name) VALUES(6, 'Kopfschmerzen');
 
 
 --
@@ -613,3 +624,42 @@ INSERT INTO tailored_text (id, idgender, iddrug, min_age, max_age, is_minimum, t
 
 INSERT INTO tailored_text (id, idgender, iddrug, min_age, max_age, is_minimum, text) VALUES (59, 1, 1, 18, 25, true, 'Jeden zweiten Tag eine Tablette lutschen.');
 INSERT INTO tailored_text (id, idgender, iddrug, min_age, max_age, is_minimum, text) VALUES (60, 2, 2, 21, 40, true, 'Jeden dritten Tag eine Tablette kauen und nicht in Chlorwasser schwimmen.');
+
+-- user_drug_plan
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(1, 1, 2, '2019-08-21 09:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(2, 2, 2, '2019-08-21 13:00:00');
+
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(11, 1, 2, '2019-08-21 09:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(12, 2, 2, '2019-08-21 13:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(13, 1, 2, '2019-09-01 09:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(14, 2, 2, '2019-09-01 13:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(15, 1, 2, '2019-09-02 09:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(16, 2, 2, '2019-09-02 13:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(17, 1, 2, '2019-09-02 09:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(18, 2, 2, '2019-09-02 13:00:00');
+
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(19, 2, 2, '2019-09-10 07:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(20, 3, 2, '2019-09-10 07:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(21, 3, 2, '2019-09-10 11:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(22, 1, 2, '2019-09-10 15:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(23, 2, 2, '2019-09-10 18:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(24, 3, 2, '2019-09-10 18:00:00');
+
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(25, 2, 2, '2019-09-11 07:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(26, 3, 2, '2019-09-11 07:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(27, 1, 2, '2019-09-11 11:00:00');
+
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(28, 2, 2, '2019-09-12 07:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(29, 3, 2, '2019-09-12 07:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(30, 1, 2, '2019-09-12 11:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(31, 1, 2, '2019-09-12 14:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(32, 2, 2, '2019-09-12 18:00:00');
+INSERT INTO user_drug_plan (id, iddrug, iduser, date_time_planned) VALUES(33, 3, 2, '2019-09-12 18:00:00');
+
+
+--
+-- Dumping data for table `user_drug_taking`
+--
+INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 1);
+INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 2);
+INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 3);

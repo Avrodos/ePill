@@ -66,7 +66,11 @@ public class DrugCreator implements SendableEntityCreatorNoIndex
       Drug.PROPERTY_TAKEN,
       Drug.PROPERTY_YEAR,
       Drug.PROPERTY_STATUS,
-      Drug.PROPERTY_VERSION
+      Drug.PROPERTY_VERSION,
+      Drug.PROPERTY_HALF_TIME_PERIOD,
+      Drug.PROPERTY_TAKE_ON_EMPTY_STOMACH,
+      Drug.PROPERTY_TAKE_ON_FULL_STOMACH,
+      Drug.PROPERTY_TAKE_TO_MEALS
    };
    
    @Override
@@ -190,6 +194,31 @@ public class DrugCreator implements SendableEntityCreatorNoIndex
       if (Drug.PROPERTY_DRUGFEATURE.equalsIgnoreCase(attribute))
       {
          return ((Drug) target).getDrugFeature();
+      }
+      
+      if (Drug.PROPERTY_HALF_TIME_PERIOD.equalsIgnoreCase(attribute))
+      {
+         return ((Drug) target).getPeriod();
+      }
+      
+      if (Drug.PROPERTY_TAKE_ON_EMPTY_STOMACH.equalsIgnoreCase(attribute))
+      {
+         return ((Drug) target).getTakeOnEmptyStomach();
+      }
+      
+      if (Drug.PROPERTY_TAKE_ON_FULL_STOMACH.equalsIgnoreCase(attribute))
+      {
+         return ((Drug) target).getTakeOnFullStomach();
+      }
+      
+      if (Drug.PROPERTY_TAKE_TO_MEALS.equalsIgnoreCase(attribute))
+      {
+         return ((Drug) target).getTakeToMeals();
+      }
+      
+      if (Drug.PROPERTY_COUNT_PER_DAY.equalsIgnoreCase(attribute))
+      {
+         return ((Drug) target).getCountPerDay();
       }
       
       return null;
@@ -369,6 +398,36 @@ public class DrugCreator implements SendableEntityCreatorNoIndex
       if (Drug.PROPERTY_DRUGFEATURE.equalsIgnoreCase(attrName))
       {
          ((Drug) target).withDrugFeature((DrugFeature) value);
+         return true;
+      }
+      
+      if (Drug.PROPERTY_HALF_TIME_PERIOD.equalsIgnoreCase(attrName))
+      {
+         ((Drug) target).setPeriod((int) value);
+         return true;
+      }
+      
+      if (Drug.PROPERTY_TAKE_ON_EMPTY_STOMACH.equalsIgnoreCase(attrName))
+      {
+    	  ((Drug) target).setTakeOnEmptyStomach((boolean) value);
+          return true;
+      }
+      
+      if (Drug.PROPERTY_TAKE_ON_FULL_STOMACH.equalsIgnoreCase(attrName))
+      {
+    	  ((Drug) target).setTakeOnFullStomach((boolean) value);
+          return true;
+      }
+      
+      if (Drug.PROPERTY_TAKE_TO_MEALS.equalsIgnoreCase(attrName))
+      {
+    	  ((Drug) target).setTakeToMeals((boolean) value);
+          return true;
+      }
+      
+      if (Drug.PROPERTY_COUNT_PER_DAY.equalsIgnoreCase(attrName))
+      {
+         ((Drug) target).setCountPerDay((int) value);
          return true;
       }
       

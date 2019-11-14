@@ -22,6 +22,7 @@
 package com.doccuty.epill.drug;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,17 +40,18 @@ import com.doccuty.epill.disease.Disease;
 import com.doccuty.epill.gender.Gender;
 import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.model.ActiveSubstance;
-import com.doccuty.epill.model.ProductGroup;
-import com.doccuty.epill.model.IndicationGroup;
-import com.doccuty.epill.model.PharmaceuticalForm;
 import com.doccuty.epill.model.AdverseEffect;
+import com.doccuty.epill.model.DrugFeature;
+import com.doccuty.epill.model.IndicationGroup;
 import com.doccuty.epill.model.Interaction;
+import com.doccuty.epill.model.Packaging;
+import com.doccuty.epill.model.PharmaceuticalForm;
+import com.doccuty.epill.model.ProductGroup;
 import com.doccuty.epill.model.util.ItemInvocationSet;
 import com.doccuty.epill.model.util.UserSet;
 import com.doccuty.epill.packagingsection.PackagingSection;
 import com.doccuty.epill.user.User;
-import com.doccuty.epill.model.Packaging;
-import com.doccuty.epill.model.DrugFeature;
+import com.doccuty.epill.userdrugplan.UserDrugPlan;
 
 @Entity
 @Table(name = "drug")
@@ -59,9 +61,12 @@ public class Drug extends SimpleDrug {
 	public void removeYou() {
 		setProductGroup(null);
 		setIndicationGroup(null);
-		withoutPackagingSection(this.getPackagingSection().toArray(new PackagingSection[this.getPackagingSection().size()]));
-		withoutActiveSubstance(this.getActiveSubstance().toArray(new ActiveSubstance[this.getActiveSubstance().size()]));
-		withoutPharmaceuticalForm(this.getPharmaceuticalForm().toArray(new PharmaceuticalForm[this.getPharmaceuticalForm().size()]));
+		withoutPackagingSection(
+				this.getPackagingSection().toArray(new PackagingSection[this.getPackagingSection().size()]));
+		withoutActiveSubstance(
+				this.getActiveSubstance().toArray(new ActiveSubstance[this.getActiveSubstance().size()]));
+		withoutPharmaceuticalForm(
+				this.getPharmaceuticalForm().toArray(new PharmaceuticalForm[this.getPharmaceuticalForm().size()]));
 		withoutAdverseEffects(this.getAdverseEffects().toArray(new AdverseEffect[this.getAdverseEffects().size()]));
 		withoutInteraction(this.getInteraction().toArray(new Interaction[this.getInteraction().size()]));
 		withoutClicks(this.getClicks().toArray(new ItemInvocation[this.getClicks().size()]));
@@ -98,13 +103,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (Packaging item : value) {
+		for (final Packaging item : value) {
 			if (item != null) {
 				if (this.packaging == null) {
 					this.packaging = new ArrayList<Packaging>();
 				}
 
-				boolean changed = this.packaging.add(item);
+				final boolean changed = this.packaging.add(item);
 
 				if (changed) {
 					item.withDrug(this);
@@ -116,7 +121,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutPackaging(Packaging... value) {
-		for (Packaging item : value) {
+		for (final Packaging item : value) {
 			if ((this.packaging != null) && (item != null)) {
 				if (this.packaging.remove(item)) {
 					item.setDrug(null);
@@ -128,7 +133,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Packaging createPackage() {
-		Packaging value = new Packaging();
+		final Packaging value = new Packaging();
 		withPackaging(value);
 		return value;
 	}
@@ -158,13 +163,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (PackagingSection item : value) {
+		for (final PackagingSection item : value) {
 			if (item != null) {
 				if (this.packagingSection == null) {
 					this.packagingSection = new ArrayList<PackagingSection>();
 				}
 
-				boolean changed = this.packagingSection.add(item);
+				final boolean changed = this.packagingSection.add(item);
 
 				if (changed) {
 					item.withDrug(this);
@@ -176,7 +181,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutPackagingSection(PackagingSection... value) {
-		for (PackagingSection item : value) {
+		for (final PackagingSection item : value) {
 			if ((this.packagingSection != null) && (item != null)) {
 				if (this.packagingSection.remove(item)) {
 					item.setDrug(null);
@@ -188,7 +193,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public PackagingSection createPackagingSection() {
-		PackagingSection value = new PackagingSection();
+		final PackagingSection value = new PackagingSection();
 		withPackagingSection(value);
 		return value;
 	}
@@ -219,13 +224,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (DrugFeature item : value) {
+		for (final DrugFeature item : value) {
 			if (item != null) {
 				if (this.drugFeature == null) {
 					this.drugFeature = new ArrayList<DrugFeature>();
 				}
 
-				boolean changed = this.drugFeature.add(item);
+				final boolean changed = this.drugFeature.add(item);
 
 				if (changed) {
 					item.withDrug(this);
@@ -237,7 +242,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutDrugFeaturee(DrugFeature... value) {
-		for (DrugFeature item : value) {
+		for (final DrugFeature item : value) {
 			if ((this.drugFeature != null) && (item != null)) {
 				if (this.drugFeature.remove(item)) {
 					item.withoutDrug(this);
@@ -249,7 +254,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public DrugFeature createDrugFeature() {
-		DrugFeature value = new DrugFeature();
+		final DrugFeature value = new DrugFeature();
 		withDrugFeature(value);
 		return value;
 	}
@@ -280,13 +285,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (ActiveSubstance item : value) {
+		for (final ActiveSubstance item : value) {
 			if (item != null) {
 				if (this.activeSubstance == null) {
 					this.activeSubstance = new ArrayList<ActiveSubstance>();
 				}
 
-				boolean changed = this.activeSubstance.add(item);
+				final boolean changed = this.activeSubstance.add(item);
 
 				if (changed) {
 					item.withDrug(this);
@@ -298,7 +303,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutActiveSubstance(ActiveSubstance... value) {
-		for (ActiveSubstance item : value) {
+		for (final ActiveSubstance item : value) {
 			if ((this.activeSubstance != null) && (item != null)) {
 				if (this.activeSubstance.remove(item)) {
 					item.withoutDrug(this);
@@ -310,7 +315,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public ActiveSubstance createActiveSubstance() {
-		ActiveSubstance value = new ActiveSubstance();
+		final ActiveSubstance value = new ActiveSubstance();
 		withActiveSubstance(value);
 		return value;
 	}
@@ -337,7 +342,7 @@ public class Drug extends SimpleDrug {
 		boolean changed = false;
 
 		if (this.productGroup != value) {
-			ProductGroup oldValue = this.productGroup;
+			final ProductGroup oldValue = this.productGroup;
 
 			if (this.productGroup != null) {
 				this.productGroup = null;
@@ -363,7 +368,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public ProductGroup createProductGroup() {
-		ProductGroup value = new ProductGroup();
+		final ProductGroup value = new ProductGroup();
 		withProductGroup(value);
 		return value;
 	}
@@ -387,15 +392,14 @@ public class Drug extends SimpleDrug {
 	}
 
 	public boolean setIndicationGroup(IndicationGroup value) {
-		
+
 		boolean changed = false;
 
 		if (this.indicationGroup != value) {
-			
-			IndicationGroup oldValue = this.indicationGroup;
 
-			if (this.indicationGroup != null)
-			{
+			final IndicationGroup oldValue = this.indicationGroup;
+
+			if (this.indicationGroup != null) {
 				this.indicationGroup = null;
 				oldValue.withoutDrug(this);
 			}
@@ -419,7 +423,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public IndicationGroup createIndicationGroup() {
-		IndicationGroup value = new IndicationGroup();
+		final IndicationGroup value = new IndicationGroup();
 		withIndicationGroup(value);
 		return value;
 	}
@@ -450,13 +454,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (PharmaceuticalForm item : value) {
+		for (final PharmaceuticalForm item : value) {
 			if (item != null) {
 				if (this.pharmaceuticalForm == null) {
 					this.pharmaceuticalForm = new ArrayList<PharmaceuticalForm>();
 				}
 
-				boolean changed = this.pharmaceuticalForm.add(item);
+				final boolean changed = this.pharmaceuticalForm.add(item);
 
 				if (changed) {
 					item.withDrug(this);
@@ -468,7 +472,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutPharmaceuticalForm(PharmaceuticalForm... value) {
-		for (PharmaceuticalForm item : value) {
+		for (final PharmaceuticalForm item : value) {
 			if ((this.pharmaceuticalForm != null) && (item != null)) {
 				if (this.pharmaceuticalForm.remove(item)) {
 					item.withoutDrug(this);
@@ -480,7 +484,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public PharmaceuticalForm createPharmaceuticalForm() {
-		PharmaceuticalForm value = new PharmaceuticalForm();
+		final PharmaceuticalForm value = new PharmaceuticalForm();
 		withPharmaceuticalForm(value);
 		return value;
 	}
@@ -511,13 +515,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (AdverseEffect item : value) {
+		for (final AdverseEffect item : value) {
 			if (item != null) {
 				if (this.adverseEffects == null) {
 					this.adverseEffects = new ArrayList<AdverseEffect>();
 				}
 
-				boolean changed = this.adverseEffects.add(item);
+				final boolean changed = this.adverseEffects.add(item);
 
 				if (changed) {
 					item.withDrug(this);
@@ -529,7 +533,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutAdverseEffects(AdverseEffect... value) {
-		for (AdverseEffect item : value) {
+		for (final AdverseEffect item : value) {
 			if ((this.adverseEffects != null) && (item != null)) {
 				if (this.adverseEffects.remove(item)) {
 					item.withoutDrug(this);
@@ -541,7 +545,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public AdverseEffect createAdverseEffects() {
-		AdverseEffect value = new AdverseEffect();
+		final AdverseEffect value = new AdverseEffect();
 		withAdverseEffects(value);
 		return value;
 	}
@@ -571,13 +575,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (Interaction item : value) {
+		for (final Interaction item : value) {
 			if (item != null) {
 				if (this.interaction == null) {
 					this.interaction = new ArrayList<Interaction>();
 				}
 
-				boolean changed = this.interaction.add(item);
+				final boolean changed = this.interaction.add(item);
 
 				if (changed) {
 					item.withDrug(this);
@@ -589,7 +593,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutInteraction(Interaction... value) {
-		for (Interaction item : value) {
+		for (final Interaction item : value) {
 			if ((this.interaction != null) && (item != null)) {
 				if (this.interaction.remove(item)) {
 					item.withoutDrug(this);
@@ -601,7 +605,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Interaction createInteraction() {
-		Interaction value = new Interaction();
+		final Interaction value = new Interaction();
 		withInteraction(value);
 		return value;
 	}
@@ -631,13 +635,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (ItemInvocation item : value) {
+		for (final ItemInvocation item : value) {
 			if (item != null) {
 				if (this.clicks == null) {
 					this.clicks = new ItemInvocationSet();
 				}
 
-				boolean changed = this.clicks.add(item);
+				final boolean changed = this.clicks.add(item);
 
 				if (changed) {
 					item.withDrug(this);
@@ -649,7 +653,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutClicks(ItemInvocation... value) {
-		for (ItemInvocation item : value) {
+		for (final ItemInvocation item : value) {
 			if ((this.clicks != null) && (item != null)) {
 				if (this.clicks.remove(item)) {
 					item.setDrug(null);
@@ -661,8 +665,67 @@ public class Drug extends SimpleDrug {
 	}
 
 	public ItemInvocation createClicks() {
-		ItemInvocation value = new ItemInvocation();
+		final ItemInvocation value = new ItemInvocation();
 		withClicks(value);
+		return value;
+	}
+
+	/********************************************************************
+	 * <pre>
+	 *              one                       many
+	 * Drug ----------------------------------- UserDrugPlan
+	 *              drug                   userDrugPlans
+	 * </pre>
+	 */
+
+	public static final String PROPERTY_USER_DRUG_PLANS = "user_drug_plans";
+
+	@Transient
+	private Set<UserDrugPlan> userDrugPlans = null;
+
+	public Set<UserDrugPlan> getUserDrugPlans() {
+		if (this.userDrugPlans == null) {
+			return new HashSet<>();
+		}
+		return this.userDrugPlans;
+	}
+
+	public Drug withUserDrugPlans(UserDrugPlan... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final UserDrugPlan item : value) {
+			if (item != null) {
+				if (this.userDrugPlans == null) {
+					this.userDrugPlans = new HashSet<>();
+				}
+
+				final boolean changed = this.userDrugPlans.add(item);
+
+				if (changed) {
+					item.withDrug(this);
+					firePropertyChange(PROPERTY_USER_DRUG_PLANS, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Drug withoutUserDrugPlans(UserDrugPlan... values) {
+		for (final UserDrugPlan item : values) {
+			if ((this.userDrugPlans != null) && (item != null)) {
+				if (this.userDrugPlans.remove(item)) {
+					item.setDrug(null);
+					firePropertyChange(PROPERTY_CLICKS, item, null);
+				}
+			}
+		}
+		return this;
+	}
+
+	public UserDrugPlan createUserDrugPlans() {
+		final UserDrugPlan value = new UserDrugPlan();
+		withUserDrugPlans(value);
 		return value;
 	}
 
@@ -692,13 +755,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (Disease item : value) {
+		for (final Disease item : value) {
 			if (item != null) {
 				if (this.disease == null) {
 					this.disease = new ArrayList<Disease>();
 				}
 
-				boolean changed = this.disease.add(item);
+				final boolean changed = this.disease.add(item);
 
 				if (changed) {
 					item.withDrug(this);
@@ -710,7 +773,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutDisease(Disease... value) {
-		for (Disease item : value) {
+		for (final Disease item : value) {
 			if ((this.disease != null) && (item != null)) {
 				if (this.disease.remove(item)) {
 					item.withoutDrug(this);
@@ -722,7 +785,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Disease createDisease() {
-		Disease value = new Disease();
+		final Disease value = new Disease();
 		withDisease(value);
 		return value;
 	}
@@ -744,7 +807,7 @@ public class Drug extends SimpleDrug {
 		if (this.gender == null) {
 			return new ArrayList<Gender>();
 		}
-		
+
 		return this.gender;
 	}
 
@@ -752,13 +815,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (Gender item : value) {
+		for (final Gender item : value) {
 			if (item != null) {
 				if (this.gender == null) {
 					this.gender = new ArrayList<Gender>();
 				}
 
-				boolean changed = this.gender.add(item);
+				final boolean changed = this.gender.add(item);
 
 				if (changed) {
 					item.withDrug(this);
@@ -770,7 +833,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutGender(Gender... value) {
-		for (Gender item : value) {
+		for (final Gender item : value) {
 			if ((this.gender != null) && (item != null)) {
 				if (this.gender.remove(item)) {
 					item.withoutDrug(this);
@@ -806,13 +869,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (User item : value) {
+		for (final User item : value) {
 			if (item != null) {
 				if (this.user == null) {
 					this.user = new UserSet();
 				}
 
-				boolean changed = this.user.add(item);
+				final boolean changed = this.user.add(item);
 
 				if (changed) {
 					item.withTakingDrug(this);
@@ -824,7 +887,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutUser(User... value) {
-		for (User item : value) {
+		for (final User item : value) {
 			if ((this.user != null) && (item != null)) {
 				if (this.user.remove(item)) {
 					item.withoutTakingDrug(this);
@@ -836,7 +899,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public User createUser() {
-		User value = new User();
+		final User value = new User();
 		withUser(value);
 		return value;
 	}
@@ -866,13 +929,13 @@ public class Drug extends SimpleDrug {
 		if (value == null) {
 			return this;
 		}
-		for (User item : value) {
+		for (final User item : value) {
 			if (item != null) {
 				if (this.userRemembering == null) {
 					this.userRemembering = new UserSet();
 				}
 
-				boolean changed = this.userRemembering.add(item);
+				final boolean changed = this.userRemembering.add(item);
 
 				if (changed) {
 					item.withRememberedDrug(this);
@@ -884,7 +947,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public Drug withoutUserRemembering(User... value) {
-		for (User item : value) {
+		for (final User item : value) {
 			if ((this.userRemembering != null) && (item != null)) {
 				if (this.userRemembering.remove(item)) {
 					item.withoutRememberedDrug(this);
@@ -896,7 +959,7 @@ public class Drug extends SimpleDrug {
 	}
 
 	public User createUserRemembering() {
-		User value = new User();
+		final User value = new User();
 		withUserRemembering(value);
 		return value;
 	}
