@@ -710,26 +710,31 @@ INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, date_tim
 
 
 -- user prescription
-INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(4, 1, 2, 1);
-INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(1, 12, 2, 1);
-INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(2, 13, 2, 1);
-INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(3, 14, 2, 1);
+-- INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(4, 1, 2, 1);
+-- INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(1, 12, 2, 1);
+-- INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(2, 13, 2, 1);
+-- INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(3, 14, 2, 1);
 
+INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(1, 1, 2, 1);
+INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(2, 3, 2, 1);
+INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(3, 2, 2, 1);
 
 -- user prescription item
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 11, 3);
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 6, 3); 
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 17, 2);
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(4, 17, 3);
-
+-- INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 11, 3);
+-- INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 6, 3); 
+-- INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 17, 2);
+-- INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(4, 17, 3);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 6, 1);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 11, 2); 
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 12, 3);
 
 --
 -- Dumping data for table `user_drug_taking`
 --
 
-INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 12);
-INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 13);
-INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 14);
+INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 1);
+INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 2);
+INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 3);
 
 --
 -- Dumping data for table `instruction`

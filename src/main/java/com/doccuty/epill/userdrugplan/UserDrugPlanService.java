@@ -74,7 +74,7 @@ public class UserDrugPlanService {
 
 			final List<UserDrugPlanItemViewModel> userDrugPlanView = new ArrayList<>();
 			 List<UserDrugPlanItem> userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
-			if (userDrugItemsPlanned.isEmpty() && dateTo.after(new Date())) {
+			if (checkPlanMustBeRecalculated(userDrugItemsPlanned, dateTo)) {
 				//if plan is empty recalculate it - only for future, don't overwrite history
 				this.recalculateAndSaveUserDrugPlanForDay(dateFrom);
 				userDrugItemsPlanned = getUserDrugPlansByUserIdAndDate(dateFrom, dateTo);
@@ -106,7 +106,39 @@ public class UserDrugPlanService {
 			return setHalftimeAndPercentagePerDrugPlanItem(userDrugPlanView);
 		}
 		
-		
+		/**
+		 * check if plan must be recalculated: future - always 
+		 * 									   past - never 
+		 * 									   today - only if new drugs must be taken - 
+		 * @param userDrugItemsPlanned
+		 * @param dateTo
+		 * @return
+		 */
+		private boolean checkPlanMustBeRecalculated(List<UserDrugPlanItem> userDrugItemsPlanned, Date dateTo) {
+			
+			// check if current plan contains all drugs
+			// if not: plan has to be recalculated
+			List<Long> drugIdsMedicationPlan = new ArrayList<>();
+			for (UserDrugPlanItem item : userDrugItemsPlanned) {
+				if (!drugIdsMedicationPlan.contains(item.getDrug().getId())) {
+					drugIdsMedicationPlan.add(item.getDrug().getId());
+				}
+			}
+			List<Drug> userDrugsTaking = drugService.findUserDrugsTaking(userService.getCurrentUser());
+			for (Drug drug : userDrugsTaking) {
+				if (!drugIdsMedicationPlan.contains(drug.getId())) {
+					LOG.info("plan must be recalculated: new drug on plan");
+					return true;
+				}
+			}
+			
+			if (userDrugItemsPlanned.isEmpty() && dateTo.after(new Date())) {
+				LOG.info("plan must be recalculated: empty plan or new day ");
+				return true;
+			}
+			return false;
+		}
+
 		public List<UserDrugPlanItemViewModel> getDrugPlanItemsNotTakenBetweenDates(Date dateFrom, Date dateTo) {
 			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
 			final List<UserDrugPlanItemViewModel> drugsNotTaken = new ArrayList<>();
@@ -285,15 +317,18 @@ public class UserDrugPlanService {
 			final List<UserDrugPlanItemViewModel> viewModel = new ArrayList<>();
 			int currentHalfTimePeriod = 0;
 			int currentPercentage = 0;
+			int relativeHour = 0;
 			for (final UserDrugPlanItemViewModel model : completePlanWithIntermediateSteps) {
 				if (model.isIntermediateStep()) {
 					// Intermediate Step
-					model.setPercentage(setPercentage(currentHalfTimePeriod, currentPercentage));
+					relativeHour++;
+					model.setPercentage(getPercentage(currentPercentage, currentHalfTimePeriod, relativeHour));
 					currentPercentage = model.getPercentage();
 					model.setHalfTimePeriod(0);
 					viewModel.add(model);
 				} else {
 					// intake
+					relativeHour = 0;
 					model.setPercentage(100);
 					currentPercentage = model.getPercentage();
 					currentHalfTimePeriod = model.getHalfTimePeriod();
@@ -321,12 +356,23 @@ public class UserDrugPlanService {
 			return viewModel;
 		}
 
-		private int setPercentage(int halfTimePeriod, int currentPercentage) {
-			if (halfTimePeriod == 0) {
+		/**
+		 * compute percentage using halftime period and relative hour
+		 * percentage = 100 * (0.5) ^ ( halfTimePeriod / relativeHour)
+		 * 
+		 * @param currentPercentage 
+		 * @param halfTimePeriod
+		 * @param relativeHour
+		 * @return
+		 */
+		private int getPercentage(int currentPercentage, int halfTimePeriod, int relativeHour) {
+			if (halfTimePeriod == 0 || currentPercentage == 0) {
 				return 0;
 			} else {
-				if ((currentPercentage - 50 / halfTimePeriod) > 0) {
-					return currentPercentage - 50 / halfTimePeriod;
+				double exponent = (double)relativeHour / (double)halfTimePeriod;
+				double percentage = 100 * Math.pow(0.5 , exponent);
+				if (percentage > 0) {
+					return (int)percentage;
 				} else {
 					return 0;
 				}

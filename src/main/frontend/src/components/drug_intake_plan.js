@@ -15,6 +15,7 @@ import CheckBox from "./checkbox";
 import {toast} from 'react-toastify';
 import Clock from "./clock";
 import PercentageCalculator from "./../util/PercentageCalculator";
+import DrugIntakeSuccessPopup from "./drug_intake_success_popup";
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about forms.
 class DrugIntakePlan extends React.Component {
@@ -30,12 +31,14 @@ class DrugIntakePlan extends React.Component {
             errorMessage: '',
             backendError: false,
             showDrugIntakePopup: false,
+            showDrugIntakeSuccessPopup: false,
             showDrugsNotTakenBeforeHour: 0
         };
         this.output = this.handleTakenChange.bind(this);
         this.handleShowProgressBar = this.handleShowProgressBar.bind(this);
         this.callbackDrugIsTaken = this.callbackDrugIsTaken.bind(this);
         this.closeChangingDrugIntakePopup = this.closeChangingDrugIntakePopup.bind(this);
+        this.closeDrugIntakeSuccessPopup = this.closeDrugIntakeSuccessPopup.bind(this);
     }
     
     setBackendError(backendError, errorMessage) {
@@ -378,6 +381,11 @@ class DrugIntakePlan extends React.Component {
         this.setState(this.state);
     }
     
+    closeDrugIntakeSuccessPopup() {
+    	console.log('closeDrugIntakeSuccessPopup...');
+        this.state.showDrugIntakeSuccessPopup = false;
+        this.setState(this.state);
+    }
 
     recalculatePlan() {
                 axios.post('/drugplan/calculate/date', { date: moment(this.state.date).format("DD.MM.YYYY")}, {
@@ -424,6 +432,7 @@ class DrugIntakePlan extends React.Component {
                          case 200:
                              console.log("case status 200");
                              if (isDrugTaken) {
+                            	 this.state.showDrugIntakeSuccessPopup = true;
                                  toast.success(t('Well done!'), options);
                              } else {
                                  toast.error(t('Remember to take it soon!'), options);
@@ -439,6 +448,7 @@ class DrugIntakePlan extends React.Component {
                      }
             });
     }
+
 
     render() {
         const { t } = this.props;
@@ -499,6 +509,23 @@ class DrugIntakePlan extends React.Component {
                                                         intakeHour={this.state.showDrugsNotTakenBeforeHour}
                                                			drugIsTakenCallback={this.callbackDrugIsTaken}
                                                			onSubmit={this.closeChangingDrugIntakePopup}
+                                                    	updateNavigation={this.props.updateNavigation}/>
+                                            </div>
+                                    }
+                                    </Popup>
+                                )
+                        }
+                        {this.state.showDrugIntakeSuccessPopup && (
+                                <Popup
+                                    open={this.state.showDrugIntakeSuccessPopup}
+                                    position="right center" modal
+                                trigger={<button type="button">Success</button>}>
+                                    {close =>
+                                            <div>
+                                               <a className="close" onClick={close}>&times;</a>
+                                               <DrugIntakeSuccessPopup 
+                                               	        message = {t("Well done!")}
+                                               			onSubmit={this.closeDrugIntakeSuccessPopup}
                                                     	updateNavigation={this.props.updateNavigation}/>
                                             </div>
                                     }

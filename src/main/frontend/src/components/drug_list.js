@@ -20,7 +20,8 @@ class DrugList extends React.Component {
                         interactions    : '',
                         cmd                     : '',
                         loading         : false,
-                        open: false
+                        open: false,
+                        showDrugIntakePopup: false
         }
 
         this.checkForInteractions       = this.checkForInteractions.bind(this);
@@ -43,7 +44,10 @@ class DrugList extends React.Component {
     
     closeDrugIntakePopup() {
         console.log("closeDrugIntakePopup by refreshing list...");
+        this.state.showDrugIntakePopup = false;
+        this.setState(this.state);
         this.setCmd();
+        console.log("...should be closed...");
     }
 
     setCmd() {
@@ -137,6 +141,7 @@ class DrugList extends React.Component {
                                 var idx = this.state.drugs.indexOf(drug);
                                 drug.isTaken = !drug.isTaken;
                                 this.state.drugs[idx] = drug;
+                                this.state.showDrugIntakePopup = true;
                                 this.setState(this.state);
                      break;
                  case 400:
@@ -378,7 +383,7 @@ class DrugList extends React.Component {
                             </Popup>
                         );
             }
-    }
+        }
 
         renderDrugIntakePopupEditButton(drug) {
                 if (drug.isTaken) {

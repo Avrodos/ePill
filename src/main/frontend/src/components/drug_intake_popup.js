@@ -44,15 +44,16 @@ class DrugIntakePopup extends React.Component {
         this.cookies = this.props.cookies;
 
         this.openModal = this.openModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);       
     }
 
     componentWillReceiveProps(props) {
         console.log("...drugName=" + this.props.drugName + ", id=" + this.props.drugId);
-                this.setState({ drugId: this.props.drugId, drugName: this.props.drugName, onSubmit: this.props.onSubmit});
-                this.getUserPrescriptionData();
-        }
-
+        this.setState({ 
+        	drugId: this.props.drugId, 
+        	drugName: this.props.drugName, 
+        	onSubmit: this.props.onSubmit});
+    }
+    
     setBackendError(backendError, errorMessage) {
         this.state.backendError = backendError;
         this.state.errorMessage = errorMessage;
@@ -195,10 +196,6 @@ class DrugIntakePopup extends React.Component {
         this.setState({open: true});
     }
 
-    closeModal() {
-        this.setState({open: false});
-    }
-
     handlePeriodInDaysChange(event) {
         this.state.periodInDays = event.target.value;
         this.setState(this.state);
@@ -225,9 +222,9 @@ class DrugIntakePopup extends React.Component {
         this.state.intakeSleepTime = event.target.checked;
         this.setState(this.state);
     }
-
+        
     handleSubmit(event) {
-        //event.preventDefault();
+        event.preventDefault();
         this.state.sending = true;
         this.setState(this.state);
         console.log("add to taking list...");
@@ -235,8 +232,7 @@ class DrugIntakePopup extends React.Component {
             console.log("add to taking list succeeded...");
             this.postUserPrescription().then(() => {
                 console.log("postUserPrescription succeeded...");
-                this.closeModal();
-                this.state.onSubmit();
+                //this.state.onSubmit();
             })
             .catch(err => {
                 console.log("error postUserPrescription...${err}");
@@ -248,6 +244,7 @@ class DrugIntakePopup extends React.Component {
 
         this.state.sending = false;
         this.setState(this.state);
+        this.state.onSubmit();
     }
 
      render() {

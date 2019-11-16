@@ -4,6 +4,7 @@ class PercentageCalculator {
 	    }
 
 	    setPercentagesForDrugFromDrugPlanItem(drugplanitems, drugplanitem, drug) {
+	    	console.log("setPercentagesForDrugFromDrugPlanItem");
 	        var percentages = this.calculatePercentages(drug.halfTimePeriod);
 	        for (var i = 0; i < drugplanitems.length; i++) {
 	                if (drugplanitems[i].userDrugPlanItemId == drugplanitem.userDrugPlanItemId) {
@@ -52,14 +53,16 @@ class PercentageCalculator {
 	     */
 	    calculatePercentageForHour(hour, halfTimePeriod) {
 	        var percentage = 0;
+	        var division = hour/halfTimePeriod;
 	        if (halfTimePeriod == 0) {
 	                percentage = 0;
 	        }
-	        if (100 - 50 * hour / halfTimePeriod > 0) {
-	                percentage = 100 - 50 * hour / halfTimePeriod;
+	        if (100 * Math.pow(0.5 , division) > 0) {
+	                percentage = 100 * Math.pow(0.5 , division);
 	        } else {
 	                percentage = 0;
 	        }
+	    	console.log("calculatePercentageForHour(" + hour + ", " + halfTimePeriod + ") = " + percentage);
 	        return percentage;
 	    }
 }
