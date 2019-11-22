@@ -19,39 +19,65 @@ class User {
 
     set(data) {
         this.id = data.id;
-        this.username	= data.username;
-        this.firstname	= data.firstname;
-        this.lastname	= data.lastname;
-        this.levelOfDetail		= data.levelOfDetail || 3;
-        this.preferredFontSize	= data.preferredFontSize || 'defaultFontSize';
-        this.redGreenColorblind	= data.redGreenColorblind || false;
+
+        this.firstname = data.firstname;
+        this.lastname = data.lastname;
+        this.email = data.email || '';
+        this.dateOfBirth = data.dateOfBirth || '',
+            this.gender = data.gender || {id: 0};
+        this.username = data.username;
+        this.redGreenColorblind = data.redGreenColorblind || false;
+        this.weight = data.weight;
+        this.levelOfDetail = data.levelOfDetail || 3;
+        this.preferredFontSize = data.preferredFontSize || 'defaultFontSize';
         this.tpa = data.tpa || false;
         this.firstSignIn = data.firstSignIn || false;
+        this.a7id = data.a7id;
+        this.smoker = data.smoker || false;
+        this.diabetes = data.diabetes || {id: 0};
     }
 
     reset() {
-        this.username = undefined;
+        this.id = -1;
+
         this.firstname = undefined;
         this.lastname = undefined;
+        this.email = undefined;
+        this.dateOfBirth = undefined;
+        this.gender = 0;
+        this.username = undefined;
+        this.redGreenColorblind = false;
+        this.weight = -1;
         this.levelOfDetail		= 3;
         this.preferredFontSize	= 100;
-        this.redGreenColorblind	= false;
-        this.id = -1;
         this.tpa = null;
         this.firstSignIn = null;
+        this.a7id = undefined;
+        this.smoker = false;
+        this.diabetes = 0;
     }
     
     get() {
     		return {
     	        id			:	this.id,
-    			username		:	this.username,
-    			firstname	:	this.firstname,
-    			lastname		:	this.lastname,
+
+                firstname: this.firstname,
+                lastname: this.lastname,
+                email: this.email,
+                dateOfBirth: this.dateOfBirth,
+                gender: this.gender,
+                username: this.username,
+                redGreenColorblind: this.redGreenColorblind,
+                weight: this.weight,
     			levelOfDetail:	this.levelOfDetail,
     			preferredFontSize	:	this.preferredFontSize,
-    			redGreenColorblind	:	this.redGreenColorblind,
                 tpa: this.tpa,
-                firstSignIn: this.firstSignIn
+                firstSignIn: this.firstSignIn,
+                a7id: this.a7id,
+                smoker: this.smoker,
+                diabetes: this.diabetes
+
+
     		}
     }
     

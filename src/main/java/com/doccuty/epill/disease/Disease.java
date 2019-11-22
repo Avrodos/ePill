@@ -21,27 +21,21 @@
    
 package com.doccuty.epill.disease;
 
-import de.uniks.networkparser.interfaces.SendableEntity;
-import java.beans.PropertyChangeSupport;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
-import java.beans.PropertyChangeListener;
-import de.uniks.networkparser.EntityUtil;
-
+import com.doccuty.epill.diabetes.Diabetes;
 import com.doccuty.epill.drug.Drug;
 import com.doccuty.epill.gender.Gender;
+import com.doccuty.epill.model.util.DiabetesSet;
 import com.doccuty.epill.model.util.DrugSet;
 import com.doccuty.epill.model.util.GenderSet;
 import com.doccuty.epill.model.util.UserSet;
 import com.doccuty.epill.user.User;
+import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.interfaces.SendableEntity;
+
+import javax.persistence.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.Set;
    /**
     * 
     * @see <a href='../../../../../../../src/test/java/com/doccuty/epill/model/SDMLib/ModelCreator.java'>ModelCreator.java</a>
@@ -396,6 +390,66 @@ import com.doccuty.epill.user.User;
       Gender value = new Gender();
       withGender(value);
       return value;
-   } 
+   }
+
+    /********************************************************************
+     * <pre>
+     *              many                       many
+     * Disease ----------------------------------- Diabetes
+     *              disease                   diabetes
+     * </pre>
+     */
+
+    public static final String PROPERTY_DIABETES = "diabetes";
+
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "disease")
+    private Set<Diabetes> diabetes = null;
+
+    public Set<Diabetes> getDiabetes() {
+        if (this.diabetes == null) {
+            return DiabetesSet.EMPTY_SET;
+        }
+
+        return this.diabetes;
+    }
+
+    public Disease withDiabetes(Diabetes... value) {
+        if (value == null) {
+            return this;
+        }
+        for (Diabetes item : value) {
+            if (item != null) {
+                if (this.diabetes == null) {
+                    this.diabetes = new DiabetesSet();
+                }
+
+                boolean changed = this.diabetes.add(item);
+
+                if (changed) {
+                    item.withDisease(this);
+                    firePropertyChange(PROPERTY_DIABETES, null, item);
+                }
+            }
+        }
+        return this;
+    }
+
+    public Disease withoutDiabetes(Diabetes... value) {
+        for (Diabetes item : value) {
+            if ((this.diabetes != null) && (item != null)) {
+                if (this.diabetes.remove(item)) {
+                    item.withoutDisease(this);
+                    firePropertyChange(PROPERTY_DIABETES, item, null);
+                }
+            }
+        }
+        return this;
+    }
+
+    public Diabetes createDiabetes() {
+        Diabetes value = new Diabetes();
+        withDiabetes(value);
+        return value;
+    }
    
 }

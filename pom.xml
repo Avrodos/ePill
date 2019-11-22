@@ -112,6 +112,13 @@
             <version>1.30.2</version>
         </dependency>
 
+        <!-- CSV files -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.7</version>
+        </dependency>
+
 
     </dependencies>
 

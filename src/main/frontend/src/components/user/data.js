@@ -1,34 +1,37 @@
 import axios from "axios";
 import React from "react";
 import Moment from 'moment';
-
-import {Link} from "react-router-dom";
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import {translate} from "react-i18next";
 import Cookies from "universal-cookie";
 
 import User from "./../../util/User";
-import {sha256} from "js-sha256";
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about
 // forms.
+
+//TODO: Find proper solution for a7id
 class UserData extends React.Component {
     constructor(props) {
         super(props);
         
         this.state = {
-	        	firstname	: '',
-	        	lastname		: '',
-	        	dateOfBirth	: '',
-	        	gender		: {id : 0},
-	        	email		: '',
-				weight 		: 0,
-	        	redGreenColorblind    : false,
+            firstname: '',
+            lastname: '',
+            email: '',
+            dateOfBirth: '',
+            gender: {id: 0},
+            username: '',
+            redGreenColorblind: false,
+            weight: 0,
             levelOfDetail       : 3,
             preferredFontSize   : 'defaultFontSize',
 			sending: false,
 			tpa: false,
-			firstSignIn: false
+            firstSignIn: false,
+            a7id: '',
+            smoker: false,
+            diabetes: {id: 0}
         };
         
         this.handleFirstnameChange		= this.handleFirstnameChange.bind(this);
@@ -43,8 +46,13 @@ class UserData extends React.Component {
 
         this.handleChangeLevelOfDetail		= this.handleChangeLevelOfDetail.bind(this);
         this.handleChangePreferredFontSize	= this.handleChangePreferredFontSize.bind(this);
-        
+
+        this.handleSmokerChange = this.handleSmokerChange.bind(this);
+        this.handleDiabetesChange = this.handleDiabetesChange.bind(this);
+        this.loadUser = this.loadUser.bind(this);
+
         this.handleSubmit				= this.handleSubmit.bind(this);
+
 
         this.cookies = this.props.cookies;
 
@@ -53,30 +61,38 @@ class UserData extends React.Component {
 
 
     componentWillMount() {
-    		if(!User.isAuthenticated()) {
-    			return;
-    		}
+        this.loadUser();
+    }
 
-    		axios.get(`/user/${User.id}`)
+    loadUser() {
+        if (!User.isAuthenticated()) {
+            return;
+        }
+
+        axios.get(`/user/${User.id}`)
             .then(({data, status}) => {
-                
-            		this.state.firstname		= data.firstname;
-            		this.state.lastname		= data.lastname;
-            		this.state.email			= data.email		|| '';
-            		this.state.dateOfBirth	= data.dateOfBirth		|| '',
-            		this.state.gender		= data.gender			|| {id : 0};
-            		this.state.username		= data.username;
-            		this.state.redGreenColorblind    = data.redGreenColorblind || false;
-					this.state.weight		= data.weight;
-            		this.state.levelOfDetail	    = data.levelOfDetail	|| 3;
-            		this.state.preferredFontSize	= data.preferredFontSize   || 'defaultFontSize';
-				this.state.tpa = data.tpa || false;
-				this.state.firstSignIn = data.firstSignIn || false;
+
+                this.state.firstname = data.firstname;
+                this.state.lastname = data.lastname;
+                this.state.email = data.email || '';
+                this.state.dateOfBirth = data.dateOfBirth || '',
+                    this.state.gender = data.gender || {id: 0};
+                this.state.username = data.username;
+                this.state.redGreenColorblind = data.redGreenColorblind || false;
+                this.state.weight = data.weight;
+                this.state.levelOfDetail = data.levelOfDetail || 3;
+                this.state.preferredFontSize = data.preferredFontSize || 'defaultFontSize';
+                this.state.tpa = data.tpa || false;
+                this.state.firstSignIn = data.firstSignIn || false;
+
+                this.state.a7id = data.a7id;
+                this.state.smoker = data.smoker || false;
+                this.state.diabetes = data.diabetes || {id: 0};
 
                 this.setState(this.state);
+
             });
     }
-    
     
     handleFirstnameChange(event) {
 	    this.state.firstname	= event.target.value;
@@ -134,6 +150,16 @@ class UserData extends React.Component {
 	    this.state.email = event.target.value;
     		this.setState(this.state);
     }
+
+    handleSmokerChange(event) {
+        this.state.smoker = event.target.value;
+        this.setState(this.state);
+    }
+
+    handleDiabetesChange(event) {
+        this.state.diabetes = {id: event.target.value};
+        this.setState(this.state);
+    }
     
     handleSubmit(event) {
         event.preventDefault();
@@ -171,13 +197,15 @@ class UserData extends React.Component {
                {
 	           		firstname			: this.state.firstname,
 	           		lastname				: this.state.lastname,
-	                	dateOfBirth			: date,
-	        			gender				: this.state.gender,
-	        			email				: this.state.email,
-	        			redGreenColorblind   : this.state.redGreenColorblind,
-    	        			levelOfDetail		: this.state.levelOfDetail,
-	    	        		preferredFontSize	: this.state.preferredFontSize,
-				   		weight : this.state.weight
+                   dateOfBirth: date,
+                   gender: this.state.gender,
+                   email: this.state.email,
+                   redGreenColorblind: this.state.redGreenColorblind,
+                   levelOfDetail: this.state.levelOfDetail,
+                   preferredFontSize: this.state.preferredFontSize,
+                   weight: this.state.weight,
+                   smoker: this.state.smoker,
+                   diabetes: this.state.diabetes
                 })
                 .then(({data, status}) => {
                      this.state.sending = false;
@@ -221,6 +249,7 @@ class UserData extends React.Component {
         this.state.sending = true;
         this.setState(this.state);
 
+        /* This code is used to register a User to my service
         const deviceId = "21002c41-c430-4043-9511-a5c527869b2c";
 
         const connectorMail = "testmailforepill@gmail.com";
@@ -256,9 +285,53 @@ class UserData extends React.Component {
                 console.log(error);
             }
         );
+         */
+        axios.post('/data/import', this.state, {
+            // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
+            // check the HTTP status code.
+            validateStatus: (status) => {
+                return (status >= 200 && status < 300) || status == 401
+            }
+        }).then(({data, status}) => {
+            this.state.sending = false;
+            this.setState(this.state);
+
+            const {t} = this.props;
+            const options = {
+                position: toast.POSITION.BOTTOM_CENTER
+            };
+
+            switch (status) {
+                case 200:
+
+                    var data = this.state;
+                    const cookies = new Cookies();
+                    const auth = cookies.get('auth');
+
+                    auth["user"] = data;
+                    cookies.set('auth', auth);
+
+                    this.loadUser();
+
+                    //TODO: messages updaten.
+                    toast.success(t('importSuccessful'), options);
+
+                    break;
+                case 400:
+                    toast.error(t('importFailed'), options);
+                    break;
+                case 401:
+                    console.log(data, "not permitted");
+                    break;
+            }
+        });
+        //TODO: ERROR handling
         console.log("done");
     }
 
+    //TODO: Die gruppierung der fieldsets anpassen
+    //TODO: die labels in die übersetzung übertragen
+    //TODO: Entscheiden ob einmal alles eingetragen werden muss oder es optional ist (-> Diabetes)
     render() {
         const {t} 		= this.props;
         const firstname 	= this.state.firstname;
@@ -276,7 +349,7 @@ class UserData extends React.Component {
                     <span className="sr-only">Info:</span>&nbsp;
 	        			{t("userCockpitDescr").replace("%User.firstname%", firstname).replace("%User.lastname%", lastname)}
 				</div>
-		    } 
+                }
 	        	   <form onSubmit={this.handleSubmit} className="row">
 					   <fieldset>
 						   <fieldset disabled={this.state.tpa}>
@@ -309,7 +382,7 @@ class UserData extends React.Component {
 					         <input type="text" name="email" id="email" className="form-control" value={this.state.email} onChange={this.handleEmailChange} />
 					      </div> 
 					    </fieldset>
-                           <fieldset>
+                           <fieldset disabled={this.state.tpa}>
                                <div className="form-group col-lg-6 col-md-6">
                                    <label htmlFor="weight">{t('weight')}</label>
                                    <input type="text" name="weight" id="weight" className="form-control" value={this.state.weight} onChange={this.handleWeightChange} />
@@ -333,6 +406,38 @@ class UserData extends React.Component {
                                 </li>
                             </ul>
                         </div>
+                               <div className="form-group col-lg-6 col-md-6">
+                                   <p><b>{t("smoker")}</b></p>
+                                   <ul className="list-inline">
+                                       <li className="col-lg-4 col-md-4 col-xs-4 list-group-item">
+                                           <label htmlFor="smoker-yes" className="radio-inline">
+                                               <input type="radio" value="1" id="smoker-yes" name="smoker"
+                                                      checked={this.state.smoker == true}
+                                                      onChange={this.handleSmokerChange}/>
+                                               {t('yes')}
+                                           </label>
+                                       </li>
+                                       <li className="col-lg-4 col-md-4 col-xs-4 list-group-item">
+                                           <label htmlFor="smoker-no" className="radio-inline">
+                                               <input type="radio" value="0" id="smoker-no" name="smoker"
+                                                      checked={this.state.smoker == false}
+                                                      onChange={this.handleSmokerChange}/>
+                                               {t('no')}
+                                           </label>
+                                       </li>
+                                   </ul>
+                               </div>
+                               <div className="form-group col-md-6 col-lg-6">
+                                   <label htmlFor="diabetes">{t('Diabetes')}</label>
+                                   <select id="diabetes" value="0" name="diabetes" className="form-control"
+                                           title={t('diabetes')} value={this.state.diabetes.id}
+                                           onChange={this.handleDiabetesChange}>
+                                       <option value="0" disabled>{t('noInfo')}</option>
+                                       <option value="1">{t('type1')}</option>
+                                       <option value="2">{t('type2')}</option>
+                                       <option value="3">{t('none')}</option>
+                                   </select>
+                               </div>
                     </fieldset>
 					<fieldset>
 					    <div className="form-group col-lg-9 col-md-9">
@@ -353,7 +458,8 @@ class UserData extends React.Component {
         						</ul>
 						</div>
 					</fieldset>
-					<fieldset>
+
+                           <fieldset>
                         <div className="form-group col-lg-9 col-md-9">
             					<p><b>{t("preferredFontSize")}</b></p>
             					<ul className="list-inline font-size-list">
@@ -392,6 +498,7 @@ class UserData extends React.Component {
            </div>
         );
     }
+
 }
 
 export default translate()(UserData);

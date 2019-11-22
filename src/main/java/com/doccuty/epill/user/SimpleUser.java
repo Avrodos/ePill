@@ -36,29 +36,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.interfaces.SendableEntity;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
-
-import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.interfaces.SendableEntity;
-
 @Entity
 @Table(name = "user_simple")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -271,6 +248,7 @@ public class SimpleUser implements SendableEntity {
 			Boolean oldValue = this.tpa;
 			this.tpa = value;
 			this.firePropertyChange(PROPERTY_TPA, oldValue, value);
+            //TODO: Brauche ich das hier? Brauche ich das bei den anderen?
 		}
 	}
 
@@ -664,5 +642,29 @@ public class SimpleUser implements SendableEntity {
 		setDinnerTime(value);
 		return this;
 	}
+
+    // ==========================================================================
+
+    public static final String PROPERTY_SMOKER = "smoker";
+
+    @Column
+    private Boolean smoker;
+
+    public Boolean getSmoker() {
+        return this.smoker;
+    }
+
+    public void setSmoker(Boolean value) {
+        if (this.smoker != value) {
+            final Boolean oldValue = this.smoker;
+            this.smoker = value;
+            this.firePropertyChange(PROPERTY_SMOKER, oldValue, value);
+        }
+    }
+
+    public SimpleUser withSmoker(Boolean value) {
+        setSmoker(value);
+        return this;
+    }
 
 }

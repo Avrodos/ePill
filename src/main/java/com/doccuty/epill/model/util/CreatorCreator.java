@@ -31,6 +31,8 @@ class CreatorCreator{
       jsonIdMap.with(new DrugFeatureCreator());
       jsonIdMap.with(new ImageCreator());
       jsonIdMap.with(new UserDrugPlanCreator());
+       jsonIdMap.with(new DiabetesCreator());
+       jsonIdMap.with(new AllergyCreator());
       return jsonIdMap;
    }
 }

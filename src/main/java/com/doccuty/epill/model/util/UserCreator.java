@@ -21,20 +21,21 @@
    
 package com.doccuty.epill.model.util;
 
-import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.IdMap;
-import com.doccuty.epill.model.PackagingTopic;
-
-import java.util.Date;
-
+import com.doccuty.epill.allergy.Allergy;
+import com.doccuty.epill.diabetes.Diabetes;
 import com.doccuty.epill.disease.Disease;
 import com.doccuty.epill.gender.Gender;
 import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.language.Language;
 import com.doccuty.epill.model.Country;
+import com.doccuty.epill.model.DrugFeature;
+import com.doccuty.epill.model.PackagingTopic;
 import com.doccuty.epill.model.UserQuery;
 import com.doccuty.epill.user.User;
-import com.doccuty.epill.model.DrugFeature;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
+
+import java.util.Date;
 
 public class UserCreator implements SendableEntityCreatorNoIndex
 {
@@ -64,7 +65,10 @@ public class UserCreator implements SendableEntityCreatorNoIndex
        User.PROPERTY_WEIGHT,
        User.PROPERTY_BREAKFAST_TIME,
        User.PROPERTY_LUNCH_TIME,
-       User.PROPERTY_DINNER_TIME
+           User.PROPERTY_DINNER_TIME,
+           User.PROPERTY_ALLERGY,
+           User.PROPERTY_DIABETES,
+           User.PROPERTY_SMOKER
     };
    
    @Override
@@ -223,6 +227,18 @@ public class UserCreator implements SendableEntityCreatorNoIndex
       if (User.PROPERTY_DINNER_TIME.equalsIgnoreCase(attribute))
       {
          return ((User) target).getDinnerTime();
+      }
+
+      if (User.PROPERTY_SMOKER.equalsIgnoreCase(attribute)) {
+         return ((User) target).getSmoker();
+      }
+
+      if (User.PROPERTY_DIABETES.equalsIgnoreCase(attribute)) {
+         return ((User) target).getDiabetes();
+      }
+
+      if (User.PROPERTY_ALLERGY.equalsIgnoreCase(attribute)) {
+         return ((User) target).getAllergy();
       }
 
       return null;
@@ -415,6 +431,27 @@ public class UserCreator implements SendableEntityCreatorNoIndex
          ((User) target).withoutDisease((Disease) value);
          return true;
       }
+
+      if (User.PROPERTY_A7ID.equalsIgnoreCase(attrName)) {
+         ((User) target).setA7id((String) value);
+         return true;
+      }
+
+      if (User.PROPERTY_ALLERGY.equalsIgnoreCase(attrName)) {
+         ((User) target).withAllergy((Allergy) value);
+         return true;
+      }
+
+      if (User.PROPERTY_DIABETES.equalsIgnoreCase(attrName)) {
+         ((User) target).setDiabetes((Diabetes) value);
+         return true;
+      }
+
+      if (User.PROPERTY_SMOKER.equalsIgnoreCase(attrName)) {
+         ((User) target).setSmoker((Boolean) value);
+         return true;
+      }
+
       
       return false;
    }

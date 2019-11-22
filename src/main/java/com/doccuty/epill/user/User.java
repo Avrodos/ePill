@@ -21,18 +21,8 @@
 
 package com.doccuty.epill.user;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
+import com.doccuty.epill.allergy.Allergy;
+import com.doccuty.epill.diabetes.Diabetes;
 import com.doccuty.epill.disease.Disease;
 import com.doccuty.epill.drug.Drug;
 import com.doccuty.epill.gender.Gender;
@@ -42,13 +32,12 @@ import com.doccuty.epill.model.Country;
 import com.doccuty.epill.model.DrugFeature;
 import com.doccuty.epill.model.PackagingTopic;
 import com.doccuty.epill.model.UserQuery;
-import com.doccuty.epill.model.util.DiseaseSet;
-import com.doccuty.epill.model.util.DrugFeatureSet;
-import com.doccuty.epill.model.util.DrugSet;
-import com.doccuty.epill.model.util.ItemInvocationSet;
-import com.doccuty.epill.model.util.PackagingTopicSet;
-import com.doccuty.epill.model.util.UserQuerySet;
+import com.doccuty.epill.model.util.*;
 import com.doccuty.epill.userdrugplan.UserDrugPlan;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 
@@ -71,7 +60,9 @@ public class User extends SimpleUser {
 		withoutUserDrugPlans(this.getUserDrugPlans().toArray(new UserDrugPlan[this.getUserDrugPlans().size()]));
 		withoutQuery(this.getQuery().toArray(new UserQuery[this.getQuery().size()]));
 		withoutDisease(this.getDisease().toArray(new Disease[this.getDisease().size()]));
+		withoutAllergy(this.getAllergy().toArray(new Allergy[this.getAllergy().size()]));
 		firePropertyChange("REMOVE_YOU", this, null);
+		setDiabetes(null);
 	}
 
 	@Override
@@ -724,4 +715,121 @@ public class User extends SimpleUser {
 		withDisease(value);
 		return value;
 	}
+
+	/********************************************************************
+	 * <pre>
+	 *              many                       many
+	 * User ----------------------------------- Allergy
+	 *              user                   allergies
+	 * </pre>
+	 */
+
+	//TODO: schauen wo überall alles "disease" aufgerufen wird
+	public static final String PROPERTY_ALLERGY = "allergy";
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "user_allergy", joinColumns = @JoinColumn(name = "iduser"), inverseJoinColumns = @JoinColumn(name = "idallergy"))
+	private Set<Allergy> allergy = null;
+
+	public Set<Allergy> getAllergy() {
+		if (this.allergy == null) {
+			return AllergySet.EMPTY_SET;
+		}
+
+		return this.allergy;
+	}
+
+	public User withAllergy(Allergy... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final Allergy item : value) {
+			if (item != null) {
+				if (this.allergy == null) {
+					this.disease = new DiseaseSet();
+				}
+
+				final boolean changed = this.allergy.add(item);
+
+				if (changed) {
+					item.withUser(this);
+					firePropertyChange(PROPERTY_ALLERGY, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public User withoutAllergy(Allergy... value) {
+		for (final Allergy item : value) {
+			if ((this.allergy != null) && (item != null)) {
+				if (this.allergy.remove(item)) {
+					item.withoutUser(this);
+					firePropertyChange(PROPERTY_ALLERGY, item, null);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Allergy createAllergy() {
+		final Allergy value = new Allergy();
+		withAllergy(value);
+		return value;
+	}
+
+	/********************************************************************
+	 * <pre>
+	 *              many                       one
+	 * User ----------------------------------- Diabetes
+	 *              user                   diabetes
+	 * </pre>
+	 */
+
+	public static final String PROPERTY_DIABETES = "diabetes";
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "iddiabetes")
+	private Diabetes diabetes = null;
+
+	public Diabetes getDiabetes() {
+		return this.diabetes;
+	}
+
+	public boolean setDiabetes(Diabetes value) {
+		boolean changed = false;
+
+		if (this.diabetes != value) {
+			final Diabetes oldValue = this.diabetes;
+
+			if (this.diabetes != null) {
+				this.diabetes = null;
+				oldValue.withoutUser(this);
+			}
+
+			this.diabetes = value;
+
+			if (value != null) {
+				value.withUser(this);
+			}
+
+			firePropertyChange(PROPERTY_DIABETES, oldValue, value);
+			changed = true;
+		}
+
+		return changed;
+	}
+
+	public User withDiabetes(Diabetes value) {
+		setDiabetes(value);
+		return this;
+	}
+
+	public Diabetes createDiabetes() {
+		final Diabetes value = new Diabetes();
+		withDiabetes(value);
+		return value;
+	}
+
+
 }

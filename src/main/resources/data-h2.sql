@@ -55,6 +55,11 @@ INSERT INTO gender (id, gender) VALUES (1,'männlich'), (2,'weiblich');
 
 
 --
+-- Dumping data for table `diabetes`
+--
+INSERT INTO diabetes (id, diabetes) VALUES (1,'type1'), (2,'type2'), (3,'none');
+
+--
 -- Dumping data for table `language`
 --
 

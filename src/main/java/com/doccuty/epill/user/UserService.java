@@ -1,17 +1,9 @@
 package com.doccuty.epill.user;
 
-import java.security.SecureRandom;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.doccuty.epill.authentication.AuthenticationService;
 import com.doccuty.epill.country.CountryRepository;
+import com.doccuty.epill.diabetes.Diabetes;
+import com.doccuty.epill.diabetes.DiabetesRepository;
 import com.doccuty.epill.drug.Drug;
 import com.doccuty.epill.drug.DrugRepository;
 import com.doccuty.epill.gender.Gender;
@@ -20,10 +12,15 @@ import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.language.LanguageRepository;
 import com.doccuty.epill.model.DrugFeature;
 import com.doccuty.epill.model.PackagingTopic;
-
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.List;
 
 /**
  * Handle all CRUD operations for posts.
@@ -50,6 +47,9 @@ public class UserService {
 
 	@Autowired
 	AuthenticationService authenticationService;
+
+	@Autowired
+	DiabetesRepository diabetesRepository;
 
 	public List<User> getAllUsers() {
 		return (List<User>) repository.findAll();
@@ -147,11 +147,17 @@ public class UserService {
 		if (user == null)
 			return null;
 
-		user.withFirstname(usr.getFirstname())
-			.withLastname(usr.getLastname())
-			.withPreferredFontSize(usr.getPreferredFontSize())
-			.withLevelOfDetail(usr.getLevelOfDetail())
+		user.withLevelOfDetail(usr.getLevelOfDetail())
 			.withRedGreenColorblind(usr.getRedGreenColorblind());
+
+		if (usr.getFirstname() != null)
+			user.withFirstname(usr.getFirstname());
+
+		if (usr.getLastname() != null)
+			user.withLastname(usr.getLastname());
+
+		if (usr.getPreferredFontSize() != null)
+			user.withPreferredFontSize(usr.getPreferredFontSize());
 
 		if (usr.getUsername() != null)
 			user.withUsername(usr.getUsername());
@@ -182,6 +188,14 @@ public class UserService {
 
 		if (usr.getFirstSignIn() != null)
 			user.setFirstSignIn(usr.getFirstSignIn());
+
+		if (usr.getDiabetes() != null)
+			user.setDiabetes(diabetesRepository.findOne(usr.getDiabetes().getId()));
+
+		if (usr.getSmoker() != null)
+			user.setSmoker(usr.getSmoker());
+
+		//TODO: Auch für neue Attribute updaten (Allergy,...)
 
 		user = repository.save(user);
 
@@ -323,6 +337,16 @@ public class UserService {
 
 	public List<Gender> getAllGender() {
 		return genderRepository.findAll();
+	}
+
+	/**
+	 * get a list of all diabetes in database
+	 *
+	 * @return List<Diabetes>
+	 */
+
+	public List<Diabetes> getAllDiabetes() {
+		return diabetesRepository.findAll();
 	}
 
 	/**

@@ -94,5 +94,11 @@
     "addDrugsToMedicationPlan": "add drugs to your Medication Plan",
 	"weight": "weight",
 	"for": "for",
-	"recalculatePlan": "recalculate plan"
+	"recalculatePlan": "recalculate plan",
+	"type1": "Type 1 Diabetes",
+	"type2": "Type 2 Diabetes",
+	"none": "No Diabetes",
+	"smoker": "Smoker",
+	"importSuccessful": "Import was successful!",
+	"importFailed": "Import Failed!"
 }

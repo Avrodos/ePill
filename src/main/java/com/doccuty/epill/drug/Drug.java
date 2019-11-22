@@ -21,37 +21,23 @@
 
 package com.doccuty.epill.drug;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
+import com.doccuty.epill.allergy.Allergy;
+import com.doccuty.epill.diabetes.Diabetes;
 import com.doccuty.epill.disease.Disease;
 import com.doccuty.epill.gender.Gender;
 import com.doccuty.epill.iteminvocation.ItemInvocation;
-import com.doccuty.epill.model.ActiveSubstance;
-import com.doccuty.epill.model.AdverseEffect;
-import com.doccuty.epill.model.DrugFeature;
-import com.doccuty.epill.model.IndicationGroup;
-import com.doccuty.epill.model.Interaction;
-import com.doccuty.epill.model.Packaging;
-import com.doccuty.epill.model.PharmaceuticalForm;
-import com.doccuty.epill.model.ProductGroup;
+import com.doccuty.epill.model.*;
 import com.doccuty.epill.model.util.ItemInvocationSet;
 import com.doccuty.epill.model.util.UserSet;
 import com.doccuty.epill.packagingsection.PackagingSection;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.userdrugplan.UserDrugPlan;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "drug")
@@ -71,6 +57,7 @@ public class Drug extends SimpleDrug {
 		withoutInteraction(this.getInteraction().toArray(new Interaction[this.getInteraction().size()]));
 		withoutClicks(this.getClicks().toArray(new ItemInvocation[this.getClicks().size()]));
 		withoutDisease(this.getDisease().toArray(new Disease[this.getDisease().size()]));
+		withoutAllergy(this.getAllergy().toArray(new Allergy[this.getAllergy().size()]));
 		firePropertyChange("REMOVE_YOU", this, null);
 	}
 
@@ -964,6 +951,8 @@ public class Drug extends SimpleDrug {
 		return value;
 	}
 
+
+
 	/*
 	 * status for remembered drugs
 	 */
@@ -996,6 +985,121 @@ public class Drug extends SimpleDrug {
 
 	public boolean getIsTaken() {
 		return this.taken;
+	}
+
+	/********************************************************************
+	 * <pre>
+	 *              many                       many
+	 * Drug ----------------------------------- Allergy
+	 *              drug                   allergy
+	 * </pre>
+	 */
+
+	public static final String PROPERTY_ALLERGY = "allergy";
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "drug_allergy", joinColumns = @JoinColumn(name = "iddrug"), inverseJoinColumns = @JoinColumn(name = "idallergy"))
+	private List<Allergy> allergy = null;
+
+	public List<Allergy> getAllergy() {
+		if (this.allergy == null) {
+			return new ArrayList<Allergy>();
+		}
+
+		return this.allergy;
+	}
+
+	public Drug withAllergy(Allergy... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final Allergy item : value) {
+			if (item != null) {
+				if (this.allergy == null) {
+					this.allergy = new ArrayList<Allergy>();
+				}
+
+				final boolean changed = this.allergy.add(item);
+
+				if (changed) {
+					item.withDrug(this);
+					firePropertyChange(PROPERTY_ALLERGY, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Drug withoutAllergy(Allergy... value) {
+		for (final Allergy item : value) {
+			if ((this.allergy != null) && (item != null)) {
+				if (this.allergy.remove(item)) {
+					item.withoutDrug(this);
+					firePropertyChange(PROPERTY_ALLERGY, item, null);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Allergy createAllergy() {
+		final Allergy value = new Allergy();
+		withAllergy(value);
+		return value;
+	}
+
+	/********************************************************************
+	 * <pre>
+	 *              many                       many
+	 * Drug ----------------------------------- Diabetes
+	 *              drug                   diabetes
+	 * </pre>
+	 */
+
+	public static final String PROPERTY_DIABETES = "diabetes";
+
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "drug")
+	private List<Diabetes> diabetes = null;
+
+	public List<Diabetes> getDiabetes() {
+		if (this.diabetes == null) {
+			return new ArrayList<Diabetes>();
+		}
+
+		return this.diabetes;
+	}
+
+	public Drug withDiabetes(Diabetes... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final Diabetes item : value) {
+			if (item != null) {
+				if (this.diabetes == null) {
+					this.diabetes = new ArrayList<Diabetes>();
+				}
+
+				final boolean changed = this.diabetes.add(item);
+
+				if (changed) {
+					item.withDrug(this);
+					firePropertyChange(PROPERTY_DIABETES, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Drug withoutDiabetes(Diabetes... value) {
+		for (final Diabetes item : value) {
+			if ((this.diabetes != null) && (item != null)) {
+				if (this.diabetes.remove(item)) {
+					item.withoutDrug(this);
+					firePropertyChange(PROPERTY_DIABETES, item, null);
+				}
+			}
+		}
+		return this;
 	}
 
 }
