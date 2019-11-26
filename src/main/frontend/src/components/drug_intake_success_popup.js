@@ -55,13 +55,14 @@ class DrugIntakeSuccessPopup extends React.Component {
         <div className="popup-content">
             <div>
                 {/* Popup content */}
-                {this.state.message}
-                <img src={"./../../assets/images/thumbs_up.jpg"} alt="success"></img>
-                
+                <div>
+                <img src={"./../../assets/images/thumbs_up.jpg"} alt="success" className="centered-picture"></img>
+                </div>
+                <div className="centered-title">{this.state.message}</div>
                 <form onSubmit={this.handleSubmit} >
                     <fieldset>
-                    <div>
-                        <button type="submit" className="btn btn-primary btn-next">{t("confirm")}</button>
+                    <div className="centered-picture">
+                        <button type="submit" className="btn btn-primary btn-next">OK</button>
                     </div>
                     </fieldset>
                 </form>

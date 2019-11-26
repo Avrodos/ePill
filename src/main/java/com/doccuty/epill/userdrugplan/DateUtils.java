@@ -1,5 +1,7 @@
 package com.doccuty.epill.userdrugplan;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -62,5 +64,23 @@ public class DateUtils {
 		final Date newDate = calendar.getTime();
 		return newDate;
 	}
+	
+	/**
+     * convert date string "dd.MM.yyyy" to date
+     *
+     * @param dateString
+     * @return Date
+     */
+    public static Date parseDateString(String dateString) {
+            final SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+            try {
+                    final Date date = formatter.parse(dateString);
+                    return date;
+            } catch (final ParseException e) {
+                    //ignore in case of error and take current date
+                    return new Date();
+            }
+    }
+
 
 }

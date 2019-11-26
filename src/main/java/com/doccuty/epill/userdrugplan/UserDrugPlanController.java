@@ -129,46 +129,35 @@ public class UserDrugPlanController {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		
-		/**
-		 * recalculate drug intake plan at day for logged in user
-		 * 
-		 * @param date
-		 * @return
-		 */
-		@RequestMapping(value = "/calculate/date", method = RequestMethod.POST)
-		public ResponseEntity<Object> recalculateDrugPlan(@RequestBody String dateString) {
-			// A pragmatic approach to security which does not use much
-			// framework-specific magic. While other approaches
-			// with annotations, etc. are possible they are much more complex while
-			// this is quite easy to understand and
-			// extend.
-			LOG.info("recalculating user drug plan for day {}", dateString);
-			if (userService.isAnonymous()) {
-				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-			}
+		 /**
+         * recalculate drug plan for user and date
+         * {"UserDrugPlanRequestParameter": {
+                "idUser":2,"date":"17.11.2019 11:00"}
+                }
+         * @param requestParam
+         * @return
+         */
+        @RequestMapping(value = "/calculate/date", method = RequestMethod.POST)
+        public ResponseEntity<Object> recalculateDrugPlan(
+                        @RequestBody UserDrugPlanRequestParameter requestParam) {
+                // A pragmatic approach to security which does not use much
+                // framework-specific magic. While other approaches
+                // with annotations, etc. are possible they are much more complex while
+                // this is quite easy to understand and
+                // extend.
+                LOG.info("recalculating user drug plan for userId = {}, day {}", requestParam.getIdUser(), requestParam.getDate());
+                if (userService.isAnonymous()) {
+                        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+                Date date = DateUtils.parseDateString(requestParam.getDate());
+                service.recalculateAndSaveUserDrugPlanForDay(date);
 
-			service.recalculateAndSaveUserDrugPlanForDay(parseDateString(dateString));
+                LOG.info("user drug plan recalculated");
 
-			LOG.info("user drug plan recalculated");
+                return new ResponseEntity<>(HttpStatus.OK);
 
-			return new ResponseEntity<>(HttpStatus.OK);
-		}
+        }
 
-		//TODO: make simpler
-		private Date parseDateString(String jsonDate) {
-			final JsonParser springParser = JsonParserFactory.getJsonParser();
-			final Map<String, Object> jsonMap = springParser.parseMap(jsonDate);
-			final Object obj = jsonMap.get("date");
-			final SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-			try {
-				final String dateString = (String) obj;
-				final Date date = formatter.parse(dateString);
-				LOG.info("converted date {}", date);
-				return date;
-			} catch (final ParseException e) {
-				return new Date();
-			}
-		}
 		
 		/**
 		 * save user prescription

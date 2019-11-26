@@ -1037,5 +1037,17 @@ a.wide { display : block }
 	border: white;
 }
 
+.centered-picture {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.invisible-button {
+	background-color: white;
+	color: white;
+}
+
 
 

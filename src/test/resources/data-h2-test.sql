@@ -710,31 +710,24 @@ INSERT INTO user_drug_plan_item (id, iddrug, iduser, date_time_planned, date_tim
 
 
 -- user prescription
--- INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(4, 1, 2, 1);
--- INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(1, 12, 2, 1);
--- INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(2, 13, 2, 1);
--- INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(3, 14, 2, 1);
-
-INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(1, 1, 2, 1);
-INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(2, 3, 2, 1);
-INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(3, 2, 2, 1);
+INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(1, 12, 2, 1);
+INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(2, 13, 2, 1);
+INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(3, 14, 2, 1);
 
 -- user prescription item
--- INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 11, 3);
--- INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 6, 3); 
--- INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 17, 2);
--- INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(4, 17, 3);
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 6, 1);
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 11, 2); 
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 12, 3);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 11, 3);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 6, 3); 
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 17, 2);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(4, 17, 3);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(5, 18, 1);
 
 --
 -- Dumping data for table `user_drug_taking`
 --
 
-INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 1);
-INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 2);
-INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 3);
+INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 12);
+INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 13);
+INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 14);
 
 --
 -- Dumping data for table `instruction`
@@ -744,7 +737,7 @@ INSERT INTO instruction (id, description) VALUES (2, 'Alkoholkonsum vermeiden');
 INSERT INTO instruction (id, description) VALUES (3, 'salziges Essen vermeiden');
 INSERT INTO instruction (id, description) VALUES (4, 'eine vegane Ernährung vermeiden');
 INSERT INTO instruction (id, description) VALUES (5, 'für ausreichend Magnesiumzufuhr sorgen');
-INSERT INTO instruction (id, description) VALUES (6, 'für ausreichen Kaliumzufuhr sorgen (esse z.B. eine Banane)');
+INSERT INTO instruction (id, description) VALUES (6, 'für ausreichend Kaliumzufuhr sorgen (esse z.B. eine Banane)');
 INSERT INTO instruction (id, description) VALUES (7, 'Stress verstärkt den Effekt dieses Medikamentes (gönne dir ausreichend Ruhepausen)');
 
 --

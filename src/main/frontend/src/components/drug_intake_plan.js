@@ -433,7 +433,6 @@ class DrugIntakePlan extends React.Component {
                              console.log("case status 200");
                              if (isDrugTaken) {
                             	 this.state.showDrugIntakeSuccessPopup = true;
-                                 toast.success(t('Well done!'), options);
                              } else {
                                  toast.error(t('Remember to take it soon!'), options);
                              }
@@ -516,10 +515,10 @@ class DrugIntakePlan extends React.Component {
                                 )
                         }
                         {this.state.showDrugIntakeSuccessPopup && (
-                                <Popup
+                                <Popup 
                                     open={this.state.showDrugIntakeSuccessPopup}
                                     position="right center" modal
-                                trigger={<button type="button">Success</button>}>
+                                    trigger={<button type="button" className="invisible-button">Success</button>}>
                                     {close =>
                                             <div>
                                                <a className="close" onClick={close}>&times;</a>
