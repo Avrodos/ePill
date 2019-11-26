@@ -1,6 +1,8 @@
 package com.doccuty.epill.user;
 
+import com.doccuty.epill.allergy.Allergy;
 import com.doccuty.epill.authentication.AuthenticationService;
+import com.doccuty.epill.condition.Condition;
 import com.doccuty.epill.country.CountryRepository;
 import com.doccuty.epill.diabetes.Diabetes;
 import com.doccuty.epill.diabetes.DiabetesRepository;
@@ -8,6 +10,7 @@ import com.doccuty.epill.drug.Drug;
 import com.doccuty.epill.drug.DrugRepository;
 import com.doccuty.epill.gender.Gender;
 import com.doccuty.epill.gender.GenderRepository;
+import com.doccuty.epill.intolerance.Intolerance;
 import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.language.LanguageRepository;
 import com.doccuty.epill.model.DrugFeature;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Handle all CRUD operations for posts.
@@ -194,6 +198,22 @@ public class UserService {
 
 		if (usr.getSmoker() != null)
 			user.setSmoker(usr.getSmoker());
+
+		if (usr.getAllergy() != null) {
+			Set<Allergy> tempAllergySet = usr.getAllergy();
+			user.withAllergy(tempAllergySet.toArray(new Allergy[tempAllergySet.size()]));
+		}
+
+		if (usr.getIntolerance() != null) {
+			Set<Intolerance> tempIntoleranceSet = usr.getIntolerance();
+			user.withIntolerance(tempIntoleranceSet.toArray(new Intolerance[tempIntoleranceSet.size()]));
+		}
+
+		if (usr.getCondition() != null) {
+			Set<Condition> tempConditionSet = usr.getCondition();
+			user.withCondition(tempConditionSet.toArray(new Condition[tempConditionSet.size()]));
+		}
+
 
 		//TODO: Auch für neue Attribute updaten (Allergy,...)
 

@@ -5,6 +5,8 @@ import com.doccuty.epill.diabetes.Diabetes;
 import com.doccuty.epill.diabetes.DiabetesRepository;
 import com.doccuty.epill.gender.Gender;
 import com.doccuty.epill.gender.GenderRepository;
+import com.doccuty.epill.intolerance.Intolerance;
+import com.doccuty.epill.intolerance.IntoleranceService;
 import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
 import org.apache.commons.csv.CSVFormat;
@@ -38,7 +40,7 @@ public class DataParsingService {
 
     //the ami keys for data, that can contain more than one entry
     //TODO: do something with "ami.medicationStatement" or "amiref.medicationStatement". They did not update ami.medicationStatement yet...
-    private static String[] listAMI = {"ami.allergyAndIntolerance", "ami.condition"};
+    //TODO: Parse Names
 
     public User importCA7UserData(User user) {
         //TODO: Filepath shouldnt be hardcoded in this class.
@@ -48,7 +50,7 @@ public class DataParsingService {
             //TODO: ERROR HANDLING
 
         }
-        User oldUser = getCurrentUser();
+        //User newData = getCurrentUser();
         User newData = new User();
         String desiredFilePrefix = user.getLastname() + "_" + user.getFirstname();
 
@@ -84,29 +86,44 @@ public class DataParsingService {
                         }
                         continue;
                     }
+                    if (!record.get("invalidation_date").equals("")) {
+                        //its invalidated
+                        continue;
+                    }
                     //a little bit ugly, but has to be done, to assure some data is not overwritten by older data.
-                    else if (key.equals("ami.sex")) {
-                        if (newData.getGender() != null || !record.get("invalidation_date").equals("")) {
-                            //is invalidation_date empty or null?
+                    else if (key.equals("ami.firstName")) {
+                        if (newData.getFirstname() != null) {
+                            continue;
+                        }
+                        String newFirstName = record.get("value");
+                        newData.setFirstname(newFirstName);
+                    } else if (key.equals("ami.lastName")) {
+                        if (newData.getLastname() != null) {
+                            continue;
+                        }
+                        String newLastName = record.get("value");
+                        newData.setLastname(newLastName);
+                    } else if (key.equals("ami.sex")) {
+                        if (newData.getGender() != null) {
                             continue; //next record
                         }
                         Gender newGender = processGender(record.get("value"));
                         // Or something like this? user.setGender(genderRepository.findOne(usr.getGender().getId()));
                         newData.setGender(newGender);
                     } else if (key.equals("ami.smokerFrequency")) {
-                        if (newData.getSmoker() != null || !record.get("invalidation_date").equals("")) {
+                        if (newData.getSmoker() != null) {
                             continue;
                         }
                         boolean newSmoker = processSmoker(record.get("value"));
                         newData.setSmoker(newSmoker);
                     } else if (key.equals("ami.diabete")) {
-                        if (newData.getDiabetes() != null || !record.get("invalidation_date").equals("")) {
+                        if (newData.getDiabetes() != null) {
                             continue;
                         }
                         Diabetes newDiabetes = processDiabetes(record.get("value"), records, record.get("multi_id"));
                         newData.setDiabetes(newDiabetes);
                     } else if (key.equals("ami.birthDate")) {
-                        if (newData.getDateOfBirth() != null || !record.get("invalidation_date").equals("")) {
+                        if (newData.getDateOfBirth() != null) {
                             continue;
                         }
                         Date newDateOfBirth = processDateOfBirth(record.get("value"));
@@ -120,12 +137,12 @@ public class DataParsingService {
                         //TODO: Erstmal Attribute für conditions und Intolerances anlegen.
                         //Mache ich 2 separate Attribute? Dann müsste ich auch die multi_ids lesen und darüber emitteln was von beidem es ist.
                         //TODO: Ab hier jetzt die Daten verarbeiten
-
                         String multiId = record.get("multi_id");
                         //Look for record with id = multiId and check record.get(key).equals(qualifier.type) -> this has li.intolerance or li.allergy
                         String qualifierType = getQualifierType(records, multiId);
                         if (qualifierType.equals("li.intolerance")) {
-                            //TODO
+                            Intolerance newIntolerance = processIntolerance(record.get("value"));
+                            newData.withIntolerance(newIntolerance);
 
                         } else if (qualifierType.equals("li.allergy")) {
                             Allergy newAllergy = new Allergy();
@@ -153,8 +170,11 @@ public class DataParsingService {
         //TODO: make sure I dont overwrite/lose data when sending back the user
         //Create another user with the user data from the parameter and overwrite with new data from "newData"
         //TODO: Update the current user with newData (there is a method for that)
-
         return service.updateUserData(newData);
+        //User returnUser = service.updateUserData(newData);
+        //service.deleteUser(newData.getId());
+        //return returnUser;
+
     }
 
     private String getQualifierType(Iterable<CSVRecord> records, String multiId) {

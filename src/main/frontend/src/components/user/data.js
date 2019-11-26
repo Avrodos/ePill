@@ -31,7 +31,13 @@ class UserData extends React.Component {
             firstSignIn: false,
             a7id: '',
             smoker: false,
-            diabetes: {id: 0}
+            diabetes: {id: 0},
+            allergy: [],
+            enteredAllergy: '',
+            intolerance: [],
+            enteredIntolerance: '',
+            condition: [],
+            enteredCondition: '',
         };
         
         this.handleFirstnameChange		= this.handleFirstnameChange.bind(this);
@@ -57,6 +63,13 @@ class UserData extends React.Component {
         this.cookies = this.props.cookies;
 
         this.testSendData = this.testSendData.bind(this);
+
+        this.handleAddAllergy = this.handleAddAllergy.bind(this);
+        this.onEnteredAllergyChange = this.onEnteredAllergyChange.bind(this);
+        this.handleAddIntolerance = this.handleAddIntolerance.bind(this);
+        this.onEnteredIntoleranceChange = this.onEnteredIntoleranceChange.bind(this);
+        this.handleAddCondition = this.handleAddCondition.bind(this);
+        this.onEnteredConditionChange = this.onEnteredConditionChange.bind(this);
     }
 
 
@@ -88,6 +101,11 @@ class UserData extends React.Component {
                 this.state.a7id = data.a7id;
                 this.state.smoker = data.smoker || false;
                 this.state.diabetes = data.diabetes || {id: 0};
+                this.state.allergy = data.allergy || [];
+                this.state.intolerance = data.intolerance || [];
+                this.state.condition = data.condition || [];
+
+                console.log(data);
 
                 this.setState(this.state);
 
@@ -158,6 +176,42 @@ class UserData extends React.Component {
 
     handleDiabetesChange(event) {
         this.state.diabetes = {id: event.target.value};
+        this.setState(this.state);
+    }
+
+    handleAddAllergy() {
+        this.state.allergy = this.state.allergy.concat(this.state.enteredAllergy);
+        this.state.enteredAllergy = "";
+        this.setState(this.state);
+        //TODO: Save it (repo), so the repository gives me back a unique id.
+    }
+
+    onEnteredAllergyChange(event) {
+        this.state.enteredAllergy = event.target.value;
+        this.setState(this.state);
+    }
+
+    handleAddIntolerance() {
+        this.state.intolerance = this.state.intolerance.concat(this.state.enteredIntolerance);
+        this.state.enteredIntolerance = "";
+        this.setState(this.state);
+        //TODO: Save it (repo), so the repository gives me back a unique id.
+    }
+
+    onEnteredIntoleranceChange(event) {
+        this.state.enteredIntolerance = event.target.value;
+        this.setState(this.state);
+    }
+
+    handleAddCondition() {
+        this.state.condition = this.state.condition.concat(this.state.enteredCondition);
+        this.state.enteredCondition = "";
+        this.setState(this.state);
+        //TODO: Save it (repo), so the repository gives me back a unique id.
+    }
+
+    onEnteredConditionChange(event) {
+        this.state.enteredCondition = event.target.value;
         this.setState(this.state);
     }
     
@@ -438,7 +492,70 @@ class UserData extends React.Component {
                                        <option value="3">{t('none')}</option>
                                    </select>
                                </div>
-                    </fieldset>
+
+                           </fieldset>
+                           <fieldset disabled={this.state.tpa}>
+                               <div className="form-group col-md-6 col-lg-6">
+                                   <label htmlFor="allergy">{t('Allergy')}</label>
+                                   <ul>
+                                       {this.state.allergy.map(item => (
+                                           <li key={item.id}>{item.name}</li>
+                                       ))}
+                                   </ul>
+                                   <input
+                                       type="text"
+                                       value={this.state.enteredAllergy}
+                                       onChange={this.onEnteredAllergyChange}
+                                   />
+                                   <button
+                                       type="button"
+                                       onClick={this.handleAddAllergy}
+                                       disabled={!this.state.enteredAllergy}
+                                   >
+                                       Add Allergy
+                                   </button>
+                               </div>
+                               <div className="form-group col-md-6 col-lg-6">
+                                   <label htmlFor="intolerance">{t('Intolerance')}</label>
+                                   <ul>
+                                       {this.state.intolerance.map(item => (
+                                           <li key={item.id}>{item.name}</li>
+                                       ))}
+                                   </ul>
+                                   <input
+                                       type="text"
+                                       value={this.state.enteredIntolerance}
+                                       onChange={this.onEnteredIntoleranceChange}
+                                   />
+                                   <button
+                                       type="button"
+                                       onClick={this.handleAddIntolerance}
+                                       disabled={!this.state.enteredIntolerance}
+                                   >
+                                       Add Intolerance
+                                   </button>
+                               </div>
+                               <div className="form-group col-md-6 col-lg-6">
+                                   <label htmlFor="condition">{t('Condition')}</label>
+                                   <ul>
+                                       {this.state.condition.map(item => (
+                                           <li key={item.id}>{item.name}</li>
+                                       ))}
+                                   </ul>
+                                   <input
+                                       type="text"
+                                       value={this.state.enteredCondition}
+                                       onChange={this.onEnteredConditionChange}
+                                   />
+                                   <button
+                                       type="button"
+                                       onClick={this.handleAddCondition}
+                                       disabled={!this.state.enteredCondition}
+                                   >
+                                       Add Condition
+                                   </button>
+                               </div>
+                           </fieldset>
 					<fieldset>
 					    <div className="form-group col-lg-9 col-md-9">
         						<p><b>{t("helpenabled")}</b></p>

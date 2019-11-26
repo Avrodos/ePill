@@ -22,10 +22,12 @@
 package com.doccuty.epill.user;
 
 import com.doccuty.epill.allergy.Allergy;
+import com.doccuty.epill.condition.Condition;
 import com.doccuty.epill.diabetes.Diabetes;
 import com.doccuty.epill.disease.Disease;
 import com.doccuty.epill.drug.Drug;
 import com.doccuty.epill.gender.Gender;
+import com.doccuty.epill.intolerance.Intolerance;
 import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.language.Language;
 import com.doccuty.epill.model.Country;
@@ -61,10 +63,13 @@ public class User extends SimpleUser {
 		withoutQuery(this.getQuery().toArray(new UserQuery[this.getQuery().size()]));
 		withoutDisease(this.getDisease().toArray(new Disease[this.getDisease().size()]));
 		withoutAllergy(this.getAllergy().toArray(new Allergy[this.getAllergy().size()]));
+		withoutIntolerance(this.getIntolerance().toArray(new Intolerance[this.getIntolerance().size()]));
+		withoutCondition(this.getCondition().toArray(new Condition[this.getCondition().size()]));
 		firePropertyChange("REMOVE_YOU", this, null);
 		setDiabetes(null);
 	}
 
+	//TODO: update
 	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();
@@ -746,7 +751,7 @@ public class User extends SimpleUser {
 		for (final Allergy item : value) {
 			if (item != null) {
 				if (this.allergy == null) {
-					this.disease = new DiseaseSet();
+					this.allergy = new AllergySet();
 				}
 
 				final boolean changed = this.allergy.add(item);
@@ -775,6 +780,130 @@ public class User extends SimpleUser {
 	public Allergy createAllergy() {
 		final Allergy value = new Allergy();
 		withAllergy(value);
+		return value;
+	}
+
+	/********************************************************************
+	 * <pre>
+	 *              many                       many
+	 * User ----------------------------------- Intolerance
+	 *              user                   allergies
+	 * </pre>
+	 */
+
+	//TODO: schauen wo überall alles "disease" aufgerufen wird
+	public static final String PROPERTY_INTOLERANCE = "intolerance";
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "user_intolerance", joinColumns = @JoinColumn(name = "iduser"), inverseJoinColumns = @JoinColumn(name = "idintolerance"))
+	private Set<Intolerance> intolerance = null;
+
+	public Set<Intolerance> getIntolerance() {
+		if (this.intolerance == null) {
+			return IntoleranceSet.EMPTY_SET;
+		}
+
+		return this.intolerance;
+	}
+
+	public User withIntolerance(Intolerance... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final Intolerance item : value) {
+			if (item != null) {
+				if (this.intolerance == null) {
+					this.intolerance = new IntoleranceSet();
+				}
+
+				final boolean changed = this.intolerance.add(item);
+
+				if (changed) {
+					item.withUser(this);
+					firePropertyChange(PROPERTY_INTOLERANCE, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public User withoutIntolerance(Intolerance... value) {
+		for (final Intolerance item : value) {
+			if ((this.intolerance != null) && (item != null)) {
+				if (this.intolerance.remove(item)) {
+					item.withoutUser(this);
+					firePropertyChange(PROPERTY_INTOLERANCE, item, null);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Intolerance createIntolerance() {
+		final Intolerance value = new Intolerance();
+		withIntolerance(value);
+		return value;
+	}
+
+	/********************************************************************
+	 * <pre>
+	 *              many                       many
+	 * User ----------------------------------- Condition
+	 *              user                   conditions
+	 * </pre>
+	 */
+
+	//TODO: schauen wo überall alles "disease" aufgerufen wird
+	public static final String PROPERTY_CONDITION = "condition";
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "user_condition", joinColumns = @JoinColumn(name = "iduser"), inverseJoinColumns = @JoinColumn(name = "idcondition"))
+	private Set<Condition> condition = null;
+
+	public Set<Condition> getCondition() {
+		if (this.condition == null) {
+			return ConditionSet.EMPTY_SET;
+		}
+
+		return this.condition;
+	}
+
+	public User withCondition(Condition... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final Condition item : value) {
+			if (item != null) {
+				if (this.condition == null) {
+					this.condition = new ConditionSet();
+				}
+
+				final boolean changed = this.condition.add(item);
+
+				if (changed) {
+					item.withUser(this);
+					firePropertyChange(PROPERTY_CONDITION, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public User withoutCondition(Condition... value) {
+		for (final Condition item : value) {
+			if ((this.condition != null) && (item != null)) {
+				if (this.condition.remove(item)) {
+					item.withoutUser(this);
+					firePropertyChange(PROPERTY_CONDITION, item, null);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Condition createCondition() {
+		final Condition value = new Condition();
+		withCondition(value);
 		return value;
 	}
 

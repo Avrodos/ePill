@@ -2660,3 +2660,9 @@ org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic c
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:844)
+2019-11-26 16:21:43 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "IDDIABETES[*]"; expected "INSERT, {"; SQL statement:
+IDDIABETES [42001-194]
+2019-11-26 16:21:51 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ID[*]"; expected "INSERT, {"; SQL statement:
+ID [42001-194]

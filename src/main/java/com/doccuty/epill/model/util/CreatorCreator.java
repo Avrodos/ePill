@@ -33,6 +33,8 @@ class CreatorCreator{
       jsonIdMap.with(new UserDrugPlanCreator());
        jsonIdMap.with(new DiabetesCreator());
        jsonIdMap.with(new AllergyCreator());
+      jsonIdMap.with(new IntoleranceCreator());
+      jsonIdMap.with(new ConditionCreator());
       return jsonIdMap;
    }
 }

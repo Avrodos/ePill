@@ -35,6 +35,9 @@ class User {
         this.a7id = data.a7id;
         this.smoker = data.smoker || false;
         this.diabetes = data.diabetes || {id: 0};
+        this.allergy = data.allergy || [];
+        this.intolerance = data.intolerance || [];
+        this.condition = data.condition || [];
     }
 
     reset() {
@@ -55,6 +58,9 @@ class User {
         this.a7id = undefined;
         this.smoker = false;
         this.diabetes = 0;
+        this.allergy = undefined;
+        this.intolerance = undefined;
+        this.condition = undefined;
     }
     
     get() {
@@ -75,8 +81,10 @@ class User {
                 firstSignIn: this.firstSignIn,
                 a7id: this.a7id,
                 smoker: this.smoker,
-                diabetes: this.diabetes
-
+                diabetes: this.diabetes,
+                allergy: this.allergy,
+                intolerance: this.intolerance,
+                condition: this.condition
 
     		}
     }

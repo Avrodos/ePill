@@ -67,7 +67,7 @@ public class UserController {
         if (service.isAnonymous()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        
+
         User user = service.getUserById(id);
     	
     		IdMap map = UserCreator.createIdMap("");

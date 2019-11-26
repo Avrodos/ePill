@@ -22,9 +22,11 @@
 package com.doccuty.epill.model.util;
 
 import com.doccuty.epill.allergy.Allergy;
+import com.doccuty.epill.condition.Condition;
 import com.doccuty.epill.diabetes.Diabetes;
 import com.doccuty.epill.disease.Disease;
 import com.doccuty.epill.gender.Gender;
+import com.doccuty.epill.intolerance.Intolerance;
 import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.language.Language;
 import com.doccuty.epill.model.Country;
@@ -67,8 +69,11 @@ public class UserCreator implements SendableEntityCreatorNoIndex
        User.PROPERTY_LUNCH_TIME,
            User.PROPERTY_DINNER_TIME,
            User.PROPERTY_ALLERGY,
+           User.PROPERTY_INTOLERANCE,
            User.PROPERTY_DIABETES,
-           User.PROPERTY_SMOKER
+           User.PROPERTY_SMOKER,
+           User.PROPERTY_CONDITION
+
     };
    
    @Override
@@ -240,6 +245,14 @@ public class UserCreator implements SendableEntityCreatorNoIndex
       if (User.PROPERTY_ALLERGY.equalsIgnoreCase(attribute)) {
          return ((User) target).getAllergy();
       }
+
+       if (User.PROPERTY_INTOLERANCE.equalsIgnoreCase(attribute)) {
+           return ((User) target).getIntolerance();
+       }
+
+       if (User.PROPERTY_CONDITION.equalsIgnoreCase(attribute)) {
+           return ((User) target).getCondition();
+       }
 
       return null;
    }
@@ -441,6 +454,16 @@ public class UserCreator implements SendableEntityCreatorNoIndex
          ((User) target).withAllergy((Allergy) value);
          return true;
       }
+
+       if (User.PROPERTY_INTOLERANCE.equalsIgnoreCase(attrName)) {
+           ((User) target).withIntolerance((Intolerance) value);
+           return true;
+       }
+
+       if (User.PROPERTY_CONDITION.equalsIgnoreCase(attrName)) {
+           ((User) target).withCondition((Condition) value);
+           return true;
+       }
 
       if (User.PROPERTY_DIABETES.equalsIgnoreCase(attrName)) {
          ((User) target).setDiabetes((Diabetes) value);

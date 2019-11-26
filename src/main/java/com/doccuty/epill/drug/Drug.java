@@ -25,6 +25,7 @@ import com.doccuty.epill.allergy.Allergy;
 import com.doccuty.epill.diabetes.Diabetes;
 import com.doccuty.epill.disease.Disease;
 import com.doccuty.epill.gender.Gender;
+import com.doccuty.epill.intolerance.Intolerance;
 import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.model.*;
 import com.doccuty.epill.model.util.ItemInvocationSet;
@@ -58,6 +59,7 @@ public class Drug extends SimpleDrug {
 		withoutClicks(this.getClicks().toArray(new ItemInvocation[this.getClicks().size()]));
 		withoutDisease(this.getDisease().toArray(new Disease[this.getDisease().size()]));
 		withoutAllergy(this.getAllergy().toArray(new Allergy[this.getAllergy().size()]));
+		withoutIntolerance(this.getIntolerance().toArray(new Intolerance[this.getIntolerance().size()]));
 		firePropertyChange("REMOVE_YOU", this, null);
 	}
 
@@ -1045,6 +1047,67 @@ public class Drug extends SimpleDrug {
 	public Allergy createAllergy() {
 		final Allergy value = new Allergy();
 		withAllergy(value);
+		return value;
+	}
+
+	/********************************************************************
+	 * <pre>
+	 *              many                       many
+	 * Drug ----------------------------------- Intolerance
+	 *              drug                   intolerance
+	 * </pre>
+	 */
+
+	public static final String PROPERTY_INTOLERANCE = "intolerance";
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "drug_intolerance", joinColumns = @JoinColumn(name = "iddrug"), inverseJoinColumns = @JoinColumn(name = "idintolerance"))
+	private List<Intolerance> intolerance = null;
+
+	public List<Intolerance> getIntolerance() {
+		if (this.intolerance == null) {
+			return new ArrayList<Intolerance>();
+		}
+
+		return this.intolerance;
+	}
+
+	public Drug withIntolerance(Intolerance... value) {
+		if (value == null) {
+			return this;
+		}
+		for (final Intolerance item : value) {
+			if (item != null) {
+				if (this.intolerance == null) {
+					this.intolerance = new ArrayList<Intolerance>();
+				}
+
+				final boolean changed = this.intolerance.add(item);
+
+				if (changed) {
+					item.withDrug(this);
+					firePropertyChange(PROPERTY_INTOLERANCE, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Drug withoutIntolerance(Intolerance... value) {
+		for (final Intolerance item : value) {
+			if ((this.intolerance != null) && (item != null)) {
+				if (this.intolerance.remove(item)) {
+					item.withoutDrug(this);
+					firePropertyChange(PROPERTY_INTOLERANCE, item, null);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Intolerance createIntolerance() {
+		final Intolerance value = new Intolerance();
+		withIntolerance(value);
 		return value;
 	}
 
