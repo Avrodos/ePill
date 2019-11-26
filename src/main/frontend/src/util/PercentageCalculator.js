@@ -12,13 +12,14 @@ class PercentageCalculator {
 	                        //set percentages for the next intermediateStep items
 	                        for (var j = 1; j < percentages.length; j++) {
 	                                if (i + j < drugplanitems.length) {
+	                                	if (i+j+1 < drugplanitems.length && !drugplanitems[i+j].intermediateStep) {
+	                                        break;
+	                                	}
 	                                        drugplanitems[i+j].percentage = percentages[j];
 	                                } else {
 	                                        break;
 	                                }
-	                                if (!drugplanitems[i+j].intermediateStep) {
-	                                        break;
-	                                }
+	                                
 	                        }
 	                        break;
 	                }

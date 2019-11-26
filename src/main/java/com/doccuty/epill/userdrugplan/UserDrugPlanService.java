@@ -243,14 +243,7 @@ public class UserDrugPlanService {
 				return false;
 			}
 		}
-		
-		private List<String> getInteractions(UserDrugPlanItem item) {
-			List<String> interactions = new ArrayList<>();
-			for (Interaction interaction : item.getDrug().getInteraction()) {
-				interactions.add(interaction.getInteraction());
-			}
-			return interactions;
-		}
+
 		
 		private String getInteractions(List<UserDrugPlanItem> items, UserDrugPlanItem item) {
 			List<Drug> drugsForHour = getDrugListForHour(items);
@@ -540,7 +533,11 @@ public class UserDrugPlanService {
 
 		private UserPrescriptionItem getUserPrescription(final int hourOfDay, UserPrescription up) {
 			UserPrescriptionItem item = new UserPrescriptionItem();
-			item.setIntakeTime(hourOfDay);
+			if (up.getDrug().getTakeOnEmptyStomach()) {
+				item.setIntakeTime(hourOfDay - 1);
+			} else {
+				item.setIntakeTime(hourOfDay);
+			}
 			item.setUserPrescription(up);
 			return item;
 		}
@@ -560,13 +557,13 @@ public class UserDrugPlanService {
 				UserPrescription firstPrescription = prescriptions.get(0);
 				param.setPeriodInDays(firstPrescription.getPeriodInDays());
 				for (UserPrescriptionItem item : firstPrescription.getUserPrescriptionItems()) {
-					if (item.getIntakeTime() == currentUser.getBreakfastTime()) {
+					if (item.getIntakeTime() == currentUser.getBreakfastTime() | item.getIntakeTime() == (currentUser.getBreakfastTime()-1)) {
 						param.setIntakeBreakfastTime(true);
-					} else if (item.getIntakeTime() == currentUser.getLunchTime()) {
+					} else if (item.getIntakeTime() == currentUser.getLunchTime() | item.getIntakeTime() == (currentUser.getLunchTime()-1)) {
 						param.setIntakeLunchTime(true);
-					} else if (item.getIntakeTime() == currentUser.getDinnerTime()) {
+					} else if (item.getIntakeTime() == currentUser.getDinnerTime() | item.getIntakeTime() == (currentUser.getDinnerTime()-1)) {
 						param.setIntakeDinnerTime(true);
-					} else if (item.getIntakeTime() == currentUser.getSleepTime()) {
+					} else if (item.getIntakeTime() == currentUser.getSleepTime() | item.getIntakeTime() == (currentUser.getSleepTime()-1)) {
 						param.setIntakeSleepTime(true);
 					}
 				}
