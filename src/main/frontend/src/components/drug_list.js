@@ -9,7 +9,7 @@ import Popup from "reactjs-popup";
 import EmptyList from "./empty_list";
 import Loading from "./loading";
 import User from "./../util/User";
-import DrugIntakePopup from "./drug_intake_popup";
+import DrugIntakePopup from "./drugintakeplan/drug_intake_popup";
 
 class DrugList extends React.Component {
     constructor(props) {

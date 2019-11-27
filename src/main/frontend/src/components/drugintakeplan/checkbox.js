@@ -5,7 +5,6 @@ import {translate} from "react-i18next";
 class CheckBox extends React.Component{
          constructor(props) {
             super(props);
-                console.log("checked=" + this.props.checked + ", id=" + this.props.id);
             this.state = {
                         isChecked: this.props.checked,
                         id: this.props.id
@@ -15,7 +14,6 @@ class CheckBox extends React.Component{
 
           handleChecked () {
             this.setState({isChecked: !this.state.isChecked});
-            console.log("changed to " + this.state.isChecked);
           }
 
           onChangeChecked(event) {

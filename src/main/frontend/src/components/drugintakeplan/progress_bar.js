@@ -2,7 +2,7 @@ import React from "react";
 
 import {translate} from "react-i18next";
 
-import User from "../util/User";
+import User from "../../util/User";
 
 class ProgressBar extends React.Component {
     constructor(props) {

@@ -22,7 +22,7 @@ import Register from "./components/register";
 import DrugList from "./components/drug_list";
 import DrugDetail from "./components/drug_detail";
 import UserData from "./components/user/data";
-import DrugIntakePlan from "./components/drug_intake_plan";
+import DrugIntakePlan from "./components/drugintakeplan/drug_intake_plan";
 
 
 class Root extends React.Component {

@@ -28,8 +28,6 @@ class ChangingDrugIntakePopup extends React.Component {
     }
         
 	componentWillReceiveProps(props) {
-        console.log("... componentWillReceiveProps - drugsNotTaken=" + this.props.drugsNotTaken +
-                        ", intakeHour" + this.props.intakeHour + ", callback=" + this.props.drugIsTakenCallback );
         this.setState({ drugsNotTaken: this.props.drugsNotTaken,
                 intakeHour: this.props.intakeHour,
                 drugIsTakenCallback: this.props.drugIsTakenCallback, 
@@ -122,7 +120,6 @@ class ChangingDrugIntakePopup extends React.Component {
     }
 
     setDrugTaken(isChecked, userDrugPlanItemId) {
-    	console.log("setDrugTaken " + isChecked + ", " + userDrugPlanItemId);
     	var i;
     	var indexFound=-1;
     	for (i=0; i < this.state.drugsNotTaken.length; i++) {
@@ -137,12 +134,10 @@ class ChangingDrugIntakePopup extends React.Component {
     		console.log("removing drug taken from list");
     		this.state.drugsNotTaken.splice(indexFound, 1);
     		this.setState(this.state);
-    		console.log("removed new length = " + this.state.drugsNotTaken.length);
     	}
     }
     
     handleTakenChange(isChecked, userDrugPlanItemId) {
-        console.log("isChecked=" + isChecked + ", userDrugPlanItemId="+ userDrugPlanItemId);
     	//update drug taken
         var isDrugTaken = !isChecked;  //toggle
         this.postDrugTaken(isDrugTaken, userDrugPlanItemId, this.state.intakeHour);
@@ -170,9 +165,7 @@ class ChangingDrugIntakePopup extends React.Component {
     
     renderIntakeHour() {
     	const {t} = this.props;
-    	console.log("renderIntakeHour...");
     	var intakeHourString = t("intakeTime") + " " + this.formatTime(this.props.intakeHour);
-    	console.log(intakeHourString);
     	return (
     			<h3 className="centered-title">{intakeHourString}</h3>
     			);

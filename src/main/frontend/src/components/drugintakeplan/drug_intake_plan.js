@@ -4,17 +4,17 @@ import React from "react";
 import {Link} from "react-router-dom";
 
 import {translate} from "react-i18next";
-import Loading from "./loading";
-import User from "./../util/User";
+import Loading from "../loading";
+import User from "../../util/User";
 import moment from 'moment';
-import EmptyList from "./empty_list";
+import EmptyList from "../empty_list";
 import ProgressBar from "./progress_bar";
 import Popup from "reactjs-popup";
 import ChangingDrugIntakePopup from "./changing_drug_intake_popup";
 import CheckBox from "./checkbox";
 import {toast} from 'react-toastify';
 import Clock from "./clock";
-import PercentageCalculator from "./../util/PercentageCalculator";
+import PercentageCalculator from "../../util/PercentageCalculator";
 import DrugIntakeSuccessPopup from "./drug_intake_success_popup";
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about forms.
@@ -73,8 +73,6 @@ class DrugIntakePlan extends React.Component {
     }
     
  getDrugsNotTakenBefore(beforeHour) {
-    	
-        console.log("getDrugsNotTakenBefore hour: " + beforeHour);
     	
         this.state.loading = true;
         this.setState(this.state);
@@ -139,32 +137,26 @@ class DrugIntakePlan extends React.Component {
         			newExpandedRows = newExpandedRows.filter(id => id !== drugplanitem.drugsPlannedSameTime[i]);
         		} else {
         			drugSelected = drugplanitem.drugsPlannedSameTime[i];
-        			console.log("handleDrugTabClick, drug = " + drugSelected.name);
         	        this.setPercentageFollowingRows(drugplanitem, drugSelected);
         		}
             }
         }
-
-        console.log('newExpandedRows,size = ' + newExpandedRows.length);
         
         this.setState({ expandedRows: newExpandedRows });
       }
 
     setPercentageFollowingRows(drugplanitem, drugSelected) {
     	if(drugplanitem && drugSelected ) {
-    		console.log("halftimePeriod=" + drugSelected.halfTimePeriod);
         	const percentageCalculator = new PercentageCalculator();
         	percentageCalculator.setPercentagesForDrugFromDrugPlanItem(this.state.drugplanitems, drugplanitem, drugSelected);
     	}
     }
     
     handleTakenChange(isChecked, userDrugPlanItemId) {
-        console.log("isChecked=" + isChecked + ", userDrugPlanItemId="+ userDrugPlanItemId);
         if (userDrugPlanItemId < 0) {
         	//intermediate step: find items before time
         	var beforeHour = - userDrugPlanItemId;
         	this.getDrugsNotTakenBefore(beforeHour).then(() => {
-                console.log("getDrugsNotTakenBefore succeeded...");
                 this.state.showDrugIntakePopup = true;
                 this.state.showDrugsNotTakenBeforeHour = beforeHour;
                 this.setState(this.state);
@@ -180,7 +172,6 @@ class DrugIntakePlan extends React.Component {
     }
     
     handleShowProgressBar() {
-    	console.log("showProgressBar " + this.state.showProgressBar);
     	this.setState({ showProgressBar: !this.state.showProgressBar});
     }
     
@@ -371,18 +362,15 @@ class DrugIntakePlan extends React.Component {
     }
     
     callbackDrugIsTaken(isDrugTaken, userDrugPlanItemId) {
-        console.log('callbackDrugIsTaken --- ' + isDrugTaken + ", " + userDrugPlanItemId);
         this.getData();
     }
     
     closeChangingDrugIntakePopup() {
-        console.log('closeChangingDrugIntakePopup...');
         this.state.showDrugIntakePopup = false;
         this.setState(this.state);
     }
     
     closeDrugIntakeSuccessPopup() {
-    	console.log('closeDrugIntakeSuccessPopup...');
         this.state.showDrugIntakeSuccessPopup = false;
         this.setState(this.state);
     }
@@ -417,7 +405,6 @@ class DrugIntakePlan extends React.Component {
     	const options = {
                 position: toast.POSITION.BOTTOM_CENTER
             };
-        console.log("setDrugTaken(userDrugPlanItemId=" + userDrugPlanItemId + ")");
         axios.post('/drugplan/drug/taken', { "drugTaken" : isDrugTaken, "userDrugPlanItemId" : userDrugPlanItemId } , {
                         validateStatus: (status) => {
                             console.log("status=" + status);
