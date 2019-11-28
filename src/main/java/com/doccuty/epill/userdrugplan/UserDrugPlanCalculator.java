@@ -52,8 +52,8 @@ public class UserDrugPlanCalculator {
         	return adjustUserDrugPlanByInteractions(drugsPlannedForRestOfDay, item);
         }
 
-		private List<UserDrugPlanItem> adjustUserDrugPlanByInteractions(List<UserDrugPlanItem> userDrugPlanForDay, UserDrugPlanItem item) {
-			List<UserDrugPlanItem> potentialMovingItems = getFirstItemsAfterIntakeChange(userDrugPlanForDay); 
+		private List<UserDrugPlanItem> adjustUserDrugPlanByInteractions(List<UserDrugPlanItem> drugsPlannedForRestOfDay, UserDrugPlanItem item) {
+			List<UserDrugPlanItem> potentialMovingItems = getFirstItemsAfterIntakeChange(drugsPlannedForRestOfDay, item); 
 			
 			for (int i = 0; i < potentialMovingItems.size(); i++) {
 				int dateTimeDifference = DateUtils.getHours(potentialMovingItems.get(i).getDateTimePlanned()) - DateUtils.getHours(item.getDateTimeIntake());
@@ -65,17 +65,19 @@ public class UserDrugPlanCalculator {
                         }
 			}
 			}
-                return getSortedUserDrugPlanByDatetimeIntake(userDrugPlanForDay);
+                return getSortedUserDrugPlanByDatetimeIntake(drugsPlannedForRestOfDay);
         }
 		
-		private List<UserDrugPlanItem> getFirstItemsAfterIntakeChange(List<UserDrugPlanItem> userDrugPlanForDay) {
+		private List<UserDrugPlanItem> getFirstItemsAfterIntakeChange(List<UserDrugPlanItem> drugsPlannedForRestOfDay, UserDrugPlanItem item) {
 			List<UserDrugPlanItem> firstIntakes = new ArrayList<>();
-			firstIntakes.add(userDrugPlanForDay.get(0));
-			for (int i = 1; i < userDrugPlanForDay.size(); i++) {
-            	if (userDrugPlanForDay.get(0).getDateTimePlanned().equals(userDrugPlanForDay.get(i).getDateTimePlanned())) {
-            		 firstIntakes.add(userDrugPlanForDay.get(i));
-            	}
-            }
+			int itemHalfPeriod = item.getDrug().getPeriod();
+			for (int j = 1; j <= itemHalfPeriod; j++) {
+				for (int i = 0; i < drugsPlannedForRestOfDay.size(); i++) {
+	            	if (drugsPlannedForRestOfDay.get(i).getDateTimePlanned().equals(DateUtils.addHoursToDate(item.getDateTimePlanned(), j))) {
+	            		 firstIntakes.add(drugsPlannedForRestOfDay.get(i));
+	            	}
+	            }
+			}
 			return firstIntakes;
 		}
 

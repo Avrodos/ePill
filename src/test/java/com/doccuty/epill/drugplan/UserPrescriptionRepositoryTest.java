@@ -95,8 +95,13 @@ public class UserPrescriptionRepositoryTest {
 	}
 	
 	@Test
-	public void getUserPrescription() {
-		UserPrescriptionRequestParameter param = userDrugPlanService.getUserPrescription(1);
-		assertNotNull(param);
-	}
+    @Transactional
+    public void getUserPrescription() {
+            final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
+            List<Drug> drugs = drugService.findUserDrugsTaking(currentUser);
+            assertTrue(!drugs.isEmpty());
+            Drug firstDrug = drugs.get(0);
+            UserPrescriptionRequestParameter param = userDrugPlanService.getUserPrescription(firstDrug.getId());
+            assertNotNull(param);
+    }
 }

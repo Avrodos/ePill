@@ -727,7 +727,7 @@ INSERT INTO user_prescription (id, iddrug, iduser, period_in_days) VALUES(3, 3, 
 -- user prescription item
 INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(1, 7, 1);
 INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(2, 11, 2); 
-INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 13, 3);
+INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(3, 12, 3);
 INSERT INTO user_prescription_item (id, intake_time, id_user_prescription) VALUES(4, 17, 2);
 
 
@@ -742,13 +742,13 @@ INSERT INTO user_drug_taking (iduser, iddrug) VALUES (2, 3);
 --
 -- Dumping data for table `instruction`
 --
-INSERT INTO instruction (id, description) VALUES (1, 'Grapefruit vermeiden');
-INSERT INTO instruction (id, description) VALUES (2, 'Alkoholkonsum vermeiden');
-INSERT INTO instruction (id, description) VALUES (3, 'salziges Essen vermeiden');
-INSERT INTO instruction (id, description) VALUES (4, 'eine vegane Ernährung vermeiden');
-INSERT INTO instruction (id, description) VALUES (5, 'für ausreichend Magnesiumzufuhr sorgen');
+INSERT INTO instruction (id, description) VALUES (1, 'Grapefruit vermeiden (steige z.B. um auf Orangen)');
+INSERT INTO instruction (id, description) VALUES (2, 'Alkoholkonsum vermeiden (steige beim abendlichen Bier z.B. auf Alkoholfreies um)');
+INSERT INTO instruction (id, description) VALUES (3, 'salziges Essen vermeiden (versuche häufiger selbst zu kochen)');
+INSERT INTO instruction (id, description) VALUES (4, 'eine vegane Ernährung vermeiden oder nehme genug B12-Tabletten ein');
+INSERT INTO instruction (id, description) VALUES (5, 'für ausreichend Magnesiumzufuhr sorgen mit Nüssen z.B.');
 INSERT INTO instruction (id, description) VALUES (6, 'für ausreichend Kaliumzufuhr sorgen (esse z.B. eine Banane)');
-INSERT INTO instruction (id, description) VALUES (7, 'Stress verstärkt den Effekt dieses Medikamentes (gönne dir ausreichend Ruhepausen)');
+INSERT INTO instruction (id, description) VALUES (7, 'Stress verstärkt den Effekt dieses Medikamentes (gönn dir einen Spaziergang im Park)');
 
 --
 -- Dumping data for table `drug_instruction`

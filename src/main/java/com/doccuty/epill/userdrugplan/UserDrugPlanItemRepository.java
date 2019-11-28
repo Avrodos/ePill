@@ -37,6 +37,8 @@ public interface UserDrugPlanItemRepository extends JpaRepository<UserDrugPlanIt
 	List<UserDrugPlanItem> findByUserBetweenDates(@Param("userid") long userid, @Param("startDate") Date startDate,
 			@Param("endDate") Date endDate);
 	
+	
+	
 	/**
 	 * find not taken drugs for user between two date times 
 	 * 

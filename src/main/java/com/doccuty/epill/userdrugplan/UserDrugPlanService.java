@@ -219,30 +219,24 @@ public class UserDrugPlanService {
 		}
 		
 		private boolean getSleep(UserDrugPlanItem item) {
-			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
-			int sleep = currentUser.getSleepTime();
-			if (item.getDateTimePlanned().equals(DateUtils.setHoursOfDate(item.getDateTimePlanned(), sleep))) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		
-		private boolean getMealtime(UserDrugPlanItem item) {
-			final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
-			int breakfast = currentUser.getBreakfastTime();
-			int lunch = currentUser.getLunchTime();
-			int dinner = currentUser.getDinnerTime();
-			if(item.getDateTimePlanned().equals(DateUtils.setHoursOfDate(item.getDateTimePlanned(), breakfast))) {
-				return true;
-			} else if (item.getDateTimePlanned().equals(DateUtils.setHoursOfDate(item.getDateTimePlanned(), lunch))) {
-				return true;
-			} else if (item.getDateTimePlanned().equals(DateUtils.setHoursOfDate(item.getDateTimePlanned(), dinner))) {
-				return true;
-			} else {
-				return false;
-			}
-		}
+            final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
+            int hours = DateUtils.getHours(item.getDateTimePlanned());
+            if (hours == currentUser.getSleepTime()) {
+                    return true;
+            } else {
+                    return false;
+            }
+    }
+
+    private boolean getMealtime(UserDrugPlanItem item) {
+            final User currentUser = userService.findUserById(userService.getCurrentUser().getId());
+            int hours = DateUtils.getHours(item.getDateTimePlanned());
+            if ((hours == currentUser.getBreakfastTime()) || (hours == currentUser.getDinnerTime()) || (hours == currentUser.getLunchTime())) {
+                    return true;
+            } else {
+                    return false;
+            }
+    }
 
 		
 		private String getInteractions(List<UserDrugPlanItem> items, UserDrugPlanItem item) {

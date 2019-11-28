@@ -488,15 +488,15 @@ class DrugIntakePlan extends React.Component {
                                 <Popup
                                     open={this.state.showDrugIntakePopup}
                                     position="right center" modal
-                                trigger={<button type="button">Drugs Not Taken</button>}>
+                                    trigger={<button className="close" type="button"></button>}>
                                     {close =>
                                             <div>
-                                               <a className="close" onClick={close}>&times;</a>
+                                               <a className="close" onClick={this.closeChangingDrugIntakePopup}>&times;</a>
                                                <ChangingDrugIntakePopup drugsNotTaken={this.state.drugsNotTaken}
                                                         intakeHour={this.state.showDrugsNotTakenBeforeHour}
-                                               			drugIsTakenCallback={this.callbackDrugIsTaken}
-                                               			onSubmit={this.closeChangingDrugIntakePopup}
-                                                    	updateNavigation={this.props.updateNavigation}/>
+                                                        drugIsTakenCallback={this.callbackDrugIsTaken}
+                                                        onSubmit={this.closeChangingDrugIntakePopup}
+                                                        updateNavigation={this.props.updateNavigation}/>
                                             </div>
                                     }
                                     </Popup>
