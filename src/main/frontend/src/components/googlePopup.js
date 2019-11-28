@@ -27,7 +27,8 @@ class googlePopup extends React.Component {
             open: false,
             gender: {id: 0},
             redGreenColorblind: false,
-            dateOfBirth: ''
+            dateOfBirth: '',
+            email: ''
         };
 
         this.authenticateWithGoogle = this.authenticateWithGoogle.bind(this);
@@ -89,7 +90,6 @@ class googlePopup extends React.Component {
             }
         })
             .then(({data, status}) => {
-
                 this.state.sending = false;
                 this.setState(this.state);
 
@@ -107,7 +107,9 @@ class googlePopup extends React.Component {
 
                         this._levelOfDetail = data.user.levelOfDetail;
                         this._preferredFontSize = data.user.preferredFontSize;
+                        this.state.email = data.user.username;
                         this.setState({
+                            email: this.state.email,
                             levelOfDetail: this._levelOfDetail,
                             preferredFontSize: this._preferredFontSize,
                             redGreenColorblind: this.state.redGreenColorblind,
@@ -156,7 +158,8 @@ class googlePopup extends React.Component {
                 redGreenColorblind: this.state.redGreenColorblind,
                 levelOfDetail: this._levelOfDetail,
                 preferredFontSize: this._preferredFontSize,
-                firstSignIn: false
+                firstSignIn: false,
+                email: this.state.email
             };
         } else {
             newData = {
@@ -167,7 +170,8 @@ class googlePopup extends React.Component {
                 redGreenColorblind: this.state.redGreenColorblind,
                 levelOfDetail: this._levelOfDetail,
                 preferredFontSize: this._preferredFontSize,
-                firstSignIn: false
+                firstSignIn: false,
+                email: this.state.email
             };
         }
 

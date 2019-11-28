@@ -170,10 +170,13 @@ public class DataParsingService {
         //TODO: make sure I dont overwrite/lose data when sending back the user
         //Create another user with the user data from the parameter and overwrite with new data from "newData"
         //TODO: Update the current user with newData (there is a method for that)
-        return service.updateUserData(newData);
-        //User returnUser = service.updateUserData(newData);
-        //service.deleteUser(newData.getId());
-        //return returnUser;
+
+        //return service.updateUserData(newData);
+
+        User returnUser = service.updateUserData(newData);
+        //long id = newData.getId();
+        //service.deleteUser(id);
+        return returnUser;
 
     }
 

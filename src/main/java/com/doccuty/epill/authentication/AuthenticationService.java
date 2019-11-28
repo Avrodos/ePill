@@ -15,10 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.doccuty.epill.model.LoginAttempt;
-import com.doccuty.epill.user.SimpleUser;
-import com.doccuty.epill.user.SimpleUserRepository;
-import com.doccuty.epill.user.UserToken;
 import java.util.Collections;
 
 
@@ -84,10 +80,10 @@ public class AuthenticationService {
     }
 
     /**
-     * @param tpaID
+     * @param tpaId
      * @return
      */
-    public UserToken tpaLogin(String tpaID, TpaService tpaService) {
+    public UserToken tpaLogin(String tpaId, String email, TpaService tpaService) {
         SimpleUser user = new User();
         if (tpaService == TpaService.GOOGLE) {
             String userID = "";
@@ -100,7 +96,7 @@ public class AuthenticationService {
                     //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
                     .build();
             try {
-                GoogleIdToken idToken = verifier.verify(tpaID);
+                GoogleIdToken idToken = verifier.verify(tpaId);
                 if (idToken != null) {
                     payload = idToken.getPayload();
 
@@ -121,16 +117,16 @@ public class AuthenticationService {
             user = repository.findByGID(userID);
             if (user == null) {
                 //no user account in the database -> we have to create one.
-                String email = payload.getEmail();
+                String impEmail = payload.getEmail();
                 String firstName = (String) payload.get("given_name");
                 String familyName = (String) payload.get("family_name");
 
                 user = new User();
                 user.setFirstname(firstName);
                 user.setLastname(familyName);
-                user.setEmail(email);
+                user.setEmail(impEmail);
                 user.setGid(userID);
-                user.setUsername(userID); //TODO: perhaps this should be mail
+                user.setUsername(impEmail);
                 user.setPassword("thirdPartyAccountService");
                 user.setTPA(true);
                 user.setFirstSignIn(true);
@@ -139,7 +135,7 @@ public class AuthenticationService {
                     return null;
                 }
 
-                return login(userID, "thirdPartyAccountService");
+                return login(user.getUsername(), "thirdPartyAccountService");
             } else {
                 // we have to just log him into this account
                 if (user.getFirstSignIn()) {
@@ -151,16 +147,15 @@ public class AuthenticationService {
 
 
         } else if (tpaService == TpaService.A7) {
-            if (tpaID.equals("")) {
+            if (tpaId.equals("")) {
                 return null;
             }
             //lets see whether or not he already has an account.
-            user = repository.findByA7ID(tpaID);
-
+            user = repository.findByA7ID(tpaId);
             if(user == null) {
                 user = new User();
-                user.setA7id(tpaID);
-                user.setUsername(tpaID);
+                user.setA7id(tpaId);
+                user.setUsername(email);
                 user.setPassword("thirdPartyAccountService");
                 user.setTPA(true);
                 user.setFirstSignIn(true);
@@ -168,7 +163,7 @@ public class AuthenticationService {
                 if(service.saveUser(childUser) == null) {
                     return null;
                 }
-                return login(tpaID, "thirdPartyAccountService");
+                return login(user.getUsername(), "thirdPartyAccountService");
             } else {
                 return login(user.getUsername(), "thirdPartyAccountService");
             }

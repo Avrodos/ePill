@@ -88,7 +88,7 @@
 	"loadingFailed": "Loading data failed!",
 	"noPermission": "Permission denied!",
   "notBasicAcc": "Account is not connected to a base ePill account. Sign-in with the corresponding third-party service.",
-  "missingData": "Please enter the missing data:",
+	"missingData": "Please enter the required missing data:",
 	"medicationPlan": "Your Medication Plan",
     "medicationEmpty": "Your Medication Plan is empty. If...<br>",
     "addDrugsToMedicationPlan": "add drugs to your Medication Plan",

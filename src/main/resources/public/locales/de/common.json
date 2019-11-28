@@ -88,7 +88,7 @@
   "loadingFailed": "Das Laden der Daten ist fehlgeschlagen!",
   "noPermission": "Fehlende Berechtigung!",
   "notBasicAcc": "Der Account ist mit keinem Basis ePill Account verbunden. Bitte über den entsprechenden Third-Party Service einloggen!",
-  "missingData": "Bitte die fehlenden Daten ergänzen:",
+	"missingData": "Bitte die benötigten fehlenden Daten ergänzen:",
 	"medicationPlan": "Dein Medikamenten-Plan",
 	"medicationEmpty": "Ihr Medikamentenplan ist leer. Wenn...<br>",
 	"addDrugsToMedicationPlan": "Füge Medikamente zu deinem Medikamentenplan hinzu",

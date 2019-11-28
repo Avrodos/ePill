@@ -1,36 +1,17 @@
 import React from "react";
 import {translate} from "react-i18next";
-import Moment from "moment";
 import {toast} from "react-toastify";
 
-//TODO: dynamisch überprüfen ob Namen/Mail fehlen?
-//TODO: only on first sign in, get User to actually fill in the data?
-//TODO: User shouldnt be able to submit without entering birthday?
+//Popup asking for required data that is missing after first Sign in (TPAs)
 class missingDataPopup extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            dateOfBirth: '',
-            gender: {id: 0},
             redGreenColorblind: false
         };
-
-        this.handleDateOfBirthChange = this.handleDateOfBirthChange.bind(this);
-        this.handleGenderChange = this.handleGenderChange.bind(this);
         this.handleRedGreenColorblind = this.handleRedGreenColorblind.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleGenderChange(event) {
-        this.state.gender = event.target.value;
-        this.setState(this.state);
-        this.props.gender(event);
-    }
-
-    handleDateOfBirthChange(event) {
-        this.state.dateOfBirth = event.target.value;
-        this.setState(this.state);
     }
 
     handleRedGreenColorblind(event) {
@@ -46,27 +27,7 @@ class missingDataPopup extends React.Component {
             position: toast.POSITION.BOTTOM_CENTER
         };
 
-        //test for valid dates:
-        var date = null;
-
-        if (this.state.dateOfBirth != '') {
-            date = Moment(this.state.dateOfBirth);
-            if (!date.isValid()) {
-                if (Moment(this.state.dateOfBirth, "DD.MM.YYYY").isValid()) {
-                    date = Moment(this.state.dateOfBirth, "DD.MM.YYYY");
-                } else {
-                    toast.error(t('invalidDateFormat'), options);
-                    return;
-                }
-            }
-
-            date = date.format("YYYY-MM-DD");
-
-            this.props.setFormattedDate(date);
-            this.props.update(event);
-        } else {
-            toast.error(t('please enter a date'), options);
-        }
+        this.props.update(event);
     }
 
     render() {
@@ -76,22 +37,6 @@ class missingDataPopup extends React.Component {
             <div>
                 <h3>{t("missingData")}</h3>
                 <form onSubmit={this.handleSubmit} className="info">
-                    <fieldset>
-                        <div className="form-group col-md-6 col-lg-6">
-                            <label htmlFor="gender">{t('gender')}</label>
-                            <select id="gender" value="0" name="gender" className="form-control" title={t('gender')}
-                                    value={this.state.gender.id} onChange={this.handleGenderChange}>
-                                <option value="0" disabled>{t('noInfo')}</option>
-                                <option value="2">{t('female')}</option>
-                                <option value="1">{t('male')}</option>
-                            </select>
-                        </div>
-                        <div className="form-group col-md-6 col-lg-6">
-                            <label htmlFor="dateOfBirth">{t('dateOfBirth')}</label>
-                            <input type="text" name="dateOfBirth" id="dateOfBirth" className="form-control"
-                                   value={this.state.dateOfBirth} onChange={this.handleDateOfBirthChange}/>
-                        </div>
-                    </fieldset>
                     <fieldset>
                         <div className="form-group col-lg-6 col-md-6">
                             <p><b>{t("redGreenColorblind")}</b></p>

@@ -1,5 +1,6 @@
 package com.doccuty.epill.authentication;
 
+import com.doccuty.epill.user.UserToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.doccuty.epill.user.UserToken;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,6 +19,7 @@ public class AuthenticationController {
     }
 
     public static class TpaLogin {
+        public String email;
         public String tpaId;
         public TpaService service;
     }
@@ -44,7 +44,7 @@ public class AuthenticationController {
 
     @RequestMapping(value = "tpaLogin", method = RequestMethod.POST)
     public ResponseEntity<UserToken> tpaLogin(@RequestBody TpaLogin userLogin) {
-        UserToken token = authenticationService.tpaLogin(userLogin.tpaId, userLogin.service);
+        UserToken token = authenticationService.tpaLogin(userLogin.tpaId, userLogin.email, userLogin.service);
 
         if(token == null) {
             return new ResponseEntity<>(token, HttpStatus.UNAUTHORIZED);

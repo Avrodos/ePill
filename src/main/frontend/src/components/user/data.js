@@ -62,7 +62,7 @@ class UserData extends React.Component {
 
         this.cookies = this.props.cookies;
 
-        this.testSendData = this.testSendData.bind(this);
+        this.testDataTransfer = this.testDataTransfer.bind(this);
 
         this.handleAddAllergy = this.handleAddAllergy.bind(this);
         this.onEnteredAllergyChange = this.onEnteredAllergyChange.bind(this);
@@ -297,7 +297,7 @@ class UserData extends React.Component {
                 });
     }
 
-    testSendData(event) {
+    testDataTransfer(event) {
         console.log("I still got it");
         event.preventDefault();
         this.state.sending = true;
@@ -610,7 +610,7 @@ class UserData extends React.Component {
 
                         </div>
 	        	    </form>
-               <button onClick={this.testSendData}>TEST</button>
+               <button onClick={this.testDataTransfer}>Import user data</button>
 
            </div>
         );
