@@ -100,5 +100,7 @@
   "none": "Kein Diabetes",
   "smoker": "Raucher",
   "importSuccessful": "Import war erfolgreich!",
-  "importFailed": "Import ist fehlgeschlagen!"
+  "importFailed": "Import ist fehlgeschlagen!",
+  "googleImport": "Google Accounts und accounts verbunden mit Google aktualisieren ihre Nutzerdaten beim login. Kein importieren an dieser Stelle notwendig!",
+  "basicAccImport": "Kein third-party account verbunden. Importieren ist daher unmöglich!"
 }

@@ -38,6 +38,7 @@ class UserData extends React.Component {
             enteredIntolerance: '',
             condition: [],
             enteredCondition: '',
+            gid: ''
         };
         
         this.handleFirstnameChange		= this.handleFirstnameChange.bind(this);
@@ -98,13 +99,14 @@ class UserData extends React.Component {
                 this.state.tpa = data.tpa || false;
                 this.state.firstSignIn = data.firstSignIn || false;
 
-                this.state.a7id = data.a7id;
+                this.state.a7id = data.a7id || '';
                 this.state.smoker = data.smoker || false;
                 this.state.diabetes = data.diabetes || {id: 0};
                 this.state.allergy = data.allergy || [];
                 this.state.intolerance = data.intolerance || [];
                 this.state.condition = data.condition || [];
 
+                this.state.gid = data.gid || '';
                 console.log(data);
 
                 this.setState(this.state);
@@ -298,87 +300,102 @@ class UserData extends React.Component {
     }
 
     testDataTransfer(event) {
-        console.log("I still got it");
+        //TODO: adjust for use, when basic user is connected to a TPS or when GAcc
         event.preventDefault();
-        this.state.sending = true;
-        this.setState(this.state);
 
-        /* This code is used to register a User to my service
-        const deviceId = "21002c41-c430-4043-9511-a5c527869b2c";
+        const {t} = this.props;
+        const options = {
+            position: toast.POSITION.BOTTOM_CENTER
+        };
 
-        const connectorMail = "testmailforepill@gmail.com";
-        const url = 'https://test-server.andaman7.com/public/v1/services/register';
-        const apiKey = '0a24fa4b-9f38-47a4-ad99-5ba3a2c211c1';
-        const hashedPw = sha256("thirdPartyAccountService");
-        let credentials = connectorMail + ":" + hashedPw;
-        let credString = 'Basic ' + window.btoa(credentials);
-
-        axios({
-            url: url,
-            method: 'POST',
-            headers: {
-                'api-key': apiKey,
-                'Authorization': credString,
-                'Content-Type': 'application/json',
-                'device-id': deviceId
-            },
-            data: {	//the body of the request
-                'firstName': this.state.firstname,
-                'lastName': this.state.lastname,
-                'email': this.state.email,
-                'language': 'EN',
-                'externalUserId': this.state.email,
-                'serviceId': 'partner.com.epill',
-                'scenarioId': 'partnerscenario.com.epill.poc'
-            }
-        }).then(({data}) => {
-                console.log(data);
-            },
-            (error) => {
-                console.log("something went wrong");
-                console.log(error);
-            }
-        );
-         */
-        axios.post('/data/import', this.state, {
-            // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
-            // check the HTTP status code.
-            validateStatus: (status) => {
-                return (status >= 200 && status < 300) || status == 401
-            }
-        }).then(({data, status}) => {
-            this.state.sending = false;
+        if (this.state.a7id == '' && this.state.tpa && this.state.gid != '') {
+            //it is a google acc
+            toast.info(t('googleImport'), options);
+        } else if (this.state.a7id != '' && !this.state.tpa) {
+            //TODO: its a basic acc connected to a7
+        } else if (this.state.a7id != '' && this.state.tpa) {
+            this.state.sending = true;
             this.setState(this.state);
 
-            const {t} = this.props;
-            const options = {
-                position: toast.POSITION.BOTTOM_CENTER
-            };
+            /* This code is used to register a User to my service
+            const deviceId = "21002c41-c430-4043-9511-a5c527869b2c";
 
-            switch (status) {
-                case 200:
+            const connectorMail = "testmailforepill@gmail.com";
+            const url = 'https://test-server.andaman7.com/public/v1/services/register';
+            const apiKey = '0a24fa4b-9f38-47a4-ad99-5ba3a2c211c1';
+            const hashedPw = sha256("thirdPartyAccountService");
+            let credentials = connectorMail + ":" + hashedPw;
+            let credString = 'Basic ' + window.btoa(credentials);
 
-                    var data = this.state;
-                    const cookies = new Cookies();
-                    const auth = cookies.get('auth');
+            axios({
+                url: url,
+                method: 'POST',
+                headers: {
+                    'api-key': apiKey,
+                    'Authorization': credString,
+                    'Content-Type': 'application/json',
+                    'device-id': deviceId
+                },
+                data: {	//the body of the request
+                    'firstName': this.state.firstname,
+                    'lastName': this.state.lastname,
+                    'email': this.state.email,
+                    'language': 'EN',
+                    'externalUserId': this.state.email,
+                    'serviceId': 'partner.com.epill',
+                    'scenarioId': 'partnerscenario.com.epill.poc'
+                }
+            }).then(({data}) => {
+                    console.log(data);
+                },
+                (error) => {
+                    console.log("something went wrong");
+                    console.log(error);
+                }
+            );
+             */
+            axios.post('/data/import', this.state, {
+                // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
+                // check the HTTP status code.
+                validateStatus: (status) => {
+                    return (status >= 200 && status < 300) || status == 401
+                }
+            }).then(({data, status}) => {
+                this.state.sending = false;
+                this.setState(this.state);
 
-                    auth["user"] = data;
-                    cookies.set('auth', auth);
+                switch (status) {
+                    case 200:
 
-                    this.loadUser();
+                        var data = this.state;
+                        const cookies = new Cookies();
+                        const auth = cookies.get('auth');
 
-                    //TODO: messages updaten.
-                    toast.success(t('importSuccessful'), options);
+                        auth["user"] = data;
+                        cookies.set('auth', auth);
 
-                    break;
-                case 400:
-                    toast.error(t('importFailed'), options);
-                    break;
-                case 401:
-                    console.log(data, "not permitted");
-                    break;
-            }
-        });
+                        this.loadUser();
+
+                        //TODO: messages updaten.
+                        toast.success(t('importSuccessful'), options);
+
+                        break;
+                    case 400:
+                        toast.error(t('importFailed'), options);
+                        break;
+                    case 401:
+                        console.log(data, "not permitted");
+                        break;
+                }
+            });
+        } else if (this.state.a7id == '' && !this.state.tpa && this.state.gid != '') {
+            //its a basic acc connected to Google
+            toast.info(t('googleImport'), options);
+        } else {
+            //its a basic acc
+            toast.info(t('basicAccImport'), options);
+        }
+
         //TODO: ERROR handling
         console.log("done");
     }
@@ -405,7 +422,10 @@ class UserData extends React.Component {
 				</div>
                 }
 	        	   <form onSubmit={this.handleSubmit} className="row">
-					   <fieldset>
+                       <p>
+                           <button onClick={this.testDataTransfer}>Import user data</button>
+                       </p>
+                       <fieldset>
 						   <fieldset disabled={this.state.tpa}>
 				            <div className="form-group col-md-6 col-lg-6">
 				               <label htmlFor="firstname">{t('firstname')}</label>
@@ -610,7 +630,6 @@ class UserData extends React.Component {
 
                         </div>
 	        	    </form>
-               <button onClick={this.testDataTransfer}>Import user data</button>
 
            </div>
         );

@@ -100,5 +100,7 @@
   "none": "No Diabetes",
   "smoker": "Smoker",
   "importSuccessful": "Import was successful!",
-  "importFailed": "Import failed!"
+	"importFailed": "Import failed!",
+	"googleImport": "Google Accounts and accounts connected to Google update their user data automatically upon login. No import necessary!",
+	"basicAccImport": "You have no connected third-party services. Therefore, import is impossible!"
 }

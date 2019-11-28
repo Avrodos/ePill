@@ -33,6 +33,7 @@ class User {
         this.tpa = data.tpa || false;
         this.firstSignIn = data.firstSignIn || false;
         this.a7id = data.a7id;
+        this.gid = data.gid;
         this.smoker = data.smoker || false;
         this.diabetes = data.diabetes || {id: 0};
         this.allergy = data.allergy || [];
@@ -56,11 +57,13 @@ class User {
         this.tpa = null;
         this.firstSignIn = null;
         this.a7id = undefined;
+        this.gid = undefined;
         this.smoker = false;
         this.diabetes = 0;
         this.allergy = undefined;
         this.intolerance = undefined;
         this.condition = undefined;
+
     }
     
     get() {
@@ -80,6 +83,7 @@ class User {
                 tpa: this.tpa,
                 firstSignIn: this.firstSignIn,
                 a7id: this.a7id,
+                gid: this.gid,
                 smoker: this.smoker,
                 diabetes: this.diabetes,
                 allergy: this.allergy,

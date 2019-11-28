@@ -45,12 +45,12 @@ public class DataParsingService {
     public User importCA7UserData(User user) {
         //TODO: Filepath shouldnt be hardcoded in this class.
         //As the path for the Connector must be hardcoded, we can hardcode it here too.
-        //TODO: Wieso ist a7id null, username allerdings nicht? (sondern hat die id) -> temp workaround, den sollte ich wohl fixen
         if (user.getA7id().isEmpty() || user.getA7id().equals("")) {
             //TODO: ERROR HANDLING
 
         }
         //User newData = getCurrentUser();
+        //TODO: vergleichen mit authenticationservice.tpa...
         User newData = new User();
         String desiredFilePrefix = user.getLastname() + "_" + user.getFirstname();
 
