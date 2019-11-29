@@ -54,6 +54,17 @@ class DrugIntakePopup extends React.Component {
         	onSubmit: this.props.onSubmit});
     }
     
+    componentDidMount() {
+        //This should prevent operations after unmounting
+    	this.getUserPrescriptionData();
+        this._isMounted = true;
+         console.log("did mount - breakfast time = " + this.state.intakeBreakfastTime + ", periodInDays=" + this.state.periodInDays);
+    }
+    
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     setBackendError(backendError, errorMessage) {
         this.state.backendError = backendError;
         this.state.errorMessage = errorMessage;
@@ -62,6 +73,7 @@ class DrugIntakePopup extends React.Component {
     }
 
     getUserPrescriptionData() {
+    	console.log("...getUserPrescriptionData");
         this.state.loading = true;
         this.setState(this.state);
         axios.get("/drugplan/userprescription", {
@@ -180,16 +192,6 @@ class DrugIntakePopup extends React.Component {
              }
              return false;
          });
-    }
-
-    componentDidMount() {
-        //This should prevent operations after unmounting
-        this._isMounted = true;
-         console.log("did mount - breakfast time = " + this.state.intakeBreakfastTime + ", periodInDays=" + this.state.periodInDays);
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
     }
 
     openModal() {

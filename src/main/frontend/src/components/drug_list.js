@@ -100,13 +100,13 @@ class DrugList extends React.Component {
 
 
     // This function is called before render() to initialize its state.
-    componentWillMount() {
+    componentDidMount() {
         this.setCmd();
     }
 
     componentWillReceiveProps(props){
                 this.props = props;
-        //this.setCmd();
+        this.setCmd();
      }
 
 

@@ -21,10 +21,10 @@ class UserData extends React.Component {
 	        	dateOfBirth	: '',
 	        	gender		: {id : 0},
 	        	email		: '',
-				breakfastTime  : 8, 
-				dinnerTime  : 19,
-				lunchTime : 13, 
-				sleepTime : 22,
+				breakfastTime  : 0, 
+				dinnerTime  : 0,
+				lunchTime : 0, 
+				sleepTime : 0,
 	        	redGreenColorblind    : false,
             levelOfDetail       : 3,
             preferredFontSize   : 'defaultFontSize',
@@ -55,7 +55,7 @@ class UserData extends React.Component {
     }
 
 
-    componentWillMount() {
+    componentDidMount() {
     		if(!User.isAuthenticated()) {
     			return;
     		}

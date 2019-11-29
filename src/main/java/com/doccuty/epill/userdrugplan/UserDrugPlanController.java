@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.doccuty.epill.authentication.ForbiddenException;
 import com.doccuty.epill.user.UserService;
+import com.doccuty.epill.userprescription.UserPrescription;
 
 /**
  * rest controller with methods to handle user drug plan
