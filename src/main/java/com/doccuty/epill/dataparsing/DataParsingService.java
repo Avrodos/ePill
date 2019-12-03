@@ -50,6 +50,7 @@ public class DataParsingService {
 
         }
         //User newData = getCurrentUser();
+        User oldData = service.getUserById(getCurrentUser().getId());
         //TODO: vergleichen mit authenticationservice.tpa...
         User newData = new User();
         String desiredFilePrefix = user.getLastname() + "_" + user.getFirstname();
@@ -92,38 +93,38 @@ public class DataParsingService {
                     }
                     //a little bit ugly, but has to be done, to assure some data is not overwritten by older data.
                     else if (key.equals("ami.firstName")) {
-                        if (newData.getFirstname() != null) {
+                        if (newData.getFirstname() != null || (oldData.getFirstname() != null && oldData.getOverwriteOnImport() != null && !oldData.getOverwriteOnImport())) {
                             continue;
                         }
                         String newFirstName = record.get("value");
                         newData.setFirstname(newFirstName);
                     } else if (key.equals("ami.lastName")) {
-                        if (newData.getLastname() != null) {
+                        if (newData.getLastname() != null || (oldData.getLastname() != null && oldData.getOverwriteOnImport() != null && !oldData.getOverwriteOnImport())) {
                             continue;
                         }
                         String newLastName = record.get("value");
                         newData.setLastname(newLastName);
                     } else if (key.equals("ami.sex")) {
-                        if (newData.getGender() != null) {
+                        if (newData.getGender() != null || ((oldData.getGender() != null && oldData.getGender().getId() != 0) && oldData.getOverwriteOnImport() != null && !oldData.getOverwriteOnImport())) {
                             continue; //next record
                         }
                         Gender newGender = processGender(record.get("value"));
                         // Or something like this? user.setGender(genderRepository.findOne(usr.getGender().getId()));
                         newData.setGender(newGender);
                     } else if (key.equals("ami.smokerFrequency")) {
-                        if (newData.getSmoker() != null) {
+                        if (newData.getSmoker() != null || (oldData.getSmoker() != null && oldData.getOverwriteOnImport() != null && !oldData.getOverwriteOnImport())) {
                             continue;
                         }
                         boolean newSmoker = processSmoker(record.get("value"));
                         newData.setSmoker(newSmoker);
                     } else if (key.equals("ami.diabete")) {
-                        if (newData.getDiabetes() != null) {
+                        if (newData.getDiabetes() != null || ((oldData.getDiabetes() != null && oldData.getDiabetes().getId() != 0) && oldData.getOverwriteOnImport() != null && !oldData.getOverwriteOnImport())) {
                             continue;
                         }
                         Diabetes newDiabetes = processDiabetes(record.get("value"), records, record.get("multi_id"));
                         newData.setDiabetes(newDiabetes);
                     } else if (key.equals("ami.birthDate")) {
-                        if (newData.getDateOfBirth() != null) {
+                        if (newData.getDateOfBirth() != null || (oldData.getDateOfBirth() != null && oldData.getOverwriteOnImport() != null && !oldData.getOverwriteOnImport())) {
                             continue;
                         }
                         Date newDateOfBirth = processDateOfBirth(record.get("value"));

@@ -15,6 +15,7 @@ import com.doccuty.epill.iteminvocation.ItemInvocation;
 import com.doccuty.epill.language.LanguageRepository;
 import com.doccuty.epill.model.DrugFeature;
 import com.doccuty.epill.model.PackagingTopic;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,13 @@ public class UserService {
 		return repository.findUserById(id);
 	}
 
+    public User findUserByGID(String gid) {
+        return repository.findUserByGID(gid);
+    }
+
+    public User findUserByA7Id(String a7id) {
+        return repository.findUserByA7Id(a7id);
+    }
 
 	public User saveUser(User user) {
 
@@ -214,6 +222,9 @@ public class UserService {
 			user.withCondition(tempConditionSet.toArray(new Condition[tempConditionSet.size()]));
 		}
 
+        if (usr.getOverwriteOnImport() != null)
+            user.setOverwriteOnImport(usr.getOverwriteOnImport());
+
 
 		//TODO: Auch für neue Attribute updaten (Allergy,...)
 
@@ -223,6 +234,7 @@ public class UserService {
 
 		return user;
 	}
+
 
 	/*
         public User updateA7UserData(User usr) {
@@ -276,7 +288,7 @@ public class UserService {
 		final byte[] salt = new byte[20];
 		random.nextBytes(salt);
 
-		final String encryptedPassword = authenticationService.hashPassword(salt.toString(), user.getPassword());
+        final String encryptedPassword = authenticationService.hashPassword(salt.toString(), usr.getPassword());
 		user.withPassword(encryptedPassword).withSalt(salt.toString());
 
 		user = repository.save(user);
@@ -477,4 +489,59 @@ public class UserService {
 		return repository.save(user);
 	}
 
+    public User transformAccountType(User usr) {
+        User user = repository.findOne(getCurrentUser().getId());
+
+        if (user == null) {
+            return null;
+        }
+
+        user.setTPA(false);
+        //TODO: I need to update the password.
+        return updateUserData(user);
+    }
+
+    public User updateGoogleData(User usr) {
+        User user = repository.findOne(getCurrentUser().getId());
+
+        if (user == null) {
+            return null;
+        }
+
+        GoogleIdToken.Payload payload = null;
+        payload = authenticationService.verifyGoogleIdentity(user.getPayloadId());
+
+        if (!payload.getSubject().equals(user.getGid())) {
+            return null;
+        }
+
+        if (user.getOverwriteOnImport() != null && user.getOverwriteOnImport() == true) {
+            String firstName = (String) payload.get("given_name");
+            String familyName = (String) payload.get("family_name");
+            user.setFirstname(firstName);
+            user.setLastname(familyName);
+        } else {
+            if (user.getFirstname() == null) {
+                String firstName = (String) payload.get("given_name");
+                user.setFirstname(firstName);
+            }
+            if (user.getLastname() == null) {
+                String familyName = (String) payload.get("family_name");
+                user.setLastname(familyName);
+            }
+        }
+        return updateUserData(user);
+    }
+
+    public User connectToA7(User usr) {
+        User user = repository.findOne(getCurrentUser().getId());
+
+        if (user == null) {
+            return null;
+        }
+
+        user.setEmail(usr.getUsername());
+        user.setA7id(usr.getA7id());
+        return updateUserData(user);
+    }
 }

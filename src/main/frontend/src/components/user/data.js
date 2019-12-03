@@ -6,12 +6,18 @@ import {translate} from "react-i18next";
 import Cookies from "universal-cookie";
 
 import User from "./../../util/User";
+import Popup from "reactjs-popup";
+import NewPasswordPopup from "./../newPasswordPopup";
+import ConnectA7Popup from "../connectA7Popup"
+import MergeConflictPopup from "../mergeConflictPopup";
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about
 // forms.
 
 //TODO: Find proper solution for a7id
 class UserData extends React.Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         
@@ -38,7 +44,11 @@ class UserData extends React.Component {
             enteredIntolerance: '',
             condition: [],
             enteredCondition: '',
-            gid: ''
+            gid: '',
+            open: false,
+            overwriteOnImport: true,
+            mcopen: false,
+            a7ropen: false
         };
         
         this.handleFirstnameChange		= this.handleFirstnameChange.bind(this);
@@ -71,11 +81,53 @@ class UserData extends React.Component {
         this.onEnteredIntoleranceChange = this.onEnteredIntoleranceChange.bind(this);
         this.handleAddCondition = this.handleAddCondition.bind(this);
         this.onEnteredConditionChange = this.onEnteredConditionChange.bind(this);
+
+        this.transformAccount = this.transformAccount.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.handleKeepChange = this.handleKeepChange.bind(this);
+        this.handleMCSubmit = this.handleMCSubmit.bind(this);
+        this.openA7ConnectPopup = this.openA7ConnectPopup.bind(this);
+        this.importA7Data = this.importA7Data.bind(this);
+        this.importGoogleData = this.importGoogleData.bind(this);
+        this.closeMCModal = this.closeMCModal.bind(this);
     }
 
 
     componentWillMount() {
         this.loadUser();
+    }
+
+    componentDidMount() {
+        //This should prevent operations after unmounting
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    openModal() {
+        this.setState({open: true});
+    }
+
+    openA7ConnectPopup() {
+        this.state.a7ropen = true;
+        this.setState(this.state);
+    }
+
+    closeModal() {
+        this.state.open = false;
+        this.state.mcopen = false;
+        this.state.a7ropen = false;
+        this.setState(this.state);
+        this.loadUser(); //TODO: geht es auch "kleiner"?
+        console.log(this.state);
+    }
+
+    closeMCModal() {
+        this.state.mcopen = false;
+        this.setState(this.state);
     }
 
     loadUser() {
@@ -107,6 +159,8 @@ class UserData extends React.Component {
                 this.state.condition = data.condition || [];
 
                 this.state.gid = data.gid || '';
+
+
                 console.log(data);
 
                 this.setState(this.state);
@@ -216,6 +270,23 @@ class UserData extends React.Component {
         this.state.enteredCondition = event.target.value;
         this.setState(this.state);
     }
+
+    handleKeepChange(event) {
+        this.state.overwriteOnImport = (event.target.value == 1) ? true : false;
+        this.setState(this.state);
+    }
+
+    handleMCSubmit(event) {
+        event.preventDefault();
+        this.closeMCModal();
+        if (this.state.a7id != '') {
+            this.importA7Data();
+        } else {
+            //must be connected to google
+            this.importGoogleData();
+        }
+
+    }
     
     handleSubmit(event) {
         event.preventDefault();
@@ -310,9 +381,14 @@ class UserData extends React.Component {
 
         if (this.state.a7id == '' && this.state.tpa && this.state.gid != '') {
             //it is a google acc
-            toast.info(t('googleImport'), options);
+            //toast.info(t('googleImport'), options);
+            this.importGoogleData();
+
         } else if (this.state.a7id != '' && !this.state.tpa) {
             //TODO: its a basic acc connected to a7
+            this.state.mcopen = true;
+            this.setState(this.state);
+
         } else if (this.state.a7id != '' && this.state.tpa) {
             this.state.sending = true;
             this.setState(this.state);
@@ -354,43 +430,12 @@ class UserData extends React.Component {
                 }
             );
              */
-            axios.post('/data/import', this.state, {
-                // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
-                // check the HTTP status code.
-                validateStatus: (status) => {
-                    return (status >= 200 && status < 300) || status == 401
-                }
-            }).then(({data, status}) => {
-                this.state.sending = false;
-                this.setState(this.state);
+            this.importA7Data();
 
-                switch (status) {
-                    case 200:
-
-                        var data = this.state;
-                        const cookies = new Cookies();
-                        const auth = cookies.get('auth');
-
-                        auth["user"] = data;
-                        cookies.set('auth', auth);
-
-                        this.loadUser();
-
-                        //TODO: messages updaten.
-                        toast.success(t('importSuccessful'), options);
-
-                        break;
-                    case 400:
-                        toast.error(t('importFailed'), options);
-                        break;
-                    case 401:
-                        console.log(data, "not permitted");
-                        break;
-                }
-            });
         } else if (this.state.a7id == '' && !this.state.tpa && this.state.gid != '') {
             //its a basic acc connected to Google
-            toast.info(t('googleImport'), options);
+            this.state.mcopen = true;
+            this.setState(this.state);
         } else {
             //its a basic acc
             toast.info(t('basicAccImport'), options);
@@ -400,13 +445,164 @@ class UserData extends React.Component {
         console.log("done");
     }
 
+    importGoogleData() {
+        const {t} = this.props;
+        const options = {
+            position: toast.POSITION.BOTTOM_CENTER
+        };
+
+        this.state.sending = true;
+        this.setState(this.state);
+        axios.post('/user/update/google', this.state, {
+            // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
+            // check the HTTP status code.
+            validateStatus: (status) => {
+                return (status >= 200 && status < 300) || status == 401
+            }
+        }).then(({data, status}) => {
+            this.state.sending = false;
+            this.setState(this.state);
+
+            switch (status) {
+                case 200:
+
+                    //TODO: messages updaten.
+                    toast.success(t('importSuccessful'), options);
+
+                    break;
+                case 400:
+                    toast.error(t('importFailed'), options);
+                    break;
+                case 401:
+                    console.log(data, "not permitted");
+                    break;
+            }
+        });
+    }
+
+    importA7Data() {
+        const {t} = this.props;
+        const options = {
+            position: toast.POSITION.BOTTOM_CENTER
+        };
+
+        axios.post('/data/import', this.state, {
+            // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
+            // check the HTTP status code.
+            validateStatus: (status) => {
+                return (status >= 200 && status < 300) || status == 401
+            }
+        }).then(({data, status}) => {
+            this.state.sending = false;
+            this.setState(this.state);
+
+            switch (status) {
+                case 200:
+
+                    var data = this.state;
+                    const cookies = new Cookies();
+                    const auth = cookies.get('auth');
+
+                    auth["user"] = data;
+                    cookies.set('auth', auth);
+
+                    this.loadUser();
+
+                    //TODO: messages updaten.
+                    toast.success(t('importSuccessful'), options);
+
+                    break;
+                case 400:
+                    toast.error(t('importFailed'), options);
+                    break;
+                case 401:
+                    console.log(data, "not permitted");
+                    break;
+            }
+        });
+    }
+
+    transformAccount(event) {
+        event.preventDefault();
+        this.state.tpa = false;
+        this.state.sending = true;
+        this.setState(this.state);
+
+        //TODO: make him choose a password (Popup)
+        if (this._isMounted) {
+            this.openModal();
+        }
+        axios.post('/user/transform', this.state, {
+            // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
+            // check the HTTP status code.
+            validateStatus: (status) => {
+                return (status >= 200 && status < 300) || status == 401
+            }
+        }).then(({data, status}) => {
+            this.state.sending = false;
+            this.setState(this.state);
+
+            const {t} = this.props;
+            const options = {
+                position: toast.POSITION.BOTTOM_CENTER
+            };
+
+            switch (status) {
+                case 200:
+                    toast.success(t('transformSuccessful'), options);
+                    break;
+                case 400:
+                    toast.error(t('transformFailed'), options);
+                    break;
+                case 401:
+                    console.log(data, "not permitted");
+                    break;
+            }
+        });
+    }
+
+    //TODO: beim button fürs importieren der Daten, wenn es kein reiner basic acc ist, muss erstmal mergeConflictPopup aufgerufen werden.
+
+
     //TODO: Die gruppierung der fieldsets anpassen
     //TODO: die labels in die übersetzung übertragen
-    //TODO: Entscheiden ob einmal alles eingetragen werden muss oder es optional ist (-> Diabetes)
     render() {
         const {t} 		= this.props;
         const firstname 	= this.state.firstname;
         const lastname 	= this.state.lastname;
+
+        let choosePasswordPopup =
+            <div>
+                <Popup open={this.state.open}>
+                    <NewPasswordPopup
+                        id={this.state.id}
+                        username={this.state.username}
+                        closeModal={this.closeModal}
+                    />
+                </Popup>
+            </div>
+
+        let a7RegisterPopup =
+            <div>
+                <Popup
+                    open={this.state.a7ropen}
+                    position="right center"
+                    modal>
+                    <ConnectA7Popup closeModal={this.closeModal}/>
+                </Popup>
+            </div>;
+
+        let mergeConflictPopup =
+            <div>
+                <Popup
+                    open={this.state.mcopen}>
+                    <MergeConflictPopup
+                        overwriteOnImport={this.state.overwriteOnImport}
+                        keepChange={this.handleKeepChange}
+                        handleMCSubmit={this.handleMCSubmit}
+                    />
+                </Popup>
+            </div>;
 
         return (
 	       <div className="container marketing no-banner">
@@ -423,8 +619,22 @@ class UserData extends React.Component {
                 }
 	        	   <form onSubmit={this.handleSubmit} className="row">
                        <p>
-                           <button onClick={this.testDataTransfer}>Import user data</button>
+                           <button disabled={this.state.a7id == '' && this.state.gid == ''}
+                                   onClick={this.testDataTransfer}>Import user data
+                           </button>
                        </p>
+                       <p>
+                           <button disabled={!this.state.tpa} onClick={this.transformAccount}> Transform account to a
+                               connected basic account
+                           </button>
+                       </p>
+                       <p>
+                           <button disabled={this.state.a7id != '' || this.state.gid != ''}
+                                   onClick={this.openA7ConnectPopup}> Connect to Andaman7
+                           </button>
+                       </p>
+                       {choosePasswordPopup}
+                       {mergeConflictPopup}
                        <fieldset>
 						   <fieldset disabled={this.state.tpa}>
 				            <div className="form-group col-md-6 col-lg-6">
@@ -630,6 +840,8 @@ class UserData extends React.Component {
 
                         </div>
 	        	    </form>
+
+               {a7RegisterPopup}
 
            </div>
         );

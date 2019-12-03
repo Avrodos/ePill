@@ -102,5 +102,10 @@
   "importSuccessful": "Import was successful!",
 	"importFailed": "Import failed!",
 	"googleImport": "Google Accounts and accounts connected to Google update their user data automatically upon login. No import necessary!",
-	"basicAccImport": "You have no connected third-party services. Therefore, import is impossible!"
+  "basicAccImport": "You have no connected third-party services. Therefore, import is impossible!",
+  "transformSuccessful": "Successfully transformed account to a connected base account.",
+  "transformFailed": "Transforming failed!",
+  "transformRequiresPasswordChange": "Transformation requires a password for ePill.",
+  "choosePassword": "Please choose a new password!",
+  "confirm": "Confirm"
 }

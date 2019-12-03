@@ -212,6 +212,28 @@ public class SimpleUser implements SendableEntity {
 
 	// ==========================================================================
 
+    public static final String PROPERTY_PAYLOADID = "payloadId";
+
+    @Column(unique = true, columnDefinition = "LONGTEXT")
+    private String payloadId;
+
+    public String getPayloadId() {
+        return this.payloadId;
+    }
+
+    public void setPayloadId(String value) {
+        if (!EntityUtil.stringEquals(this.payloadId, value)) {
+            this.payloadId = value;
+        }
+    }
+
+    public SimpleUser withPayloadId(String value) {
+        setPayloadId(value);
+        return this;
+    }
+
+    // ==========================================================================
+
 	public static final String PROPERTY_A7ID = "a7id";
 
 	@Column(unique = true)
@@ -666,5 +688,30 @@ public class SimpleUser implements SendableEntity {
         setSmoker(value);
         return this;
     }
+
+    // ==========================================================================
+
+    public static final String PROPERTY_OVERWRITEONIMPORT = "overwriteOnImport";
+
+    @Column
+    private Boolean overwriteOnImport;
+
+    public Boolean getOverwriteOnImport() {
+        return this.overwriteOnImport;
+    }
+
+    public void setOverwriteOnImport(Boolean value) {
+        if (this.overwriteOnImport != value) {
+            final Boolean oldValue = this.overwriteOnImport;
+            this.overwriteOnImport = value;
+            this.firePropertyChange(PROPERTY_OVERWRITEONIMPORT, oldValue, value);
+        }
+    }
+
+    public SimpleUser withOverwriteOnImport(Boolean value) {
+        setOverwriteOnImport(value);
+        return this;
+    }
+
 
 }

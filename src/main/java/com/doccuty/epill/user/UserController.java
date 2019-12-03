@@ -205,6 +205,27 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * transforms a TPA to a basic account connected to corresponding service.
+     *
+     * @param user
+     * @return
+     */
+
+    @RequestMapping(value = "/transform", method = RequestMethod.POST)
+    public ResponseEntity<JsonObject> transformAccountType(@RequestBody User user) {
+        // A pragmatic approach to security which does not use much framework-specific magic. While other approaches
+        // with annotations, etc. are possible they are much more complex while this is quite easy to understand and
+        // extend.
+        if (service.isAnonymous()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        service.transformAccountType(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     /*
     @RequestMapping(value="/updateA7", method = RequestMethod.POST)
     public ResponseEntity<JsonObject> updateA7UserData(@RequestBody User user) {
@@ -220,4 +241,46 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
      */
+
+    /**
+     * update user data for google services
+     *
+     * @param user
+     * @return
+     */
+
+    @RequestMapping(value = "/update/google", method = RequestMethod.POST)
+    public ResponseEntity<JsonObject> updateGoogleData(@RequestBody User user) {
+        // A pragmatic approach to security which does not use much framework-specific magic. While other approaches
+        // with annotations, etc. are possible they are much more complex while this is quite easy to understand and
+        // extend.
+        if (service.isAnonymous()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        user = service.updateGoogleData(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * update user data for google services
+     *
+     * @param user
+     * @return
+     */
+
+    @RequestMapping(value = "/connect/a7", method = RequestMethod.POST)
+    public ResponseEntity<JsonObject> connectToA7(@RequestBody User user) {
+        // A pragmatic approach to security which does not use much framework-specific magic. While other approaches
+        // with annotations, etc. are possible they are much more complex while this is quite easy to understand and
+        // extend.
+        if (service.isAnonymous()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        user = service.connectToA7(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -84,54 +84,35 @@ public class AuthenticationService {
      * @return
      */
     public UserToken tpaLogin(String tpaId, String email, TpaService tpaService) {
-        SimpleUser user = new User();
+        User user = new User();
         if (tpaService == TpaService.GOOGLE) {
             String userID = "";
             Payload payload = null;
-            //Verification of the received token
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
-                    // Specify the CLIENT_ID of the app that accesses the backend:
-                    .setAudience(Collections.singletonList("583900150012-agjlvgr8gjsj8cv5f8fkiv3fjl9keu1j.apps.googleusercontent.com"))
-                    // Or, if multiple clients access the backend:
-                    //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
-                    .build();
-            try {
-                GoogleIdToken idToken = verifier.verify(tpaId);
-                if (idToken != null) {
-                    payload = idToken.getPayload();
-
-                    // This is our desired ID. Unique and constant for the whole account lifetime.
-                    userID = payload.getSubject();
-                }
-
-            } catch (Exception e){
-                //we have an error
-                //TODO: Do I need further error handling?
-                return null;
-            }
+            payload = verifyGoogleIdentity(tpaId);
+            // This is our desired ID. Unique and constant for the whole account lifetime.
+            userID = payload.getSubject();
             if (userID.equals("") || payload == null) {
                 return null;
             }
-
             //this means we successfully verified the user
-            user = repository.findByGID(userID);
+            user = service.findUserByGID(userID);
+
+            String firstName = (String) payload.get("given_name");
+            String familyName = (String) payload.get("family_name");
             if (user == null) {
                 //no user account in the database -> we have to create one.
-                String impEmail = payload.getEmail();
-                String firstName = (String) payload.get("given_name");
-                String familyName = (String) payload.get("family_name");
-
                 user = new User();
                 user.setFirstname(firstName);
                 user.setLastname(familyName);
+                String impEmail = payload.getEmail();
                 user.setEmail(impEmail);
                 user.setGid(userID);
+                user.setPayloadId(tpaId);
                 user.setUsername(impEmail);
                 user.setPassword("thirdPartyAccountService");
                 user.setTPA(true);
                 user.setFirstSignIn(true);
-                User childUser = (User) user;
-                if(service.saveUser(childUser) == null) {
+                if (service.saveUser(user) == null) {
                     return null;
                 }
 
@@ -151,7 +132,7 @@ public class AuthenticationService {
                 return null;
             }
             //lets see whether or not he already has an account.
-            user = repository.findByA7ID(tpaId);
+            user = service.findUserByA7Id(tpaId);
             if(user == null) {
                 user = new User();
                 user.setA7id(tpaId);
@@ -159,8 +140,7 @@ public class AuthenticationService {
                 user.setPassword("thirdPartyAccountService");
                 user.setTPA(true);
                 user.setFirstSignIn(true);
-                User childUser = (User) user;
-                if(service.saveUser(childUser) == null) {
+                if (service.saveUser(user) == null) {
                     return null;
                 }
                 return login(user.getUsername(), "thirdPartyAccountService");
@@ -172,6 +152,29 @@ public class AuthenticationService {
             //something went wrong with the transmission of states.
             return null;
         }
+    }
+
+    public Payload verifyGoogleIdentity(String tpaId) {
+        Payload payload = null;
+        //Verification of the received token
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
+                // Specify the CLIENT_ID of the app that accesses the backend:
+                .setAudience(Collections.singletonList("583900150012-agjlvgr8gjsj8cv5f8fkiv3fjl9keu1j.apps.googleusercontent.com"))
+                // Or, if multiple clients access the backend:
+                //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+                .build();
+        try {
+            GoogleIdToken idToken = verifier.verify(tpaId);
+            if (idToken != null) {
+                payload = idToken.getPayload();
+            }
+
+        } catch (Exception e) {
+            //we have an error
+            //TODO: Do I need further error handling?
+            return null;
+        }
+        return payload;
     }
 
 

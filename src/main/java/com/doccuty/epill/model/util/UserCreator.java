@@ -72,7 +72,8 @@ public class UserCreator implements SendableEntityCreatorNoIndex
            User.PROPERTY_INTOLERANCE,
            User.PROPERTY_DIABETES,
            User.PROPERTY_SMOKER,
-           User.PROPERTY_CONDITION
+           User.PROPERTY_CONDITION,
+           User.PROPERTY_OVERWRITEONIMPORT
 
     };
    
@@ -252,6 +253,10 @@ public class UserCreator implements SendableEntityCreatorNoIndex
 
        if (User.PROPERTY_CONDITION.equalsIgnoreCase(attribute)) {
            return ((User) target).getCondition();
+       }
+
+       if (User.PROPERTY_OVERWRITEONIMPORT.equalsIgnoreCase(attribute)) {
+           return ((User) target).getOverwriteOnImport();
        }
 
       return null;
@@ -474,6 +479,11 @@ public class UserCreator implements SendableEntityCreatorNoIndex
          ((User) target).setSmoker((Boolean) value);
          return true;
       }
+
+       if (User.PROPERTY_OVERWRITEONIMPORT.equalsIgnoreCase(attrName)) {
+           ((User) target).setOverwriteOnImport((Boolean) value);
+           return true;
+       }
 
       
       return false;

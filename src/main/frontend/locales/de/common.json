@@ -102,5 +102,10 @@
   "importSuccessful": "Import war erfolgreich!",
   "importFailed": "Import ist fehlgeschlagen!",
   "googleImport": "Google Accounts und accounts verbunden mit Google aktualisieren ihre Nutzerdaten beim login. Kein importieren an dieser Stelle notwendig!",
-  "basicAccImport": "Kein third-party account verbunden. Importieren ist daher unmöglich!"
+  "basicAccImport": "Kein third-party account verbunden. Importieren ist daher unmöglich!",
+  "transformSuccessful": "Der Account wurde erfolgreich in einen verbundenen Base Account umgewandelt",
+  "transformFailed": "Beim Umwandeln ist ein Fehler aufgetreten!",
+  "transformRequiresPasswordChange": "Für die Umwandlung wird ein ePill Passwort benötigt.",
+  "choosePassword": "Bitte ein neues Passwort wählen!",
+  "confirm": "Bestätigen"
 }
