@@ -2,9 +2,9 @@ package com.doccuty.epill.dataparsing;
 
 import com.doccuty.epill.allergy.Allergy;
 import com.doccuty.epill.diabetes.Diabetes;
-import com.doccuty.epill.diabetes.DiabetesRepository;
+import com.doccuty.epill.diabetes.DiabetesService;
 import com.doccuty.epill.gender.Gender;
-import com.doccuty.epill.gender.GenderRepository;
+import com.doccuty.epill.gender.GenderService;
 import com.doccuty.epill.intolerance.Intolerance;
 import com.doccuty.epill.intolerance.IntoleranceService;
 import com.doccuty.epill.user.User;
@@ -33,28 +33,36 @@ public class DataParsingService {
     private UserService service;
 
     @Autowired
-    private DiabetesRepository diabetesRepository;
+    private DiabetesService diabetesService;
 
     @Autowired
-    private GenderRepository genderRepository;
+    private GenderService genderService;
 
-    //the ami keys for data, that can contain more than one entry
-    //TODO: do something with "ami.medicationStatement" or "amiref.medicationStatement". They did not update ami.medicationStatement yet...
-    //TODO: Parse Names
+    @Autowired
+    private AllergyService allergyService;
+
+    @Autowired
+    private IntoleranceService intoleranceService;
+
+    @Autowired
+    private ConditionService conditionService;
 
     public User importCA7UserData(User user) {
-        //TODO: Filepath shouldnt be hardcoded in this class.
+
         //As the path for the Connector must be hardcoded, we can hardcode it here too.
         if (user.getA7id().isEmpty() || user.getA7id().equals("")) {
-            //TODO: ERROR HANDLING
-
+            return null;
         }
         //User newData = getCurrentUser();
         User oldData = service.getUserById(getCurrentUser().getId());
-        //TODO: vergleichen mit authenticationservice.tpa...
+        //By creating a temporary User, we can make sure, that we are only taking the newest Data by taking single field information only once, from newest files to oldest.
+        //As updates in the profile are reflected by new files, i.e., older files contain outdated information.
         User newData = new User();
         String desiredFilePrefix = user.getLastname() + "_" + user.getFirstname();
 
+        //The connector setup forces an absolute path for configuration
+        //Therefore, might as well use a hardcoded file path here
+        //Adjust as needed.
         List<Path> files = new ArrayList<>();
         File folder = new File("/home/fuji/Documents/Connector/Documents/andaman7/inbox");
         File[] listOfFiles = folder.listFiles();
@@ -67,7 +75,6 @@ public class DataParsingService {
             }
         }
         Collections.sort(files, Collections.reverseOrder()); //we want to look at the newest first.
-        //TODO: Does it actually sort newest to oldest?
         for (int i = 0; i < files.size(); i++) {
             try {
                 // Read CSV file. For each row, instantiate and collect `DailyProduct`.
@@ -79,7 +86,6 @@ public class DataParsingService {
                 }
                 for (int j = 0; j < records.size(); j++) {
                     CSVRecord record = records.get(j);
-                    //ASSUMPTION: parent_id is always the id of the EHR
                     String key = record.get("key");
                     if (key.equals("routing.source")) {
                         if (!record.get("id").equals(user.getA7id())) {
@@ -88,10 +94,9 @@ public class DataParsingService {
                         continue;
                     }
                     if (!record.get("invalidation_date").equals("")) {
-                        //its invalidated
+                        //information is invalidated
                         continue;
                     }
-                    //a little bit ugly, but has to be done, to assure some data is not overwritten by older data.
                     else if (key.equals("ami.firstName")) {
                         if (newData.getFirstname() != null || (oldData.getFirstname() != null && oldData.getOverwriteOnImport() != null && !oldData.getOverwriteOnImport())) {
                             continue;
@@ -109,7 +114,6 @@ public class DataParsingService {
                             continue; //next record
                         }
                         Gender newGender = processGender(record.get("value"));
-                        // Or something like this? user.setGender(genderRepository.findOne(usr.getGender().getId()));
                         newData.setGender(newGender);
                     } else if (key.equals("ami.smokerFrequency")) {
                         if (newData.getSmoker() != null || (oldData.getSmoker() != null && oldData.getOverwriteOnImport() != null && !oldData.getOverwriteOnImport())) {
@@ -122,6 +126,9 @@ public class DataParsingService {
                             continue;
                         }
                         Diabetes newDiabetes = processDiabetes(record.get("value"), records, record.get("multi_id"));
+                        if (newDiabetes == null) {
+                            continue;
+                        }
                         newData.setDiabetes(newDiabetes);
                     } else if (key.equals("ami.birthDate")) {
                         if (newData.getDateOfBirth() != null || (oldData.getDateOfBirth() != null && oldData.getOverwriteOnImport() != null && !oldData.getOverwriteOnImport())) {
@@ -151,38 +158,34 @@ public class DataParsingService {
                             //TODO: wahrscheinlich muss ich noch UUIDs für jede vergeben?
                             // newData.withAllergy(newAllergy);
                         } else {
-                            //TODO: Fehlerbehandlung
+                            continue;
                         }
 
                     } else {
-                        //TODO: Fehlerbehandlung
+                        continue;
                     }
                     //Might be interesting: UUID id = UUID.fromString( record.get( "id" ) );
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                //TODO: proper error handling.
+                break;
             } catch (IOException e) {
                 e.printStackTrace();
+                break;
             } catch (ParseException e) {
                 e.printStackTrace();
+                break;
             }
         }
-        //TODO: make sure I dont overwrite/lose data when sending back the user
-        //Create another user with the user data from the parameter and overwrite with new data from "newData"
-        //TODO: Update the current user with newData (there is a method for that)
-
-        //return service.updateUserData(newData);
-
-        User returnUser = service.updateUserData(newData);
-        //long id = newData.getId();
-        //service.deleteUser(id);
-        return returnUser;
-
+        if (files.size() > 0) {
+            User result = service.updateUserData(newData);
+            return result;
+        }
+        return null;
     }
 
     private String getQualifierType(Iterable<CSVRecord> records, String multiId) {
-        //let us assume, that the qualifier always comes after the parent
+        //since we do not receive a guarantee for its position, we will have to look through it all
         for (CSVRecord record : records) {
             if (record.get("parent_id").equals(multiId) && record.get("key").equals("qualifier.type")) {
                 //we found our qualifier
@@ -197,9 +200,7 @@ public class DataParsingService {
         if (value.equals("li.yes")) {
             String qualifierType = getQualifierType(records, multiId);
             if (qualifierType.equals("li.type1")) {
-                return diabetesRepository.findOne(1);
-                //currentDiabetes.setDiabetes("typ1");
-                //currentDiabetes.setId(1);
+                return diabetesService.getDiabetesById(1);
             } else if (qualifierType.equals("li.type2")) {
                 currentDiabetes.setDiabetes("type2");
                 currentDiabetes.setId(2);
@@ -214,11 +215,8 @@ public class DataParsingService {
     }
 
     private boolean processSmoker(String value) {
-        if (value.equals("li.smoker")) {
-            return true;
-        }
+        return value.equals("li.smoker");
         //there is some further differentiation in A7, which we don't care for.
-        return false;
     }
 
     private Gender processGender(String value) {
@@ -227,10 +225,7 @@ public class DataParsingService {
         //TODO: Does this work with .equals?
         switch (value) {
             case "li.man":
-                return genderRepository.findOne(1);
-            //currentGender.setGender("male");
-            //currentGender.setId(1);
-            //break;
+                return genderService.getGenderById(1);
             case "li.woman":
                 currentGender.setGender("female");
                 currentGender.setId(2);
@@ -262,7 +257,6 @@ public class DataParsingService {
      * @return the current user.
      */
     public User getCurrentUser() {
-        //TODO: unstatic machen nach dem testen
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

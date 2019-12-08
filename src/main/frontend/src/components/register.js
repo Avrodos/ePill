@@ -231,5 +231,4 @@ class Register extends React.Component {
     }
 }
 
-//TODO Does it still have to be withCookies?
 export default withCookies(translate()(Register));

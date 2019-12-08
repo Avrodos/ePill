@@ -89,6 +89,9 @@ public class AuthenticationService {
             String userID = "";
             Payload payload = null;
             payload = verifyGoogleIdentity(tpaId);
+            if (payload == null) {
+                return null;
+            }
             // This is our desired ID. Unique and constant for the whole account lifetime.
             userID = payload.getSubject();
             if (userID.equals("") || payload == null) {
@@ -171,7 +174,6 @@ public class AuthenticationService {
 
         } catch (Exception e) {
             //we have an error
-            //TODO: Do I need further error handling?
             return null;
         }
         return payload;

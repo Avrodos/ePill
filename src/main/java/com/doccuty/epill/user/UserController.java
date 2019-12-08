@@ -264,7 +264,7 @@ public class UserController {
     }
 
     /**
-     * update user data for google services
+     * update connection status for a7
      *
      * @param user
      * @return
@@ -280,6 +280,27 @@ public class UserController {
         }
 
         user = service.connectToA7(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * update status, whether the user confirmed the service registration for A7
+     *
+     * @param user
+     * @return
+     */
+
+    @RequestMapping(value = "/registerFurtherData/a7", method = RequestMethod.POST)
+    public ResponseEntity<JsonObject> registerFurtherDataForA7(@RequestBody User user) {
+        // A pragmatic approach to security which does not use much framework-specific magic. While other approaches
+        // with annotations, etc. are possible they are much more complex while this is quite easy to understand and
+        // extend.
+        if (service.isAnonymous()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        user = service.registerFurtherDataA7(user);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

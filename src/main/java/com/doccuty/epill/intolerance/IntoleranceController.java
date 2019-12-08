@@ -2,6 +2,7 @@ package com.doccuty.epill.intolerance;
 
 
 import com.doccuty.epill.model.util.IntoleranceCreator;
+import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
@@ -19,6 +20,7 @@ import java.util.HashSet;
  * HTTP endpoint for a post-related HTTP requests.
  */
 @RestController
+@RequestMapping("/intolerance")
 public class IntoleranceController {
 
     @Autowired
@@ -27,7 +29,7 @@ public class IntoleranceController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/intolerance/all/")
+    @RequestMapping("/all")
     public ResponseEntity<JsonObject> getAllAllergies() {
 
         HashSet<Intolerance> set = service.getAllAllergies();
@@ -48,7 +50,7 @@ public class IntoleranceController {
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
-    @RequestMapping(value = {"/intolerance/{id}/"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/{id}"}, method = RequestMethod.GET)
     public ResponseEntity<JsonObject> getIntoleranceById(@PathVariable(value = "id") int id) {
 
         Intolerance intolerance = service.getIntoleranceById(id);
@@ -63,8 +65,8 @@ public class IntoleranceController {
     }
 
 
-    @RequestMapping(value = "/intolerance/save/")
-    public ResponseEntity<Object> addIntolerance(@RequestParam("name") String name) {
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public ResponseEntity<Object> addIntolerance(@RequestBody String name) {
         // A pragmatic approach to security which does not use much framework-specific magic. While other approaches
         // with annotations, etc. are possible they are much more complex while this is quite easy to understand and
         // extend.
@@ -73,10 +75,16 @@ public class IntoleranceController {
         }
 
         Intolerance intolerance = new Intolerance();
+        //the name always ends on "=", which is not desired.
+        if (name != null && name.length() > 0 && name.charAt(name.length() - 1) == '=') {
+            name = name.substring(0, name.length() - 1);
+        }
         intolerance.setName(name);
 
+        User user = userService.getUserById(userService.getCurrentUser().getId());
         service.addIntolerance(intolerance);
-
+        user.withIntolerance(intolerance);
+        userService.updateUserData(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

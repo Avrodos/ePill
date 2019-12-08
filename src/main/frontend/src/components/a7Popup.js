@@ -10,6 +10,8 @@ import User from "../util/User";
 import Popup from "reactjs-popup";
 import MissingDataPopup from "./missingDataPopup";
 
+
+//The component responsible for logging in the user with his exisitng a7 credentials
 class a7Popup extends React.Component {
     _isMounted = false;
     _token = "";
@@ -48,6 +50,7 @@ class a7Popup extends React.Component {
         this.handleRedGreenColorblind = this.handleRedGreenColorblind.bind(this);
         this.setFormattedDate = this.setFormattedDate.bind(this);
     }
+
 
     componentDidMount() {
         //This should prevent operations after unmounting
@@ -153,7 +156,7 @@ class a7Popup extends React.Component {
                                     error: undefined
                                 });
                                 this._token = data.token;
-                                //TODO: is this the first sign in?
+                                //Is this the first sign in?
                                 if (data.user.firstSignIn) {
                                     //we need further data
                                     this.openModal();
@@ -176,8 +179,6 @@ class a7Popup extends React.Component {
             );
     }
 
-    //WRITE: describe problem regarding the update of data, getting the gender etc
-    //TODO: adjust method for proper use in profile
     updateA7UserData() {
         if (this.state.sending)
             return;
@@ -252,7 +253,6 @@ class a7Popup extends React.Component {
     render() {
         const {t} = this.props;
 
-        //TODO: Proper error handling if the user clicks outside of modal before entering data.
         let missingDataPopup =
             <div>
                 <Popup open={this.state.open}>
@@ -266,7 +266,7 @@ class a7Popup extends React.Component {
             <div>
                 <div>
                     {/* Popup content */}
-                    <h2>Login für Andaman7</h2>
+                    <h2>{t("loginForA7")}</h2>
 
                     <form onSubmit={this.handleSubmit} className="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-0 col-lg-4 col-lg-offset-0 column">
                         <div className="form-group">

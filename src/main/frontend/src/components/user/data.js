@@ -10,11 +10,11 @@ import Popup from "reactjs-popup";
 import NewPasswordPopup from "./../newPasswordPopup";
 import ConnectA7Popup from "../connectA7Popup"
 import MergeConflictPopup from "../mergeConflictPopup";
+import FurtherMedicalDataPopup from "../furtherMedicalDataPopup";
 
 // See https://facebook.github.io/react/docs/forms.html for documentation about
 // forms.
 
-//TODO: Find proper solution for a7id
 class UserData extends React.Component {
     _isMounted = false;
 
@@ -29,7 +29,7 @@ class UserData extends React.Component {
             gender: {id: 0},
             username: '',
             redGreenColorblind: false,
-            weight: 0,
+            weight: '',
             levelOfDetail       : 3,
             preferredFontSize   : 'defaultFontSize',
 			sending: false,
@@ -48,7 +48,9 @@ class UserData extends React.Component {
             open: false,
             overwriteOnImport: true,
             mcopen: false,
-            a7ropen: false
+            a7ropen: false,
+            alreadyRegisteredForFurtherData: false,
+            registeredForFurtherDataOpen: false
         };
         
         this.handleFirstnameChange		= this.handleFirstnameChange.bind(this);
@@ -73,7 +75,7 @@ class UserData extends React.Component {
 
         this.cookies = this.props.cookies;
 
-        this.testDataTransfer = this.testDataTransfer.bind(this);
+        this.importUserData = this.importUserData.bind(this);
 
         this.handleAddAllergy = this.handleAddAllergy.bind(this);
         this.onEnteredAllergyChange = this.onEnteredAllergyChange.bind(this);
@@ -91,6 +93,10 @@ class UserData extends React.Component {
         this.importA7Data = this.importA7Data.bind(this);
         this.importGoogleData = this.importGoogleData.bind(this);
         this.closeMCModal = this.closeMCModal.bind(this);
+        this.openMCModal = this.openMCModal.bind(this);
+        this.closeRegisterForFurtherMedicalDataModal = this.closeRegisterForFurtherMedicalDataModal.bind(this);
+        this.openRegisterForFurtherMedicalDataModal = this.openRegisterForFurtherMedicalDataModal.bind(this);
+        this.handleFurtherMedicalDataSubmit = this.handleFurtherMedicalDataSubmit.bind(this);
     }
 
 
@@ -122,11 +128,27 @@ class UserData extends React.Component {
         this.state.a7ropen = false;
         this.setState(this.state);
         this.loadUser(); //TODO: geht es auch "kleiner"?
-        console.log(this.state);
+    }
+
+    openMCModal() {
+        this.state.mcopen = true;
+        this.setState(this.state);
     }
 
     closeMCModal() {
         this.state.mcopen = false;
+        this.setState(this.state);
+    }
+
+    closeRegisterForFurtherMedicalDataModal() {
+        this.state.registeredForFurtherDataOpen = false;
+        this.setState(this.state);
+        console.log("closing popup");
+        console.log(this.state);
+    }
+
+    openRegisterForFurtherMedicalDataModal() {
+        this.state.registeredForFurtherDataOpen = true;
         this.setState(this.state);
     }
 
@@ -138,14 +160,14 @@ class UserData extends React.Component {
         axios.get(`/user/${User.id}`)
             .then(({data, status}) => {
 
-                this.state.firstname = data.firstname;
-                this.state.lastname = data.lastname;
+                this.state.firstname = data.firstname || '';
+                this.state.lastname = data.lastname || '';
                 this.state.email = data.email || '';
                 this.state.dateOfBirth = data.dateOfBirth || '',
                     this.state.gender = data.gender || {id: 0};
-                this.state.username = data.username;
+                this.state.username = data.username || '';
                 this.state.redGreenColorblind = data.redGreenColorblind || false;
-                this.state.weight = data.weight;
+                this.state.weight = data.weight || '';
                 this.state.levelOfDetail = data.levelOfDetail || 3;
                 this.state.preferredFontSize = data.preferredFontSize || 'defaultFontSize';
                 this.state.tpa = data.tpa || false;
@@ -157,13 +179,16 @@ class UserData extends React.Component {
                 this.state.allergy = data.allergy || [];
                 this.state.intolerance = data.intolerance || [];
                 this.state.condition = data.condition || [];
+                this.state.alreadyRegisteredForFurtherData = data.registeredForFurtherData || false;
 
                 this.state.gid = data.gid || '';
 
-
-                console.log(data);
-
                 this.setState(this.state);
+
+                console.log("the received data:");
+                console.log(data);
+                console.log("loading user:");
+                console.log(this.state);
 
             });
     }
@@ -226,7 +251,7 @@ class UserData extends React.Component {
     }
 
     handleSmokerChange(event) {
-        this.state.smoker = event.target.value;
+        this.state.smoker = (event.target.value == 1) ? true : false;
         this.setState(this.state);
     }
 
@@ -235,11 +260,43 @@ class UserData extends React.Component {
         this.setState(this.state);
     }
 
-    handleAddAllergy() {
-        this.state.allergy = this.state.allergy.concat(this.state.enteredAllergy);
-        this.state.enteredAllergy = "";
+    handleAddAllergy(event) {
+        event.preventDefault();
+        const {t} = this.props;
+        const options = {
+            position: toast.POSITION.BOTTOM_CENTER
+        };
+
+        this.state.sending = true;
         this.setState(this.state);
-        //TODO: Save it (repo), so the repository gives me back a unique id.
+        axios.post('/allergy/save', this.state.enteredAllergy, {
+            // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
+            // check the HTTP status code.
+            validateStatus: (status) => {
+                return (status >= 200 && status < 300) || status == 401
+            }
+        }).then(({data, status}) => {
+            this.state.sending = false;
+            this.setState(this.state);
+
+            switch (status) {
+                case 200:
+                    //const tempAll = {id: data.id, name: data.name, };
+                    //this.state.allergy.push(tempAll);
+                    this.state.enteredAllergy = "";
+                    this.setState(this.state);
+                    this.loadUser();
+                    toast.success(t('addSuccessful'), options);
+
+                    break;
+                case 400:
+                    toast.error(t('addFailed'), options);
+                    break;
+                case 401:
+                    console.log(data, "not permitted");
+                    break;
+            }
+        });
     }
 
     onEnteredAllergyChange(event) {
@@ -247,11 +304,41 @@ class UserData extends React.Component {
         this.setState(this.state);
     }
 
-    handleAddIntolerance() {
-        this.state.intolerance = this.state.intolerance.concat(this.state.enteredIntolerance);
-        this.state.enteredIntolerance = "";
+    handleAddIntolerance(event) {
+        event.preventDefault();
+        const {t} = this.props;
+        const options = {
+            position: toast.POSITION.BOTTOM_CENTER
+        };
+
+        this.state.sending = true;
         this.setState(this.state);
-        //TODO: Save it (repo), so the repository gives me back a unique id.
+        axios.post('/intolerance/save', this.state.enteredIntolerance, {
+            // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
+            // check the HTTP status code.
+            validateStatus: (status) => {
+                return (status >= 200 && status < 300) || status == 401
+            }
+        }).then(({data, status}) => {
+            this.state.sending = false;
+            this.setState(this.state);
+
+            switch (status) {
+                case 200:
+                    this.state.enteredIntolerance = "";
+                    this.setState(this.state);
+                    this.loadUser();
+                    toast.success(t('addSuccessful'), options);
+
+                    break;
+                case 400:
+                    toast.error(t('addFailed'), options);
+                    break;
+                case 401:
+                    console.log(data, "not permitted");
+                    break;
+            }
+        });
     }
 
     onEnteredIntoleranceChange(event) {
@@ -259,11 +346,41 @@ class UserData extends React.Component {
         this.setState(this.state);
     }
 
-    handleAddCondition() {
-        this.state.condition = this.state.condition.concat(this.state.enteredCondition);
-        this.state.enteredCondition = "";
+    handleAddCondition(event) {
+        event.preventDefault();
+        const {t} = this.props;
+        const options = {
+            position: toast.POSITION.BOTTOM_CENTER
+        };
+
+        this.state.sending = true;
         this.setState(this.state);
-        //TODO: Save it (repo), so the repository gives me back a unique id.
+        axios.post('/condition/save', this.state.enteredCondition, {
+            // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
+            // check the HTTP status code.
+            validateStatus: (status) => {
+                return (status >= 200 && status < 300) || status == 401
+            }
+        }).then(({data, status}) => {
+            this.state.sending = false;
+            this.setState(this.state);
+
+            switch (status) {
+                case 200:
+                    this.state.enteredCondition = "";
+                    this.setState(this.state);
+                    this.loadUser();
+                    toast.success(t('addSuccessful'), options);
+
+                    break;
+                case 400:
+                    toast.error(t('addFailed'), options);
+                    break;
+                case 401:
+                    console.log(data, "not permitted");
+                    break;
+            }
+        });
     }
 
     onEnteredConditionChange(event) {
@@ -286,6 +403,22 @@ class UserData extends React.Component {
             this.importGoogleData();
         }
 
+    }
+
+    handleFurtherMedicalDataSubmit(event) {
+        //event.preventDefault();
+        console.log("start of handle method");
+        console.log(this.state);
+        this.closeRegisterForFurtherMedicalDataModal();
+        //this.state.registeredForFurtherDataOpen = false;
+        //this.setState(this.state);
+        if ((this.state.a7id != '' || this.state.gid != '') && !this.state.tpa) {
+            this.openMCModal();
+        } else {
+            this.importA7Data();
+            console.log("After importing data");
+            console.log(this.state);
+        }
     }
     
     handleSubmit(event) {
@@ -370,8 +503,7 @@ class UserData extends React.Component {
                 });
     }
 
-    testDataTransfer(event) {
-        //TODO: adjust for use, when basic user is connected to a TPS or when GAcc
+    importUserData(event) {
         event.preventDefault();
 
         const {t} = this.props;
@@ -385,52 +517,21 @@ class UserData extends React.Component {
             this.importGoogleData();
 
         } else if (this.state.a7id != '' && !this.state.tpa) {
-            //TODO: its a basic acc connected to a7
-            this.state.mcopen = true;
-            this.setState(this.state);
-
+            //it is a basic acc connected to a7
+            if (!this.state.alreadyRegisteredForFurtherData) {
+                this.openRegisterForFurtherMedicalDataModal();
+            } else {
+                this.openMCModal();
+            }
         } else if (this.state.a7id != '' && this.state.tpa) {
+            //this is a a7 tpa account
             this.state.sending = true;
             this.setState(this.state);
-
-            /* This code is used to register a User to my service
-            const deviceId = "21002c41-c430-4043-9511-a5c527869b2c";
-
-            const connectorMail = "testmailforepill@gmail.com";
-            const url = 'https://test-server.andaman7.com/public/v1/services/register';
-            const apiKey = '0a24fa4b-9f38-47a4-ad99-5ba3a2c211c1';
-            const hashedPw = sha256("thirdPartyAccountService");
-            let credentials = connectorMail + ":" + hashedPw;
-            let credString = 'Basic ' + window.btoa(credentials);
-
-            axios({
-                url: url,
-                method: 'POST',
-                headers: {
-                    'api-key': apiKey,
-                    'Authorization': credString,
-                    'Content-Type': 'application/json',
-                    'device-id': deviceId
-                },
-                data: {	//the body of the request
-                    'firstName': this.state.firstname,
-                    'lastName': this.state.lastname,
-                    'email': this.state.email,
-                    'language': 'EN',
-                    'externalUserId': this.state.email,
-                    'serviceId': 'partner.com.epill',
-                    'scenarioId': 'partnerscenario.com.epill.poc'
-                }
-            }).then(({data}) => {
-                    console.log(data);
-                },
-                (error) => {
-                    console.log("something went wrong");
-                    console.log(error);
-                }
-            );
-             */
-            this.importA7Data();
+            if (!this.state.alreadyRegisteredForFurtherData) {
+                this.openRegisterForFurtherMedicalDataModal();
+            } else {
+                this.importA7Data();
+            }
 
         } else if (this.state.a7id == '' && !this.state.tpa && this.state.gid != '') {
             //its a basic acc connected to Google
@@ -440,9 +541,6 @@ class UserData extends React.Component {
             //its a basic acc
             toast.info(t('basicAccImport'), options);
         }
-
-        //TODO: ERROR handling
-        console.log("done");
     }
 
     importGoogleData() {
@@ -465,10 +563,7 @@ class UserData extends React.Component {
 
             switch (status) {
                 case 200:
-
-                    //TODO: messages updaten.
                     toast.success(t('importSuccessful'), options);
-
                     break;
                 case 400:
                     toast.error(t('importFailed'), options);
@@ -508,7 +603,6 @@ class UserData extends React.Component {
 
                     this.loadUser();
 
-                    //TODO: messages updaten.
                     toast.success(t('importSuccessful'), options);
 
                     break;
@@ -522,16 +616,7 @@ class UserData extends React.Component {
         });
     }
 
-    transformAccount(event) {
-        event.preventDefault();
-        this.state.tpa = false;
-        this.state.sending = true;
-        this.setState(this.state);
-
-        //TODO: make him choose a password (Popup)
-        if (this._isMounted) {
-            this.openModal();
-        }
+    sendTransformAccountToBackend() {
         axios.post('/user/transform', this.state, {
             // We allow a status code of 401 (unauthorized). Otherwise it is interpreted as an error and we can't
             // check the HTTP status code.
@@ -549,7 +634,6 @@ class UserData extends React.Component {
 
             switch (status) {
                 case 200:
-                    toast.success(t('transformSuccessful'), options);
                     break;
                 case 400:
                     toast.error(t('transformFailed'), options);
@@ -561,11 +645,18 @@ class UserData extends React.Component {
         });
     }
 
-    //TODO: beim button fürs importieren der Daten, wenn es kein reiner basic acc ist, muss erstmal mergeConflictPopup aufgerufen werden.
+    transformAccount(event) {
+        event.preventDefault();
+        this.state.tpa = false;
+        this.state.sending = true;
+        this.setState(this.state);
+        //he has to choose a new password
+        if (this._isMounted) {
+            this.openModal();
+        }
+        this.sendTransformAccountToBackend();
+    }
 
-
-    //TODO: Die gruppierung der fieldsets anpassen
-    //TODO: die labels in die übersetzung übertragen
     render() {
         const {t} 		= this.props;
         const firstname 	= this.state.firstname;
@@ -588,7 +679,11 @@ class UserData extends React.Component {
                     open={this.state.a7ropen}
                     position="right center"
                     modal>
-                    <ConnectA7Popup closeModal={this.closeModal}/>
+                    <ConnectA7Popup
+                        closeModal={this.closeModal}
+                        firstName={this.state.firstname}
+                        lastName={this.state.lastname}
+                    />
                 </Popup>
             </div>;
 
@@ -600,6 +695,20 @@ class UserData extends React.Component {
                         overwriteOnImport={this.state.overwriteOnImport}
                         keepChange={this.handleKeepChange}
                         handleMCSubmit={this.handleMCSubmit}
+                    />
+                </Popup>
+            </div>;
+
+        let furtherMedicalDataPopup =
+            <div>
+                <Popup
+                    open={this.state.registeredForFurtherDataOpen}>
+                    <FurtherMedicalDataPopup
+                        handleFurtherMedicalDataSubmit={this.handleFurtherMedicalDataSubmit}
+                        tpa={this.state.tpa}
+                        username={this.state.username}
+                        firstName={this.state.firstname}
+                        lastName={this.state.lastname}
                     />
                 </Popup>
             </div>;
@@ -620,7 +729,7 @@ class UserData extends React.Component {
 	        	   <form onSubmit={this.handleSubmit} className="row">
                        <p>
                            <button disabled={this.state.a7id == '' && this.state.gid == ''}
-                                   onClick={this.testDataTransfer}>Import user data
+                                   onClick={this.importUserData}>Import user data
                            </button>
                        </p>
                        <p>
@@ -635,6 +744,7 @@ class UserData extends React.Component {
                        </p>
                        {choosePasswordPopup}
                        {mergeConflictPopup}
+                       {furtherMedicalDataPopup}
                        <fieldset>
 						   <fieldset disabled={this.state.tpa}>
 				            <div className="form-group col-md-6 col-lg-6">
@@ -726,7 +836,7 @@ class UserData extends React.Component {
                            </fieldset>
                            <fieldset disabled={this.state.tpa}>
                                <div className="form-group col-md-6 col-lg-6">
-                                   <label htmlFor="allergy">{t('Allergy')}</label>
+                                   <label htmlFor="allergy">{t('Allergies')}</label>
                                    <ul>
                                        {this.state.allergy.map(item => (
                                            <li key={item.id}>{item.name}</li>
@@ -746,7 +856,7 @@ class UserData extends React.Component {
                                    </button>
                                </div>
                                <div className="form-group col-md-6 col-lg-6">
-                                   <label htmlFor="intolerance">{t('Intolerance')}</label>
+                                   <label htmlFor="intolerance">{t('Intolerances')}</label>
                                    <ul>
                                        {this.state.intolerance.map(item => (
                                            <li key={item.id}>{item.name}</li>
@@ -766,7 +876,7 @@ class UserData extends React.Component {
                                    </button>
                                </div>
                                <div className="form-group col-md-6 col-lg-6">
-                                   <label htmlFor="condition">{t('Condition')}</label>
+                                   <label htmlFor="condition">{t('Conditions')}</label>
                                    <ul>
                                        {this.state.condition.map(item => (
                                            <li key={item.id}>{item.name}</li>

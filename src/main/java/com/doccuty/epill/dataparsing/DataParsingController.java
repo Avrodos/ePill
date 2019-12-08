@@ -23,8 +23,11 @@ public class DataParsingController {
         if (dataParsingService.isAnonymous()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        dataParsingService.importCA7UserData(user);
+        if (dataParsingService.importCA7UserData(user) != null) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
     }
 }

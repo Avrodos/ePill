@@ -69,7 +69,6 @@ public class User extends SimpleUser {
 		setDiabetes(null);
 	}
 
-	//TODO: update
 	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();
@@ -80,6 +79,14 @@ public class User extends SimpleUser {
 		result.append(" ").append(this.getUsername());
 		result.append(" ").append(this.getEmail());
 		result.append(" ").append(this.getLevelOfDetail());
+		result.append(" ").append(this.getLanguage());
+		result.append(" ").append(this.getGender());
+		result.append(" ").append(this.getDisease());
+        result.append(" ").append(this.getAllergy());
+		result.append(" ").append(this.getIntolerance());
+		result.append(" ").append(this.getCondition());
+		result.append(" ").append(this.getDiabetes());
+
 		return super.toString() + result.substring(1);
 	}
 
@@ -729,10 +736,10 @@ public class User extends SimpleUser {
 	 * </pre>
 	 */
 
-	//TODO: schauen wo überall alles "disease" aufgerufen wird
 	public static final String PROPERTY_ALLERGY = "allergy";
 
-	@ManyToMany(cascade = CascadeType.ALL)
+
+    @ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_allergy", joinColumns = @JoinColumn(name = "iduser"), inverseJoinColumns = @JoinColumn(name = "idallergy"))
 	private Set<Allergy> allergy = null;
 
@@ -791,7 +798,6 @@ public class User extends SimpleUser {
 	 * </pre>
 	 */
 
-	//TODO: schauen wo überall alles "disease" aufgerufen wird
 	public static final String PROPERTY_INTOLERANCE = "intolerance";
 
 	@ManyToMany(cascade = CascadeType.ALL)
@@ -853,7 +859,6 @@ public class User extends SimpleUser {
 	 * </pre>
 	 */
 
-	//TODO: schauen wo überall alles "disease" aufgerufen wird
 	public static final String PROPERTY_CONDITION = "condition";
 
 	@ManyToMany(cascade = CascadeType.ALL)

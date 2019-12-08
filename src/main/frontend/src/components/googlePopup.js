@@ -10,8 +10,8 @@ import GoogleLogin from "react-google-login";
 import Popup from "reactjs-popup";
 import MissingDataPopup from "./missingDataPopup";
 
-//TODO: Fehlermeldung falls login fehlschlägt aufgrund von 2 mal gleiche mail?
-//INFO: Testing mail for google is: testmailforepill@gmail.com : thirdPartyAccountService
+
+//Component responsible for logging in users into ePill through their respective google credentials.
 class googlePopup extends React.Component {
     _isMounted = false;
     _token = "";

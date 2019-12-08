@@ -2,6 +2,7 @@ package com.doccuty.epill.allergy;
 
 
 import com.doccuty.epill.model.util.AllergyCreator;
+import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
@@ -19,6 +20,7 @@ import java.util.HashSet;
  * HTTP endpoint for a post-related HTTP requests.
  */
 @RestController
+@RequestMapping("/allergy")
 public class AllergyController {
 
     @Autowired
@@ -27,7 +29,7 @@ public class AllergyController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/allergy/all/")
+    @RequestMapping("/all")
     public ResponseEntity<JsonObject> getAllAllergies() {
 
         HashSet<Allergy> set = service.getAllAllergies();
@@ -48,7 +50,7 @@ public class AllergyController {
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
-    @RequestMapping(value = {"/allergy/{id}/"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/{id}"}, method = RequestMethod.GET)
     public ResponseEntity<JsonObject> getAllergyById(@PathVariable(value = "id") int id) {
 
         Allergy allergy = service.getAllergyById(id);
@@ -63,8 +65,8 @@ public class AllergyController {
     }
 
 
-    @RequestMapping(value = "/allergy/save/")
-    public ResponseEntity<Object> addAllergy(@RequestParam("name") String name) {
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public ResponseEntity<JsonObject> addAllergy(@RequestBody String name) {
         // A pragmatic approach to security which does not use much framework-specific magic. While other approaches
         // with annotations, etc. are possible they are much more complex while this is quite easy to understand and
         // extend.
@@ -73,10 +75,16 @@ public class AllergyController {
         }
 
         Allergy allergy = new Allergy();
+        //the name always ends on "=", which is not desired.
+        if (name != null && name.length() > 0 && name.charAt(name.length() - 1) == '=') {
+            name = name.substring(0, name.length() - 1);
+        }
         allergy.setName(name);
 
+        User user = userService.getUserById(userService.getCurrentUser().getId());
         service.addAllergy(allergy);
-
+        user.withAllergy(allergy);
+        userService.updateUserData(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

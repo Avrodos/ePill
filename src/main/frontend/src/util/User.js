@@ -40,6 +40,7 @@ class User {
         this.intolerance = data.intolerance || [];
         this.condition = data.condition || [];
         this.overwriteOnImport = data.overwriteOnImport || false;
+        this.registeredForFurtherData = data.registeredForFurtherData || false;
     }
 
     reset() {
@@ -65,6 +66,7 @@ class User {
         this.intolerance = undefined;
         this.condition = undefined;
         this.overwriteOnImport = false;
+        this.registeredForFurtherData = false;
 
     }
     
@@ -91,7 +93,8 @@ class User {
                 allergy: this.allergy,
                 intolerance: this.intolerance,
                 condition: this.condition,
-                overwriteOnImport: this.overwriteOnImport
+                overwriteOnImport: this.overwriteOnImport,
+                registeredForFurtherData: this.registeredForFurtherData
 
     		}
     }

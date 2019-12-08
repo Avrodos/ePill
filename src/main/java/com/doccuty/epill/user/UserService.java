@@ -207,6 +207,10 @@ public class UserService {
 		if (usr.getSmoker() != null)
 			user.setSmoker(usr.getSmoker());
 
+		if (usr.getWeight() != 0) {
+			user.setWeight(usr.getWeight());
+		}
+
 		if (usr.getAllergy() != null) {
 			Set<Allergy> tempAllergySet = usr.getAllergy();
 			user.withAllergy(tempAllergySet.toArray(new Allergy[tempAllergySet.size()]));
@@ -225,8 +229,8 @@ public class UserService {
         if (usr.getOverwriteOnImport() != null)
             user.setOverwriteOnImport(usr.getOverwriteOnImport());
 
-
-		//TODO: Auch für neue Attribute updaten (Allergy,...)
+		if (usr.getRegisteredForFurtherData() != null)
+			user.setRegisteredForFurtherData(usr.getRegisteredForFurtherData());
 
 		user = repository.save(user);
 
@@ -497,7 +501,6 @@ public class UserService {
         }
 
         user.setTPA(false);
-        //TODO: I need to update the password.
         return updateUserData(user);
     }
 
@@ -544,4 +547,15 @@ public class UserService {
         user.setA7id(usr.getA7id());
         return updateUserData(user);
     }
+
+	public User registerFurtherDataA7(User usr) {
+		User user = repository.findOne(getCurrentUser().getId());
+
+		if (user == null) {
+			return null;
+		}
+
+		user.setRegisteredForFurtherData(true);
+		return updateUserData(user);
+	}
 }

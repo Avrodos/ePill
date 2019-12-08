@@ -49,14 +49,10 @@ class newPasswordPopup extends React.Component {
 
                 this.state.sending = false;
                 this.setState(this.state);
-
                 switch (status) {
                     case 200:
                         toast.success(t('passwordChangeSuccess'), options);
                         this.props.closeModal();
-                        break;
-                    case 409:
-                        toast.error(t('usernameUsed'), options);
                         break;
                     default:
                         toast.error(t('errorOccurred'), options);
@@ -73,6 +69,7 @@ class newPasswordPopup extends React.Component {
                 <div className="page-header">
                     <h2>{t('transformRequiresPasswordChange')}</h2>
                     <h2>{t('choosePassword')}</h2>
+                    <p>{t('noteOnlyFormLogin')}</p>
                 </div>
                 <div className="form-group">
                     <label htmlFor="password">{t('password')}</label>

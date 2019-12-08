@@ -53,7 +53,6 @@ public class SimpleUser implements SendableEntity {
 		this.lastname = lastname;
 	}
 
-	//TODO: Clean this up.
 	public SimpleUser(long id, String firstname, String lastname, String username, String password, String salt,
 					  String preferredFontSize, int levelOfDetail, boolean redGreenColorblind, String gid, Boolean tpa, String a7id, Boolean firstSignIn, int weight) {
 		this.id = id;
@@ -69,7 +68,7 @@ public class SimpleUser implements SendableEntity {
 		this.tpa = tpa;
 		this.a7id = a7id;
 		this.firstSignIn = firstSignIn;
-        this.weight = weight;
+		this.weight = weight;
 	}
 
 	public SimpleUser(User user) {
@@ -97,6 +96,10 @@ public class SimpleUser implements SendableEntity {
 		this.breakfastTime = user.getBreakfastTime();
 		this.dinnerTime = user.getDinnerTime();
 		this.lunchTime = user.getLunchTime();
+		this.smoker = user.getSmoker();
+		this.registeredForFurtherData = user.getRegisteredForFurtherData();
+		this.overwriteOnImport = user.getOverwriteOnImport();
+
 	}
 
 	// ==========================================================================
@@ -270,7 +273,6 @@ public class SimpleUser implements SendableEntity {
 			Boolean oldValue = this.tpa;
 			this.tpa = value;
 			this.firePropertyChange(PROPERTY_TPA, oldValue, value);
-            //TODO: Brauche ich das hier? Brauche ich das bei den anderen?
 		}
 	}
 
@@ -713,5 +715,30 @@ public class SimpleUser implements SendableEntity {
         return this;
     }
 
+	// ==========================================================================
+
+	//This aids us identifying the first sign in of the user
+	//Needed for e.g., red-green colorblindness
+	public static final String PROPERTY_REGISTEREDFORFURTHERDATA = "registeredForFurtherData";
+
+	@Column
+	private Boolean registeredForFurtherData;
+
+	public Boolean getRegisteredForFurtherData() {
+		return this.registeredForFurtherData;
+	}
+
+	public void setRegisteredForFurtherData(Boolean value) {
+		if (this.registeredForFurtherData != value) {
+			Boolean oldValue = this.registeredForFurtherData;
+			this.registeredForFurtherData = value;
+			this.firePropertyChange(PROPERTY_REGISTEREDFORFURTHERDATA, oldValue, value);
+		}
+	}
+
+	public SimpleUser withRegisteredForFurtherData(Boolean value) {
+		setRegisteredForFurtherData(value);
+		return this;
+	}
 
 }

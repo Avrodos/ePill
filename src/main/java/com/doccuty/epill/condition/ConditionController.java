@@ -2,6 +2,7 @@ package com.doccuty.epill.condition;
 
 
 import com.doccuty.epill.model.util.ConditionCreator;
+import com.doccuty.epill.user.User;
 import com.doccuty.epill.user.UserService;
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
@@ -19,6 +20,7 @@ import java.util.HashSet;
  * HTTP endpoint for a post-related HTTP requests.
  */
 @RestController
+@RequestMapping("/condition")
 public class ConditionController {
 
     @Autowired
@@ -27,7 +29,7 @@ public class ConditionController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/condition/all/")
+    @RequestMapping("/all")
     public ResponseEntity<JsonObject> getAllAllergies() {
 
         HashSet<Condition> set = service.getAllAllergies();
@@ -48,7 +50,7 @@ public class ConditionController {
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
-    @RequestMapping(value = {"/condition/{id}/"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/{id}"}, method = RequestMethod.GET)
     public ResponseEntity<JsonObject> getConditionById(@PathVariable(value = "id") int id) {
 
         Condition condition = service.getConditionById(id);
@@ -63,8 +65,8 @@ public class ConditionController {
     }
 
 
-    @RequestMapping(value = "/condition/save/")
-    public ResponseEntity<Object> addCondition(@RequestParam("name") String name) {
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public ResponseEntity<Object> addCondition(@RequestBody String name) {
         // A pragmatic approach to security which does not use much framework-specific magic. While other approaches
         // with annotations, etc. are possible they are much more complex while this is quite easy to understand and
         // extend.
@@ -73,10 +75,16 @@ public class ConditionController {
         }
 
         Condition condition = new Condition();
+        //the name always ends on "=", which is not desired.
+        if (name != null && name.length() > 0 && name.charAt(name.length() - 1) == '=') {
+            name = name.substring(0, name.length() - 1);
+        }
         condition.setName(name);
 
+        User user = userService.getUserById(userService.getCurrentUser().getId());
         service.addCondition(condition);
-
+        user.withCondition(condition);
+        userService.updateUserData(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
