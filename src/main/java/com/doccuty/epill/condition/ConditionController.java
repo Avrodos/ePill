@@ -30,9 +30,9 @@ public class ConditionController {
     private UserService userService;
 
     @RequestMapping("/all")
-    public ResponseEntity<JsonObject> getAllAllergies() {
+    public ResponseEntity<JsonObject> getAllConditions() {
 
-        HashSet<Condition> set = service.getAllAllergies();
+        HashSet<Condition> set = service.getAllConditions();
 
         IdMap map = ConditionCreator.createIdMap("");
         map.withFilter(Filter.regard(Deep.create(2)));
@@ -74,16 +74,21 @@ public class ConditionController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        Condition condition = new Condition();
         //the name always ends on "=", which is not desired.
         if (name != null && name.length() > 0 && name.charAt(name.length() - 1) == '=') {
             name = name.substring(0, name.length() - 1);
         }
-        condition.setName(name);
 
+        Condition repoCond = service.getConditionByName(name);
         User user = userService.getUserById(userService.getCurrentUser().getId());
-        service.addCondition(condition);
-        user.withCondition(condition);
+
+        if (repoCond == null) {
+            repoCond = new Condition();
+            repoCond.setName(name);
+            service.addCondition(repoCond);
+        }
+
+        user.withCondition(repoCond);
         userService.updateUserData(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }

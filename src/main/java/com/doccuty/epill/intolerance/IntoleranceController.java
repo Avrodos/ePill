@@ -30,9 +30,9 @@ public class IntoleranceController {
     private UserService userService;
 
     @RequestMapping("/all")
-    public ResponseEntity<JsonObject> getAllAllergies() {
+    public ResponseEntity<JsonObject> getAllIntolerances() {
 
-        HashSet<Intolerance> set = service.getAllAllergies();
+        HashSet<Intolerance> set = service.getAllIntolerances();
 
         IdMap map = IntoleranceCreator.createIdMap("");
         map.withFilter(Filter.regard(Deep.create(2)));
@@ -74,16 +74,21 @@ public class IntoleranceController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        Intolerance intolerance = new Intolerance();
         //the name always ends on "=", which is not desired.
         if (name != null && name.length() > 0 && name.charAt(name.length() - 1) == '=') {
             name = name.substring(0, name.length() - 1);
         }
-        intolerance.setName(name);
 
+        Intolerance repoInt = service.getIntoleranceByName(name);
         User user = userService.getUserById(userService.getCurrentUser().getId());
-        service.addIntolerance(intolerance);
-        user.withIntolerance(intolerance);
+
+        if (repoInt == null) {
+            repoInt = new Intolerance();
+            repoInt.setName(name);
+            service.addIntolerance(repoInt);
+        }
+
+        user.withIntolerance(repoInt);
         userService.updateUserData(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }

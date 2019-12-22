@@ -74,17 +74,23 @@ public class AllergyController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        Allergy allergy = new Allergy();
         //the name always ends on "=", which is not desired.
         if (name != null && name.length() > 0 && name.charAt(name.length() - 1) == '=') {
             name = name.substring(0, name.length() - 1);
         }
-        allergy.setName(name);
 
+        Allergy repoAll = service.getAllergyByName(name);
         User user = userService.getUserById(userService.getCurrentUser().getId());
-        service.addAllergy(allergy);
-        user.withAllergy(allergy);
+
+        if (repoAll == null) {
+            repoAll = new Allergy();
+            repoAll.setName(name);
+            service.addAllergy(repoAll);
+        }
+
+        user.withAllergy(repoAll);
         userService.updateUserData(user);
         return new ResponseEntity<>(HttpStatus.OK);
+
     }
 }

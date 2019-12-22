@@ -1,6 +1,9 @@
 package com.doccuty.epill.dataparsing;
 
 import com.doccuty.epill.allergy.Allergy;
+import com.doccuty.epill.allergy.AllergyService;
+import com.doccuty.epill.condition.Condition;
+import com.doccuty.epill.condition.ConditionService;
 import com.doccuty.epill.diabetes.Diabetes;
 import com.doccuty.epill.diabetes.DiabetesService;
 import com.doccuty.epill.gender.Gender;
@@ -136,15 +139,15 @@ public class DataParsingService {
                         }
                         Date newDateOfBirth = processDateOfBirth(record.get("value"));
                         newData.setDateOfBirth(newDateOfBirth);
-                    } else if (Arrays.stream(listAMI).anyMatch(key::equals)) {
-                        //TODO: Noch überprüfen ob die Daten nicht invalidiert wurden
-                        //Append new information
-                        if (!record.get("invalidation_date").equals("")) {
+                    } else if (key.equals("ami.condition")) {
+                        //some conditions are in the past. We do not need them.
+                        if (hasEndDate(records, record.get("multi_id"))) {
                             continue;
                         }
-                        //TODO: Erstmal Attribute für conditions und Intolerances anlegen.
-                        //Mache ich 2 separate Attribute? Dann müsste ich auch die multi_ids lesen und darüber emitteln was von beidem es ist.
-                        //TODO: Ab hier jetzt die Daten verarbeiten
+                        Condition newCondition = processCondition(record.get("value"));
+                        newData.withCondition(newCondition);
+                    } else if (key.equals("ami.allergyAndIntolerance")) {
+                        //Append new information
                         String multiId = record.get("multi_id");
                         //Look for record with id = multiId and check record.get(key).equals(qualifier.type) -> this has li.intolerance or li.allergy
                         String qualifierType = getQualifierType(records, multiId);
@@ -153,10 +156,8 @@ public class DataParsingService {
                             newData.withIntolerance(newIntolerance);
 
                         } else if (qualifierType.equals("li.allergy")) {
-                            Allergy newAllergy = new Allergy();
-                            newAllergy.setName(record.get("value"));
-                            //TODO: wahrscheinlich muss ich noch UUIDs für jede vergeben?
-                            // newData.withAllergy(newAllergy);
+                            Allergy newAllergy = processAllergy(record.get("value"));
+                            newData.withAllergy(newAllergy);
                         } else {
                             continue;
                         }
@@ -184,6 +185,47 @@ public class DataParsingService {
         return null;
     }
 
+    private Allergy processAllergy(String name) {
+        if (!allergyService.allergyExistsByName(name)) {
+            Allergy newAllergy = new Allergy();
+            newAllergy.setName(name);
+            allergyService.addAllergy(newAllergy);
+            return newAllergy;
+        }
+        return null;
+    }
+
+    private Intolerance processIntolerance(String name) {
+        if (!intoleranceService.intoleranceExistsByName(name)) {
+            Intolerance newIntolerance = new Intolerance();
+            newIntolerance.setName(name);
+            intoleranceService.addIntolerance(newIntolerance);
+            return newIntolerance;
+        }
+        return null;
+    }
+
+    private Condition processCondition(String name) {
+        if (!conditionService.conditionExistsByName(name)) {
+            Condition newCondition = new Condition();
+            newCondition.setName(name);
+            conditionService.addCondition(newCondition);
+            return newCondition;
+        }
+        return null;
+    }
+
+    private boolean hasEndDate(Iterable<CSVRecord> records, String multiId) {
+        //since we do not receive a guarantee for its position, we will have to look through it all
+        for (CSVRecord record : records) {
+            if (record.get("parent_id").equals(multiId) && record.get("key").equals("qualifier.endDate")) {
+                //we found our qualifier
+                return true;
+            }
+        }
+        return false;
+    }
+
     private String getQualifierType(Iterable<CSVRecord> records, String multiId) {
         //since we do not receive a guarantee for its position, we will have to look through it all
         for (CSVRecord record : records) {
@@ -196,22 +238,19 @@ public class DataParsingService {
     }
 
     private Diabetes processDiabetes(String value, ArrayList<CSVRecord> records, String multiId) {
-        Diabetes currentDiabetes = new Diabetes();
+        //type 1 = id(1), type 2 = id(2), none = id(3)
         if (value.equals("li.yes")) {
             String qualifierType = getQualifierType(records, multiId);
             if (qualifierType.equals("li.type1")) {
                 return diabetesService.getDiabetesById(1);
             } else if (qualifierType.equals("li.type2")) {
-                currentDiabetes.setDiabetes("type2");
-                currentDiabetes.setId(2);
+                return diabetesService.getDiabetesById(2);
             } else {
-                //TODO: Fehlerbehandlung
+                return null;
             }
         } else {
-            currentDiabetes.setDiabetes("none"); //TODO: vermutlich irgendwo dokumentieren
-            currentDiabetes.setId(3); //muss alles beantwortet werden
+            return diabetesService.getDiabetesById(3);
         }
-        return currentDiabetes;
     }
 
     private boolean processSmoker(String value) {
@@ -221,15 +260,12 @@ public class DataParsingService {
 
     private Gender processGender(String value) {
         Gender currentGender = new Gender();
-        ; // 0 = no info, 1 = male, 2 = female
-        //TODO: Does this work with .equals?
+        // 0 = no info, 1 = male, 2 = female
         switch (value) {
             case "li.man":
                 return genderService.getGenderById(1);
             case "li.woman":
-                currentGender.setGender("female");
-                currentGender.setId(2);
-                break;
+                return genderService.getGenderById(2);
             default:
                 currentGender.setId(0);
         }
