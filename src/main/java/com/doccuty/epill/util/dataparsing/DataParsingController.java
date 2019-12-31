@@ -1,4 +1,4 @@
-package com.doccuty.epill.dataparsing;
+package com.doccuty.epill.util.dataparsing;
 
 
 import com.doccuty.epill.user.User;

@@ -1,4 +1,4 @@
-package com.doccuty.epill.dataparsing;
+package com.doccuty.epill.util.dataparsing;
 
 import com.doccuty.epill.allergy.Allergy;
 import com.doccuty.epill.allergy.AllergyService;
@@ -61,7 +61,7 @@ public class DataParsingService {
         //By creating a temporary User, we can make sure, that we are only taking the newest Data by taking single field information only once, from newest files to oldest.
         //As updates in the profile are reflected by new files, i.e., older files contain outdated information.
         User newData = new User();
-        String desiredFilePrefix = user.getLastname() + "_" + user.getFirstname();
+        String desiredFilePrefix = oldData.getLastname() + "_" + oldData.getFirstname();
 
         //The connector setup forces an absolute path for configuration
         //Therefore, might as well use a hardcoded file path here

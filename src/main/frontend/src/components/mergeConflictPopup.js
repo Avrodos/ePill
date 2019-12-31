@@ -33,11 +33,9 @@ class mergeConflictPopup extends React.Component {
                             </label>
                         </li>
                     </ul>
+                    <button type="submit" className="btn btn-primary"
+                            onClick={this.props.handleMCSubmit}>{t('confirm')} </button>
                 </div>
-
-                <button type="submit" className="btn btn-primary"
-                        onClick={this.props.handleMCSubmit}>{t('confirm')} </button>
-
             </div>
         )
     }

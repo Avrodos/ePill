@@ -143,8 +143,6 @@ class UserData extends React.Component {
     closeRegisterForFurtherMedicalDataModal() {
         this.state.registeredForFurtherDataOpen = false;
         this.setState(this.state);
-        console.log("closing popup");
-        console.log(this.state);
     }
 
     openRegisterForFurtherMedicalDataModal() {
@@ -185,11 +183,6 @@ class UserData extends React.Component {
 
                 this.setState(this.state);
 
-                console.log("the received data:");
-                console.log(data);
-                console.log("loading user:");
-                console.log(this.state);
-
             });
     }
     
@@ -209,7 +202,7 @@ class UserData extends React.Component {
     }
     
     handleDateOfBirthChange(event) {
-	    this.state.dateOfBirth = event.target.value
+        this.state.dateOfBirth = event.target.value;
 	    	this.setState(this.state);
     }
     
@@ -407,8 +400,6 @@ class UserData extends React.Component {
 
     handleFurtherMedicalDataSubmit(event) {
         //event.preventDefault();
-        console.log("start of handle method");
-        console.log(this.state);
         this.closeRegisterForFurtherMedicalDataModal();
         //this.state.registeredForFurtherDataOpen = false;
         //this.setState(this.state);
@@ -416,8 +407,6 @@ class UserData extends React.Component {
             this.openMCModal();
         } else {
             this.importA7Data();
-            console.log("After importing data");
-            console.log(this.state);
         }
     }
     
@@ -671,7 +660,7 @@ class UserData extends React.Component {
                         closeModal={this.closeModal}
                     />
                 </Popup>
-            </div>
+            </div>;
 
         let a7RegisterPopup =
             <div>

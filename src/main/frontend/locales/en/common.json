@@ -113,7 +113,7 @@
   "choosePassword": "Please choose a new password!",
   "confirm": "Confirm",
   "connectExplanation": "After logging in, please consent to the sharing process on your registered mobile device.",
-  "whatToKeep": "Possible Mergeconflict!",
+  "whatToKeep": "Possible Merge Conflict!",
   "keepExplanation": "Since the account already contains some user data, merge conflicts are possible. Therefore, decide which data should be kept. \n\n Info: Import of data is only possible with matching names.",
   "keepePill": "Keep ePill-Data",
   "keepTPA": "Overwrite with TPA-Data",

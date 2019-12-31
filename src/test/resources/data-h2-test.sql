@@ -86,6 +86,9 @@ INSERT INTO user_simple (id, date_of_birth, date_of_registration, email, firstna
 INSERT INTO user_simple (id, date_of_birth, date_of_registration, email, firstname, lastname, level_of_detail, password, preferred_font_size, salt, username, red_green_colorblind, breakfast_time, lunch_time, dinner_time)
     VALUES
     (2,'1995-09-18','2019-09-01 12:00:00','cs@test.de','Christina','Speck',3,'cca69a44146a648c096757dfa37984d0357dfcf2e40227905b730ccc5653f23e919e226c39380a091975c87fd369e87dbd7856018c4d7f99b2a4db8ddec22416','defaultFontSize','[B@63ba2cf8','cs', false, 7, 12, 18);
+INSERT INTO user_simple (id, date_of_birth, date_of_registration, email, firstname, lastname, level_of_detail, password, preferred_font_size, salt, username, red_green_colorblind, breakfast_time, lunch_time, dinner_time)
+    VALUES
+    (3,'1997-10-12','2019-12-01 12:00:00','sa@test.de','Sajjad','Ahmad',3,'2ec2b0cb5bc17e00b8badcc56e4564ffebdda60afab4f3b4fac03eaeb532fc85d888d86c58610fbaf82c75ebcf00ad74c84ed6764edc9bff3c444955641503d2','defaultFontSize','[B@27e8f897','sa', false, 7, 12, 18);
 
 
 --
@@ -94,7 +97,7 @@ INSERT INTO user_simple (id, date_of_birth, date_of_registration, email, firstna
 
 INSERT INTO user_ (id, idcountry, idgender, idlanguage) VALUES (1,1,1,1);
 INSERT INTO user_ (id, idcountry, idgender, idlanguage) VALUES (2,1,2,1);
-
+INSERT INTO user_ (id, idcountry, idgender, idlanguage) VALUES (3,1,1,1);
 
 --
 -- Dumping data for table `indication_group`
